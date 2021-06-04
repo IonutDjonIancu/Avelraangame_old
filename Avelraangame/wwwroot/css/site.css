@@ -61,6 +61,9 @@ html {
 body {
   /* Margin bottom by footer height */
   margin-bottom: 60px;
+  background-image: url("../media/background/IronCrown_flag.jpeg");
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 .footer {
   position: absolute;
@@ -69,3 +72,4 @@ body {
   white-space: nowrap;
   line-height: 60px; /* Vertically center the text there */
 }
+

@@ -1,10 +1,16 @@
 ﻿// URLs
 const generateItemPalantirUrl = "/palantir/generateitem"
 const getOkUrl = "/palantir/getok"
-
 // divIDs
 let clickBtn = '#clickBtn';
 let displayDiv = '#display';
+// images
+
+
+
+
+
+
 
 
 //events
