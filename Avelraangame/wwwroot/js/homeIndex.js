@@ -62,8 +62,8 @@ function logInConsole(res) {
 
 function displayItem(itemData) {
     var html = `
-<p>Name: ${itemData.Name}</p>
-<p>Level: ${itemData.Level}</p>
+<p style="color:navajowhite">Name: ${itemData.Name}</p>
+<p style="color:navajowhite">Level: ${itemData.Level}</p>
 <button class="btn ${returnItemLevel(itemData.Level)}">${itemData.Name}</button>
 `;
 
