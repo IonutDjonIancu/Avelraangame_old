@@ -1,0 +1,30 @@
+﻿@{
+    ViewData["Title"] = "Player";
+}
+<br />
+<div class="btn-group">
+    <a class="btn btn-outline-dark btn-sm" asp-controller="Home" asp-action="Index">Home</a>
+    <a style="color:navajowhite" class="btn btn-outline-secondary btn-sm" asp-controller="Player" asp-action="Index">Player</a>
+</div>
+
+<div class="text-left jumbotron" style="opacity: 0.7; background-color:black">
+    <p style="color:navajowhite">Create player account</p>
+    <form>
+        <div class="mb-3">
+            <label for="nameField" class="form-label" style="color:navajowhite">Name</label>
+            <input title="Name" type="text" class="form-control" style="width: 50%" id="nameField">
+        </div>
+        <div class="mb-3">
+            <label for="wardField" class="form-label" style="color:navajowhite">Ward</label>
+            <input title="Ward" type="password" class="form-control" style="width: 50%" id="wardField">
+        </div>
+        <div class="mb-3">
+            <label for="wardcheckField" class="form-label" style="color:navajowhite">Confirm ward</label>
+            <input title="Wardcheck" type="password" class="form-control" style="width: 50%" id="wardcheckField">
+        </div>
+    </form>
+    <button id="saveBtn" class="btn btn-outline-light">Save</button>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="~/js/playerIndex.js"></script>

@@ -2,9 +2,13 @@
     ViewData["Title"] = "Home Page";
 }
 <br />
+<div class="btn-group">
+    <a style="color:navajowhite" class="btn btn-outline-secondary btn-sm" asp-controller="Home" asp-action="Index">Home</a>
+    <a class="btn btn-outline-dark btn-sm" asp-controller="Player" asp-action="Index">Player</a>
+</div>
 
 <div class="text-left jumbotron" style="opacity: 0.7; background-color:black">
-    <button id="clickBtn" class="btn btn-outline-light">click</button>
+    <button id="clickBtn" class="btn btn-outline-light">Generate item</button>
     <br />  
     <br />  
     <div id="display"></div>

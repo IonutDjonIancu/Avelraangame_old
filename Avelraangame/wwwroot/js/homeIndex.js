@@ -1,10 +1,9 @@
 ﻿// URLs
-const generateItemPalantirUrl = "/palantir/generateitem"
+const generateItemPalantirURL = "/palantir/generateitem"
 const getOkUrl = "/palantir/getok"
 // divIDs
 let clickBtn = '#clickBtn';
 let displayDiv = '#display';
-// images
 
 
 
@@ -14,7 +13,6 @@ let displayDiv = '#display';
 
 
 //events
-
 $(clickBtn).on('click', function () {
 
     createItem();
@@ -26,16 +24,19 @@ $(clickBtn).on('click', function () {
 
 
 //functions
-
 function createItem() {
 
     $.ajax({
-        url: generateItemPalantirUrl,
+        type: "GET",
+        url: generateItemPalantirURL,
         //data: data,
         success: function (data, status, xhr) {
 
             logInConsole(data);
             displayItem(data);
+        },
+        error: function (err) {
+            logInConsole(err);
         },
         dataType: 'json'
     });

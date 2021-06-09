@@ -1,12 +1,14 @@
 ﻿using Avelraangame.Data;
 using Avelraangame.Models.ViewModels;
-using Avelraangame.Services.ServiceBase;
+using Avelraangame.Services.ServiceUtils;
+using Avelraangame.Services.SubService;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
 namespace Avelraangame.Services
 {
-    public class ItemsService : ItemsServiceBase
+    public class ItemsService : ItemsSubService
     {
         private AvelraanContext Context { get; set; }
 
@@ -15,27 +17,42 @@ namespace Avelraangame.Services
             Context = new AvelraanContext();
         }
 
-        public ItemVm GenerateRandomItem()
+        public RequestVm GenerateRandomItem()
         {
+            var request = new RequestVm();
+            var itemVm = new ItemVm();
+
             var itemLevel = GenerateItemLevel();
 
             if (itemLevel == 5)
             {
-                //return GenerateArtifactItem(); // <------ should return a Vm
+                //return GenerateArtifactItem(); // <------ should return ArtifactVm
                 throw new NotImplementedException();
             }
             else if (itemLevel == 6)
             {
-                //return GenerateRelicItem(); // <------ should return a Vm
+                //return GenerateRelicItem(); // <------ should return RelicVm
                 throw new NotImplementedException();
             }
             else
             {
-                var item = GenerateNormalItem(itemLevel);
-                var itemVm = new ItemVm(item);
+                try
+                {
+                    var item = GenerateNormalItem(itemLevel);
+                    itemVm.Convert(item);
+                }
+                catch (Exception ex)
+                {
+                    request.OperationSuccess = false;
+                    request.Message = ex.Message;
+                    return request;
+                }
 
-                return itemVm;
             }
+
+            request.Response = JsonConvert.SerializeObject(itemVm);
+
+            return request;
         }
 
         public List<ItemVm> GetItems()

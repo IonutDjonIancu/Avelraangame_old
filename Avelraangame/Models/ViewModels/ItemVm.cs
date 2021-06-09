@@ -26,7 +26,26 @@ namespace Avelraangame.Models.ViewModels
 
         public bool IsConsumable { get; set; }
 
+        public ItemVm()
+        {
+
+        }
+
         public ItemVm(Item item)
+        {
+            Id = item.Id;
+            Owner = item.Owner;
+            Name = item.Name;
+            Type = item.Type;
+            Level = item.Level;
+            IsEquipped = item.IsEquipped;
+            Worth = item.Worth;
+            InSlot = item.InSlot;
+            Properties = JsonConvert.DeserializeObject<ItemProperties>(item.Properties);
+            IsConsumable = item.IsConsumable;
+        }
+
+        public void Convert(Item item)
         {
             Id = item.Id;
             Owner = item.Owner;

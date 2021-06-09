@@ -1,43 +1,42 @@
-﻿using Avelraangame.Services;
-using Avelraangame.Services.ServiceUtils;
+﻿using Avelraangame.Models.ApiModels;
+using Avelraangame.Services;
+using Avelraangame.Services.Validations;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
 namespace Avelraangame.Controllers
 {
+    //[Route()]
+    [ApiController]
     public class PalantirController : ControllerBase
     {
         // GET: palantir/GetOk
-        [HttpGet]
+        [HttpGet("GetOk")]
         public string GetOk()
         {
             return "ok";
         }
 
+        #region Items
         // GET: palantir/GenerateItem
-        [HttpGet]
+        [HttpGet("GenerateItem")]
         public string GenerateItem()
         {
             var itemService = new ItemsService();
-            var item = itemService.GenerateRandomItem();
+            var request = itemService.GenerateRandomItem();
 
-            var result = JsonConvert.SerializeObject(item);
-
-            return result;
-        }
-
-        // GET: palantir/GetString
-        [HttpGet]
-        public string GetString()
-        {
-            var result = Scribe.Stats_Strength;
-
-
-            return result;
+            if (request.OperationSuccess)
+            {
+                return request.Response;
+            }
+            else
+            {
+                return request.Message;
+            }
         }
 
         // GET: palantir/GetItems
-        [HttpGet]
+        [HttpGet("GetItems")]
         public string GetItems()
         {
             var itemService = new ItemsService();
@@ -50,13 +49,34 @@ namespace Avelraangame.Controllers
 
 
         // GET: palantir/CreateItem
-        [HttpGet]
+        [HttpGet("CreateItem")]
         public void CreateItem()
         {
             var itemService = new ItemsService();
 
             itemService.CreateItem();
         }
+        #endregion
+
+
+        #region player
+        // POST: palantir/createplayer
+        [HttpPost("CreatePlayer")]
+        public IActionResult CreatePlayer(RequestModel request)
+        {
+            var (statusCode, statusMessage) = PalantirValidations.ValidateRequest(request);
+
+            if (statusCode != 200) 
+            {
+                return StatusCode(statusCode, statusMessage);
+            }
+
+            var playerService = new PlayersService();
+            var isSuccess = playerService.CreatePlayer(request);
+
+            return StatusCode(200, "Player created");
+        }
+        #endregion
 
     }
 }
