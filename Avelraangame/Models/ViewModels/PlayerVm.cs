@@ -4,6 +4,6 @@
     {
         public string Name { get; set; }
         public string Ward { get; set; }
-        public string Wardheck { get; set; }
+        public string Wardcheck { get; set; }
     }
 }

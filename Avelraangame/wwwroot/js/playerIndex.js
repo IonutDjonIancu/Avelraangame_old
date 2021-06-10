@@ -26,7 +26,7 @@ function createPlayer() {
     var object = {
         name: nameValue,
         ward: wardValue,
-        warcheck: wardcheckValue
+        wardcheck: wardcheckValue
     }
     var request = {
         message: JSON.stringify(object)

@@ -1,5 +1,6 @@
 ﻿using Avelraangame.Data;
 using Avelraangame.Models;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Avelraangame.Services
@@ -19,6 +20,16 @@ namespace Avelraangame.Services
         {
             Context.Players.Add(player);
             Context.SaveChanges();
+        }
+        
+        public List<string> GetPlayersNames()
+        {
+            return Context.Players.Select(s => s.Name).ToList();
+        }
+
+        public int GetPlayersCount()
+        {
+            return Context.Players.Count();
         }
         #endregion
 

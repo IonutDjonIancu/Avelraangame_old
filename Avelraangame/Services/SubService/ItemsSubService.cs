@@ -1,12 +1,13 @@
 ﻿using Avelraangame.Models;
 using Avelraangame.Models.ModelProps;
+using Avelraangame.Services.Base;
 using Avelraangame.Services.ServiceUtils;
 using Newtonsoft.Json;
 using System;
 
 namespace Avelraangame.Services.SubService
 {
-    public class ItemsSubService
+    public class ItemsSubService : ItemBase
     {
         protected SkillsSubService Skills { get; set; }
         protected AssetsSubService Assets { get; set; }

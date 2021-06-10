@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Tests\" />
     <Folder Include="wwwroot\media\background\" />
   </ItemGroup>
 
