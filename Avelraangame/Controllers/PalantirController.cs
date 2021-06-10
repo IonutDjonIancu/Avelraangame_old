@@ -1,12 +1,14 @@
 ﻿using Avelraangame.Models.ApiModels;
+using Avelraangame.Models.ViewModels;
 using Avelraangame.Services;
+using Avelraangame.Services.ServiceUtils;
 using Avelraangame.Services.Validations;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
 namespace Avelraangame.Controllers
 {
-    //[Route()]
+    [Route("api/palantir")]
     [ApiController]
     public class PalantirController : ControllerBase
     {
@@ -23,16 +25,7 @@ namespace Avelraangame.Controllers
         public string GenerateItem()
         {
             var itemService = new ItemsService();
-            var request = itemService.GenerateRandomItem();
-
-            if (request.OperationSuccess)
-            {
-                return request.Response;
-            }
-            else
-            {
-                return request.Message;
-            }
+            return itemService.GenerateRandomItem();
         }
 
         // GET: palantir/GetItems
@@ -46,35 +39,25 @@ namespace Avelraangame.Controllers
 
             return result;
         }
-
-
-        // GET: palantir/CreateItem
-        [HttpGet("CreateItem")]
-        public void CreateItem()
-        {
-            var itemService = new ItemsService();
-
-            itemService.CreateItem();
-        }
         #endregion
 
 
         #region player
         // POST: palantir/createplayer
         [HttpPost("CreatePlayer")]
-        public IActionResult CreatePlayer(RequestModel request)
+        public string CreatePlayer([FromBody]RequestVm request)
         {
-            var (statusCode, statusMessage) = PalantirValidations.ValidateRequest(request);
+            var validateRequest = PalantirValidations.ValidateRequest(request);
 
-            if (statusCode != 200) 
+            if (validateRequest.Equals(Scribe.ShortMessages.BadRequest))
             {
-                return StatusCode(statusCode, statusMessage);
+                return validateRequest.ToString();
             }
 
             var playerService = new PlayersService();
-            var isSuccess = playerService.CreatePlayer(request);
+            var response = playerService.CreatePlayer(request);
 
-            return StatusCode(200, "Player created");
+            return response.ToString();
         }
         #endregion
 

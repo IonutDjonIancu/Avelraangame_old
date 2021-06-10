@@ -144,7 +144,15 @@
         #endregion
 
         #region ApplicationMessages
-        public const string Operation_success = "Success";
+        public const string Application_operation_success = "Success";
+        public const string Application_requestIsInvalid = "Request is invalid";
+        public enum ShortMessages
+        {
+            Ok,
+            BadRequest,
+            Success,
+            Failure
+        }
         #endregion
     }
 }

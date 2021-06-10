@@ -1,25 +1,23 @@
-﻿using Avelraangame.Models.ApiModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Avelraangame.Models.ViewModels;
+using Avelraangame.Services.ServiceUtils;
 
 namespace Avelraangame.Services.Validations
 {
     public static class PalantirValidations
     {
-        public static (int statusCode, string statusMessage) ValidateRequest(RequestModel request)
+        public static Scribe.ShortMessages ValidateRequest(RequestVm request)
         {
             if (request == null)
             {
-                return (statusCode: 403, statusMessage: "Request is null");
-            }
-            if (request.RequestPayload == null)
-            {
-                return (statusCode: 403, statusMessage: "Request payload missing or null");
+                return Scribe.ShortMessages.BadRequest;
             }
 
-            return (statusCode: 200, statusMessage: "Ok");
+            if (string.IsNullOrWhiteSpace(request.Message))
+            {
+                return Scribe.ShortMessages.BadRequest;
+            }
+
+            return Scribe.ShortMessages.Ok;
         }
     }
 }

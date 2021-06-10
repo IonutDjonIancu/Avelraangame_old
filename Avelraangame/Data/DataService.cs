@@ -13,13 +13,17 @@ namespace Avelraangame.Services
             Context = new AvelraanContext();
         }
 
-        public void CreatePlayer(Player player)
+        public void SavePlayer(Player player)
         {
             Context.Players.Add(player);
             Context.SaveChanges();
         }
 
-
+        public void SaveItem(Item item)
+        {
+            Context.Items.Add(item);
+            Context.SaveChanges();
+        }
 
     }
 }

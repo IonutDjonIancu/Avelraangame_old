@@ -1,6 +1,7 @@
 ﻿using Avelraangame.Data;
 using Avelraangame.Models;
 using Avelraangame.Models.ModelProps;
+using Avelraangame.Models.ViewModels;
 using Avelraangame.Services.ServiceUtils;
 using Newtonsoft.Json;
 using System;
