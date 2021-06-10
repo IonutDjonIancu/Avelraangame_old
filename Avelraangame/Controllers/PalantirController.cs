@@ -1,10 +1,8 @@
-﻿using Avelraangame.Models.ApiModels;
-using Avelraangame.Models.ViewModels;
+﻿using Avelraangame.Models.ViewModels;
 using Avelraangame.Services;
 using Avelraangame.Services.ServiceUtils;
-using Avelraangame.Services.Validations;
+using Avelraangame.Services.Base;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace Avelraangame.Controllers
 {
@@ -12,15 +10,15 @@ namespace Avelraangame.Controllers
     [ApiController]
     public class PalantirController : ControllerBase
     {
-        // GET: palantir/GetOk
+        // GET: api/palantir/GetOk
         [HttpGet("GetOk")]
         public string GetOk()
         {
-            return "ok";
+            return Scribe.ShortMessages.Ok.ToString();
         }
 
-        #region Items
-        // GET: palantir/GenerateItem
+    #region Items
+        // GET: api/palantir/GenerateItem
         [HttpGet("GenerateItem")]
         public string GenerateItem()
         {
@@ -28,26 +26,22 @@ namespace Avelraangame.Controllers
             return itemService.GenerateRandomItem();
         }
 
-        // GET: palantir/GetItems
-        [HttpGet("GetItems")]
-        public string GetItems()
+        // GET: api/palantir/GetItems
+        [HttpGet("GetItemsCount")]
+        public int GetItemsCount()
         {
             var itemService = new ItemsService();
-            var listOfItems = itemService.GetItems();
-
-            var result = JsonConvert.SerializeObject(listOfItems);
-
-            return result;
+            return itemService.GetItemsCount();
         }
-        #endregion
+    #endregion
 
 
-        #region player
-        // POST: palantir/createplayer
+    #region Players
+        // POST: api/palantir/createplayer
         [HttpPost("CreatePlayer")]
         public string CreatePlayer([FromBody]RequestVm request)
         {
-            var validateRequest = PalantirValidations.ValidateRequest(request);
+            var validateRequest = PalantirBase.ValidatePOSTRequest(request);
 
             if (validateRequest.Equals(Scribe.ShortMessages.BadRequest))
             {
@@ -55,11 +49,9 @@ namespace Avelraangame.Controllers
             }
 
             var playerService = new PlayersService();
-            var response = playerService.CreatePlayer(request);
-
-            return response.ToString();
+            return playerService.CreatePlayer(request);
         }
-        #endregion
+    #endregion
 
     }
 }

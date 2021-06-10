@@ -4,23 +4,15 @@ using Avelraangame.Services.ServiceUtils;
 using Avelraangame.Services.SubService;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 
 namespace Avelraangame.Services
 {
     public class ItemsService : ItemsSubService
     {
-        private DataService DataService { get; set; }
-
-        public ItemsService()
-        {
-            DataService = new DataService();
-        }
-
         public string GenerateRandomItem()
         {
             var itemLevel = GenerateItemLevel();
-            var response = string.Empty;
+            string response;
             Item item;
 
             if (itemLevel == 5)
@@ -41,7 +33,7 @@ namespace Avelraangame.Services
                 }
                 catch (Exception ex)
                 {
-                    response = string.Concat(Scribe.ShortMessages.Failure, ex);
+                    response = string.Concat(Scribe.ShortMessages.Failure, ": ", ex);
                     return response;
                 }
             }
@@ -53,18 +45,9 @@ namespace Avelraangame.Services
             return response;
         }
 
-        public List<ItemVm> GetItems()
+        public int GetItemsCount()
         {
-            var allItems = GetAllItems();
-            var returnList = new List<ItemVm>();
-
-            foreach (var item in allItems)
-            {
-                var i = new ItemVm(item);
-                returnList.Add(i);
-            }
-
-            return returnList;
+            return DataService.GetItemsCount();
         }
 
     }

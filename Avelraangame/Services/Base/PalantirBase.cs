@@ -1,11 +1,11 @@
 ﻿using Avelraangame.Models.ViewModels;
 using Avelraangame.Services.ServiceUtils;
 
-namespace Avelraangame.Services.Validations
+namespace Avelraangame.Services.Base
 {
-    public static class PalantirValidations
+    public static class PalantirBase
     {
-        public static Scribe.ShortMessages ValidateRequest(RequestVm request)
+        public static Scribe.ShortMessages ValidatePOSTRequest(RequestVm request)
         {
             if (request == null)
             {

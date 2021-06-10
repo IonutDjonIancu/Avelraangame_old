@@ -1,37 +1,42 @@
 ﻿using Avelraangame.Models.ViewModels;
 using Avelraangame.Services.ServiceUtils;
 using Avelraangame.Services.SubService;
-using Avelraangame.Services.Validations;
 using Newtonsoft.Json;
+using System;
+using Avelraangame.Models;
 
 namespace Avelraangame.Services
 {
     public class PlayersService : PlayersSubService
     {
-        public PlayerValidations PlayerValidations { get; set; }
-        public DataService DataService { get; set; }
-
-        public PlayersService()
+        public string CreatePlayer(RequestVm request)
         {
-            DataService = new DataService();
-            PlayerValidations = new PlayerValidations();
-        }
+            PlayerVm playerVm;
 
-        public Scribe.ShortMessages CreatePlayer(RequestVm request)
-        {
-            var playerVm = JsonConvert.DeserializeObject<PlayerVm>(request.Message);
+            try
+            {
+                playerVm = ValidateRequest(request.Message);
+                ValidatePlayerDetails(playerVm);
+                ValidatePlayerUnicity(playerVm.Name);
+                ValidateNumberOfPlayers();
+            }
+            catch (Exception ex)
+            {
+                return string.Concat(Scribe.ShortMessages.Failure, ": ", ex.Message);
+            }
 
-            
 
+            var player = new Player()
+            {
+                Id = Guid.NewGuid(),
+                Name = playerVm.Name,
+                Ward = playerVm.Ward,
+                LastLogin = DateTime.Now
+            };
 
-            // insert validations
+            DataService.SavePlayer(player);
 
-
-
-            //Context.Players.Add(player); <--------------------------- must be moved in DataService
-            //Context.SaveChanges();
-
-            return Scribe.ShortMessages.Success;
+            return Scribe.ShortMessages.Success.ToString();
         }
     }
 }
