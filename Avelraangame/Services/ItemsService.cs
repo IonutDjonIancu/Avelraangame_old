@@ -20,7 +20,7 @@ namespace Avelraangame.Services
         public string GenerateRandomItem()
         {
             var itemLevel = GenerateItemLevel();
-            var response = string.Empty;
+            string response;
             Item item;
 
             if (itemLevel == 5)
@@ -41,7 +41,7 @@ namespace Avelraangame.Services
                 }
                 catch (Exception ex)
                 {
-                    response = string.Concat(Scribe.ShortMessages.Failure, ex);
+                    response = string.Concat(Scribe.ShortMessages.Failure, ": ", ex);
                     return response;
                 }
             }
@@ -53,18 +53,9 @@ namespace Avelraangame.Services
             return response;
         }
 
-        public List<ItemVm> GetItems()
+        public int GetItemsCount()
         {
-            var allItems = GetAllItems();
-            var returnList = new List<ItemVm>();
-
-            foreach (var item in allItems)
-            {
-                var i = new ItemVm(item);
-                returnList.Add(i);
-            }
-
-            return returnList;
+            return DataService.GetItemsCount();
         }
 
     }

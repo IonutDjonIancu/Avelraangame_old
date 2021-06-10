@@ -1,10 +1,8 @@
-﻿using Avelraangame.Models.ApiModels;
-using Avelraangame.Models.ViewModels;
+﻿using Avelraangame.Models.ViewModels;
 using Avelraangame.Services;
 using Avelraangame.Services.ServiceUtils;
 using Avelraangame.Services.Validations;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace Avelraangame.Controllers
 {
@@ -16,7 +14,7 @@ namespace Avelraangame.Controllers
         [HttpGet("GetOk")]
         public string GetOk()
         {
-            return "ok";
+            return Scribe.ShortMessages.Ok.ToString();
         }
 
         #region Items
@@ -29,15 +27,11 @@ namespace Avelraangame.Controllers
         }
 
         // GET: palantir/GetItems
-        [HttpGet("GetItems")]
-        public string GetItems()
+        [HttpGet("GetItemsCount")]
+        public int GetItemsCount()
         {
             var itemService = new ItemsService();
-            var listOfItems = itemService.GetItems();
-
-            var result = JsonConvert.SerializeObject(listOfItems);
-
-            return result;
+            return itemService.GetItemsCount();
         }
         #endregion
 
