@@ -1,41 +1,56 @@
-﻿using Avelraangame.Data;
+﻿using Avelraangame.Models;
 using Avelraangame.Models.ViewModels;
-using Avelraangame.Services.ServiceBase;
+using Avelraangame.Services.ServiceUtils;
+using Avelraangame.Services.SubService;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
 namespace Avelraangame.Services
 {
-    public class ItemsService : ItemsServiceBase
+    public class ItemsService : ItemsSubService
     {
-        private AvelraanContext Context { get; set; }
+        private DataService DataService { get; set; }
 
         public ItemsService()
         {
-            Context = new AvelraanContext();
+            DataService = new DataService();
         }
 
-        public ItemVm GenerateRandomItem()
+        public string GenerateRandomItem()
         {
             var itemLevel = GenerateItemLevel();
+            var response = string.Empty;
+            Item item;
 
             if (itemLevel == 5)
             {
-                //return GenerateArtifactItem(); // <------ should return a Vm
+                //return GenerateArtifactItem(); // <------ should return ArtifactVm
                 throw new NotImplementedException();
             }
             else if (itemLevel == 6)
             {
-                //return GenerateRelicItem(); // <------ should return a Vm
+                //return GenerateRelicItem(); // <------ should return RelicVm
                 throw new NotImplementedException();
             }
             else
             {
-                var item = GenerateNormalItem(itemLevel);
-                var itemVm = new ItemVm(item);
-
-                return itemVm;
+                try
+                {
+                    item = GenerateNormalItem(itemLevel);
+                }
+                catch (Exception ex)
+                {
+                    response = string.Concat(Scribe.ShortMessages.Failure, ex);
+                    return response;
+                }
             }
+
+            DataService.SaveItem(item);
+            var itemVm = new ItemVm(item);
+
+            response = JsonConvert.SerializeObject(itemVm);
+            return response;
         }
 
         public List<ItemVm> GetItems()
@@ -51,17 +66,6 @@ namespace Avelraangame.Services
 
             return returnList;
         }
-
-        public void CreateItem()
-        {
-            var itemLevel = GenerateItemLevel();
-            var item = GenerateNormalItem(itemLevel);
-
-            Context.Items.Add(item); // should cross through Validators
-
-            Context.SaveChanges();
-        }
-
 
     }
 }

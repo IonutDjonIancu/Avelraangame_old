@@ -137,6 +137,22 @@
         #region Errors
         public const string Error_Switch_notCoveredCase = "The current switch statement returned the default case.";
         public const string Error_IfElseIf_notCoveredCase = "The current IfElseIf block returned the final else case.";
+        public const string Error_Validation_attributeIsMissing = "is missing."; // to check for null or empty/whitespace strings
+        public const string Error_Validation_Player_wardCheckNotEqualsWard = "The passwords do not match.";
+        public const string Error_Validation_Player_wardTooLong = "The passwords is too long, 10 chars max.";
+        public const string Error_Validation_Player_nameTooLong = "The name is too long, 50 chars max.";
+        #endregion
+
+        #region ApplicationMessages
+        public const string Application_operation_success = "Success";
+        public const string Application_requestIsInvalid = "Request is invalid";
+        public enum ShortMessages
+        {
+            Ok,
+            BadRequest,
+            Success,
+            Failure
+        }
         #endregion
     }
 }

@@ -2,9 +2,9 @@
 using Avelraangame.Services.ServiceUtils;
 using System;
 
-namespace Avelraangame.Services.ServiceBase
+namespace Avelraangame.Services.SubService
 {
-    public class SkillsServiceBase
+    public class SkillsSubService
     {
         public ItemProperties ReturnRandomSkillIncreaseForItem(ItemProperties props, int increasedBy)
         {

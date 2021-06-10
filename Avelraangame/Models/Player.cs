@@ -14,6 +14,8 @@ namespace Avelraangame.Models
         [Required]
         public string Ward { get; set; }
 
+        public DateTime LastLogin { get; set; }
+
         public ICollection<Character> Characters { get; set; }
     }
 }

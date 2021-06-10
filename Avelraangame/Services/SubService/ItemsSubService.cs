@@ -1,25 +1,26 @@
 ﻿using Avelraangame.Data;
 using Avelraangame.Models;
 using Avelraangame.Models.ModelProps;
+using Avelraangame.Models.ViewModels;
 using Avelraangame.Services.ServiceUtils;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Avelraangame.Services.ServiceBase
+namespace Avelraangame.Services.SubService
 {
-    public class ItemsServiceBase
+    public class ItemsSubService
     {
-        protected SkillsServiceBase Skills { get; set; }
-        protected AssetsServiceBase Assets { get; set; }
-        protected StatsServiceBase Stats { get; set; }
+        protected SkillsSubService Skills { get; set; }
+        protected AssetsSubService Assets { get; set; }
+        protected StatsSubService Stats { get; set; }
         private AvelraanContext Context { get; set; }
-        protected ItemsServiceBase()
+        protected ItemsSubService()
         {
-            Skills = new SkillsServiceBase();
-            Assets = new AssetsServiceBase();
-            Stats = new StatsServiceBase();
+            Skills = new SkillsSubService();
+            Assets = new AssetsSubService();
+            Stats = new StatsSubService();
             Context = new AvelraanContext();
         }
 

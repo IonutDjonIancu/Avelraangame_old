@@ -1,43 +1,35 @@
-﻿using Avelraangame.Services;
+﻿using Avelraangame.Models.ApiModels;
+using Avelraangame.Models.ViewModels;
+using Avelraangame.Services;
 using Avelraangame.Services.ServiceUtils;
+using Avelraangame.Services.Validations;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
 namespace Avelraangame.Controllers
 {
+    [Route("api/palantir")]
+    [ApiController]
     public class PalantirController : ControllerBase
     {
         // GET: palantir/GetOk
-        [HttpGet]
+        [HttpGet("GetOk")]
         public string GetOk()
         {
             return "ok";
         }
 
+        #region Items
         // GET: palantir/GenerateItem
-        [HttpGet]
+        [HttpGet("GenerateItem")]
         public string GenerateItem()
         {
             var itemService = new ItemsService();
-            var item = itemService.GenerateRandomItem();
-
-            var result = JsonConvert.SerializeObject(item);
-
-            return result;
-        }
-
-        // GET: palantir/GetString
-        [HttpGet]
-        public string GetString()
-        {
-            var result = Scribe.Stats_Strength;
-
-
-            return result;
+            return itemService.GenerateRandomItem();
         }
 
         // GET: palantir/GetItems
-        [HttpGet]
+        [HttpGet("GetItems")]
         public string GetItems()
         {
             var itemService = new ItemsService();
@@ -47,16 +39,27 @@ namespace Avelraangame.Controllers
 
             return result;
         }
+        #endregion
 
 
-        // GET: palantir/CreateItem
-        [HttpGet]
-        public void CreateItem()
+        #region player
+        // POST: palantir/createplayer
+        [HttpPost("CreatePlayer")]
+        public string CreatePlayer([FromBody]RequestVm request)
         {
-            var itemService = new ItemsService();
+            var validateRequest = PalantirValidations.ValidateRequest(request);
 
-            itemService.CreateItem();
+            if (validateRequest.Equals(Scribe.ShortMessages.BadRequest))
+            {
+                return validateRequest.ToString();
+            }
+
+            var playerService = new PlayersService();
+            var response = playerService.CreatePlayer(request);
+
+            return response.ToString();
         }
+        #endregion
 
     }
 }
