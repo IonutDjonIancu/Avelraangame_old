@@ -16,6 +16,11 @@ namespace Avelraangame.Services
         }
 
         #region Player
+        public Player GetPlayerByName(string name)
+        {
+            return Context.Players.Where(s => s.Name == name).FirstOrDefault();
+        }
+
         public void SavePlayer(Player player)
         {
             Context.Players.Add(player);

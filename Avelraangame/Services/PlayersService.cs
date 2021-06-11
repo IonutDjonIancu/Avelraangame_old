@@ -38,5 +38,10 @@ namespace Avelraangame.Services
 
             return Scribe.ShortMessages.Success.ToString();
         }
+
+        public Player GetPlayerByName(string name)
+        {
+            return DataService.GetPlayerByName(name);
+        }
     }
 }
