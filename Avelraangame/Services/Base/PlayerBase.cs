@@ -15,7 +15,7 @@ namespace Avelraangame.Services.Base
             DataService = new DataService();
         }
 
-        protected PlayerVm ValidateRequest(string request)
+        protected PlayerVm ValidateRequestDeserialization_PlayerVm(string request)
         {
             PlayerVm playerVm;
 

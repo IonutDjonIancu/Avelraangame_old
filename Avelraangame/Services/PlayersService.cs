@@ -1,7 +1,6 @@
 ﻿using Avelraangame.Models.ViewModels;
 using Avelraangame.Services.ServiceUtils;
 using Avelraangame.Services.SubService;
-using Newtonsoft.Json;
 using System;
 using Avelraangame.Models;
 
@@ -15,7 +14,7 @@ namespace Avelraangame.Services
 
             try
             {
-                playerVm = ValidateRequest(request.Message);
+                playerVm = ValidateRequestDeserialization_PlayerVm(request.Message);
                 ValidatePlayerDetails(playerVm);
                 ValidatePlayerUnicity(playerVm.Name);
                 ValidateNumberOfPlayers();
