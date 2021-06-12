@@ -1,7 +1,6 @@
-﻿using Avelraangame.Models.ViewModels;
+﻿using Avelraangame.Models;
+using Avelraangame.Models.ViewModels;
 using Avelraangame.Services.ServiceUtils;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Newtonsoft.Json;
 using System;
 
@@ -30,6 +29,18 @@ namespace Avelraangame.Services.Base
             }
 
             return charBehalfVm;
+        }
+
+        protected Player ValidatePlayer(string playerName)
+        {
+            var player = DataService.GetPlayerByName(playerName);
+
+            if (player == null)
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.ResourceNotFound, ": ", $"player: {playerName}"));
+            }
+
+            return player;
         }
     }
 }

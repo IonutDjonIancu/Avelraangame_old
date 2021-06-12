@@ -155,7 +155,8 @@
             Ok,
             BadRequest,
             Success,
-            Failure
+            Failure,
+            ResourceNotFound
         }
         #endregion
     }

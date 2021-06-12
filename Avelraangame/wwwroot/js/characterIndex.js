@@ -5,9 +5,12 @@ const characterRoll20URL = "api/palantir/CharacterRoll20";
 const choosePlayerBtn = "#choosePlayerBtn";
 const playerPlaceholder = "#playerPlaceholder";
 const rollStatsBtn = "#rollStatsBtn";
+const storeStatsBtn = "#storeStatsBtn";
 const statsPlaceholder = "#statsPlaceholder";
-let dice;
+const storeStatsPlaceholder = "#storeStatsPlaceholder";
+let lastRoll;
 let playerAccount;
+let playerThatCalls;
 
 
 
@@ -15,6 +18,7 @@ let playerAccount;
 $(choosePlayerBtn).on("click", function () {
 
     var account = "Djon";
+    //var account = "aaaasdas";
 
     $(playerPlaceholder).text(account);
     playerAccount = account;
@@ -29,39 +33,6 @@ $(rollStatsBtn).on("click", function () {
 
 
 
-function createItem() {
-
-
-
-
-
-
-
-    var object = {
-        name: nameValue,
-        ward: wardValue,
-        wardcheck: wardcheckValue
-    }
-    var request = {
-        message: JSON.stringify(object)
-    }
-
-
-    //$.ajax({
-    //    type: "POST",
-    //    url: createPlayerURL,
-    //    contentType: 'application/json',
-    //    data: JSON.stringify(request),
-    //    success: function (data, status, xhr) {
-    //        console.log(data);
-    //    },
-    //    error: function (err) {
-    //        console.log(err);
-    //    },
-    //});
-
-};
-
 function charRoll20() {
 
     if (!playerAccount) {
@@ -70,6 +41,7 @@ function charRoll20() {
     }
 
     var object = {
+        PlayerId: playerThatCalls,
         PlayerName: playerAccount
     }
     var request = {
@@ -82,8 +54,20 @@ function charRoll20() {
         contentType: 'text/plain',
         data: request,
         success: function (data, status, xhr) {
-            console.log(data);
-            $(statsPlaceholder).text(data);
+
+            if (data.error) {
+                console.log(data.error);
+                return;
+            }
+
+            var response = JSON.parse(data.data);
+
+            playerThatCalls = response.PlayerId;
+            lastRoll = response.DiceRoll;
+
+            console.log(playerThatCalls);
+            console.log(lastRoll);
+            $(statsPlaceholder).text(lastRoll);
         },
         error: function (err) {
             console.log(err);
