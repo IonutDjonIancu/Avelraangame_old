@@ -5,7 +5,7 @@ namespace Avelraangame.Services.Base
 {
     public static class PalantirBase
     {
-        public static Scribe.ShortMessages ValidatePOSTRequest(RequestVm request)
+        public static Scribe.ShortMessages ValidateRequest(RequestVm request)
         {
             if (request == null)
             {

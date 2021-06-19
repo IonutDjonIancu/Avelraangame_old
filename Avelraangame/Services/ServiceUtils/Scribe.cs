@@ -155,8 +155,18 @@
             Ok,
             BadRequest,
             Success,
-            Failure
+            Failure,
+            ResourceNotFound
         }
+        #endregion
+
+        #region TemporaryDataTable
+        public enum ServiceTempData
+        {
+            PlayerData
+        }
+        
+        
         #endregion
     }
 }

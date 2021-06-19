@@ -4,14 +4,16 @@ using Avelraangame.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Avelraangame.Migrations
 {
     [DbContext(typeof(AvelraanContext))]
-    partial class AvelraanContextModelSnapshot : ModelSnapshot
+    [Migration("20210618161600_Adding_tempsData_table_for_temporaryData")]
+    partial class Adding_tempsData_table_for_temporaryData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -29,13 +31,11 @@ namespace Avelraangame.Migrations
                     b.Property<string>("AssetsBase")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("EntityLevel")
-                        .HasColumnType("int");
-
                     b.Property<bool>("IsAlive")
                         .HasColumnType("bit");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
@@ -44,9 +44,6 @@ namespace Avelraangame.Migrations
 
                     b.Property<string>("StatsBase")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("StatsRoll")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -118,23 +115,25 @@ namespace Avelraangame.Migrations
                     b.ToTable("Players");
                 });
 
-            modelBuilder.Entity("Avelraangame.Models.TemporaryData", b =>
+            modelBuilder.Entity("Avelraangame.Models.Temps", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Key")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                    b.Property<int>("DataType")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Value")
+                    b.Property<string>("DataUniqueIdentifier")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DataValue")
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("TemporaryData");
+                    b.ToTable("Temps");
                 });
 
             modelBuilder.Entity("Avelraangame.Models.Character", b =>

@@ -35,7 +35,7 @@ function createPlayer() {
 
     $.ajax({
         type: "POST",
-        url: createPlayerURL,
+        url: CreateCharacterURL,
         contentType: 'application/json',
         data: JSON.stringify(request),
         success: function (data, status, xhr) {

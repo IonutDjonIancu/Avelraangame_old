@@ -1,0 +1,41 @@
+﻿@{
+    ViewData["Title"] = "Character";
+}
+<br />
+<p style="color:navajowhite">Characters</p>
+
+@{ 
+    var list = ViewBag.listOfPlayers;
+}
+
+<div class="text-left jumbotron" style="opacity:0.7; background-color:black; color:navajowhite">
+    <p style="color:navajowhite">Create character</p>
+    <div>
+        <select class="btn btn-outline-light" aria-label="playersSelect" name="players" id="players">
+            <option selected>Select a player</option>
+            @foreach (var item in list)
+            {
+                <option value="@item">@item</option>
+            }
+        </select>
+        <p id="playerPlaceholder" style="float:right"></p>
+    </div>
+    <hr />
+    <div>
+        <button id="rollStatsBtn" class="btn btn-outline-light">Roll stats</button>
+        <p id="statsPlaceholder" style="float:right"></p>
+    </div>
+    <hr />
+    <div>
+        <button id="storeStatsBtn" class="btn btn-outline-light">Store</button>
+        <p id="storeStatsPlaceholder" style="float:right; color:green"></p>
+    </div>
+    <hr />
+    <div>
+        <button id="saveBtn" class="btn btn-outline-success" style="float:right">Save</button>
+    </div>
+</div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="~/js/characterIndex.js"></script>

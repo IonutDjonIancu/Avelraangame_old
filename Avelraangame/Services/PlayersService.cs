@@ -1,9 +1,9 @@
 ﻿using Avelraangame.Models.ViewModels;
 using Avelraangame.Services.ServiceUtils;
 using Avelraangame.Services.SubService;
-using Newtonsoft.Json;
 using System;
 using Avelraangame.Models;
+using Newtonsoft.Json;
 
 namespace Avelraangame.Services
 {
@@ -13,18 +13,10 @@ namespace Avelraangame.Services
         {
             PlayerVm playerVm;
 
-            try
-            {
-                playerVm = ValidateRequest(request.Message);
-                ValidatePlayerDetails(playerVm);
-                ValidatePlayerUnicity(playerVm.Name);
-                ValidateNumberOfPlayers();
-            }
-            catch (Exception ex)
-            {
-                return string.Concat(Scribe.ShortMessages.Failure, ": ", ex.Message);
-            }
-
+            playerVm = ValidateRequestDeserialization_PlayerVm(request.Message);
+            ValidatePlayerDetails(playerVm);
+            ValidatePlayerUnicity(playerVm.Name);
+            ValidateNumberOfPlayers();
 
             var player = new Player()
             {
@@ -37,6 +29,21 @@ namespace Avelraangame.Services
             DataService.SavePlayer(player);
 
             return Scribe.ShortMessages.Success.ToString();
+        }
+
+        public Player GetPlayerByName(string name)
+        {
+            return DataService.GetPlayerByName(name);
+        }
+
+        public Player GetPlayerById(Guid id)
+        {
+            return DataService.GetPlayerById(id);
+        }
+
+        public string GetAllPlayers()
+        {
+            return JsonConvert.SerializeObject(DataService.GetPlayersNames());
         }
     }
 }

@@ -12,37 +12,29 @@ namespace Avelraangame.Services
         public string GenerateRandomItem()
         {
             var itemLevel = GenerateItemLevel();
-            string response;
+            string responseString;
             Item item;
 
             if (itemLevel == 5)
             {
                 //return GenerateArtifactItem(); // <------ should return ArtifactVm
-                throw new NotImplementedException();
+                throw new NotImplementedException(message: $"{Scribe.ShortMessages.Failure}: not implemented exception");
             }
             else if (itemLevel == 6)
             {
                 //return GenerateRelicItem(); // <------ should return RelicVm
-                throw new NotImplementedException();
+                throw new NotImplementedException(message: $"{Scribe.ShortMessages.Failure}: not implemented exception");
             }
             else
             {
-                try
-                {
-                    item = GenerateNormalItem(itemLevel);
-                }
-                catch (Exception ex)
-                {
-                    response = string.Concat(Scribe.ShortMessages.Failure, ": ", ex);
-                    return response;
-                }
+                item = GenerateNormalItem(itemLevel);
             }
 
             DataService.SaveItem(item);
             var itemVm = new ItemVm(item);
 
-            response = JsonConvert.SerializeObject(itemVm);
-            return response;
+            responseString = JsonConvert.SerializeObject(itemVm);
+            return responseString;
         }
 
         public int GetItemsCount()
