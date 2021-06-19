@@ -1,27 +1,83 @@
 ﻿// URLs
-const createPlayerURL = "api/palantir/CreateCharacter";
-const characterRoll20URL = "api/palantir/CharacterRoll20";
+const Character_Roll20URL = "api/palantir/Character_Roll20";
+const Character_StoreRollURL = "api/palantir/Character_StoreRoll";
+const Character_AddCharacterURL = "api/palantir/Character_AddCharacter";
+
 // divIDs
-const choosePlayerBtn = "#choosePlayerBtn";
 const playerPlaceholder = "#playerPlaceholder";
 const rollStatsBtn = "#rollStatsBtn";
 const storeStatsBtn = "#storeStatsBtn";
+const saveBtn = "#saveBtn";
 const statsPlaceholder = "#statsPlaceholder";
 const storeStatsPlaceholder = "#storeStatsPlaceholder";
-let lastRoll;
+const players = "#players";
 let playerAccount;
-let playerThatCalls;
+let playerThatCallsId;
+
+// objects
+let contentTypeObj = {
+    json: "application/json",
+    text: "text/plain"
+}
+
+
+
+// on page load
+
+
+
+
+
 
 
 
 // events
-$(choosePlayerBtn).on("click", function () {
+$(saveBtn).on("click", function () {
 
-    var account = "Djon";
-    //var account = "aaaasdas";
+    if (!playerThatCallsId) {
+        return;
+    }
+
+    var object = {
+        PlayerId: playerThatCallsId,
+        PlayerName: playerAccount
+    }
+    var request = {
+        message: JSON.stringify(object)
+    }
+
+
+    $.ajax({
+        type: "GET",
+        url: Character_AddCharacterURL,
+        contentType: contentTypeObj.text,
+        data: request,
+        success: function (resp) {
+            var response = JSON.parse(resp);
+
+            if (response.Error) {
+                console.log(response.Error);
+                return;
+            }
+
+            var data = response.Data;
+
+            window.location = `character/CreateCharacter?characterId=${data}`;
+        },
+        error: function (err) {
+            console.log(err);
+        }
+    });
+
+});
+
+$(players).on("change", function () {
+
+    var account = $(players)[0].value;
 
     $(playerPlaceholder).text(account);
     playerAccount = account;
+    playerThatCallsId = "00000000-0000-0000-0000-000000000000";
 });
 
 $(rollStatsBtn).on("click", function () {
@@ -30,8 +86,48 @@ $(rollStatsBtn).on("click", function () {
 
 });
 
+$(storeStatsBtn).on("click", function () {
+
+    if (!playerThatCallsId) {
+        return;
+    }
+
+    var object = {
+        PlayerId: playerThatCallsId,
+        PlayerName: playerAccount
+    }
+    var request = {
+        message: JSON.stringify(object)
+    }
+
+    $.ajax({
+        type: "GET",
+        url: Character_StoreRollURL,
+        contentType: contentTypeObj.text,
+        data: request,
+        success: function (resp) {
+            var response = JSON.parse(resp);
+
+            if (response.Error) {
+                console.log(response.Error);
+                return;
+            }
+
+            var data = JSON.parse(response.Data);
+
+            $(storeStatsPlaceholder).text(data.Roll);
+
+        },
+        error: function (err) {
+            console.log(err);
+        }
+    });
+});
 
 
+
+
+// functions
 
 function charRoll20() {
 
@@ -41,7 +137,7 @@ function charRoll20() {
     }
 
     var object = {
-        PlayerId: playerThatCalls,
+        PlayerId: playerThatCallsId,
         PlayerName: playerAccount
     }
     var request = {
@@ -50,29 +146,40 @@ function charRoll20() {
 
     $.ajax({
         type: "GET",
-        url: characterRoll20URL,
-        contentType: 'text/plain',
+        url: Character_Roll20URL,
+        contentType: contentTypeObj.text,
         data: request,
-        success: function (data, status, xhr) {
+        success: function (resp) {
+            var response = JSON.parse(resp);
 
-            if (data.error) {
-                console.log(data.error);
+            if (response.Error) {
+                console.log(response.Error);
                 return;
             }
 
-            var response = JSON.parse(data.data);
+            data = JSON.parse(response.Data);
 
-            playerThatCalls = response.PlayerId;
-            lastRoll = response.DiceRoll;
+            playerThatCallsId = data.PlayerId; // once this is set all the other calls make sense, otherwise they will return
 
-            console.log(playerThatCalls);
-            console.log(lastRoll);
-            $(statsPlaceholder).text(lastRoll);
+            console.log(data.PlayerId, data.Roll);
+
+            $(statsPlaceholder).text(data.Roll);
+
         },
         error: function (err) {
             console.log(err);
         }
     });
 }
+
+
+
+
+
+
+
+
+
+
 
 

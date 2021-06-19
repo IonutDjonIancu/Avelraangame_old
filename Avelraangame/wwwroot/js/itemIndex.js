@@ -30,36 +30,33 @@ function createItem() {
         type: "GET",
         url: generateItemPalantirURL,
         //data: data,
-        success: function (data, status, xhr) {
+        dataType: 'text',
+        success: function (res, status, xhr) {
+            var response = JSON.parse(res);
 
-            logInConsole(data);
-            displayItem(data);
+            var data = response.Data;
+            var err = response.Error;
+
+            if (err) {
+                console.log(err);
+                return;
+            }
+
+            var parsedData = JSON.parse(data);
+
+            console.log(parsedData);
+            displayItem(parsedData);
         },
         error: function (err) {
-            logInConsole(err);
+
+            console.log(err);
+
         },
-        dataType: 'json'
     });
 
 }
 
 
-function getOk() {
-
-    $.ajax({
-        url: getOkUrl,
-        //data: data,
-        success: logInConsole("great success"),
-        dataType: 'text'
-    });
-
-}
-
-function logInConsole(res) {
-    console.log(res);
-
-    //console.log(JSON.parse(res.BonusProps));
-}
 
 function displayItem(itemData) {
     var html = `

@@ -10,6 +10,7 @@ namespace Avelraangame.Data
         public virtual DbSet<Item> Items { get; set; }
         public virtual DbSet<Player> Players { get; set; }
         public virtual DbSet<Character> Characters { get; set; }
+        public virtual DbSet<TemporaryData> TemporaryData { get; set; }
 
         public AvelraanContext()
         {
@@ -68,6 +69,15 @@ namespace Avelraangame.Data
                     .WithMany(s => s.Characters)
                     .HasForeignKey(s => s.PlayerId)
                     .HasPrincipalKey(s => s.Id); // unique identifier in the Player model
+            });
+
+        // Temps
+            modelBuilder.Entity<TemporaryData>(entity =>
+            {
+                entity.Property(s => s.Key)
+                    .HasMaxLength(255);
+                entity.Property(s => s.Value)
+                    .HasMaxLength(255);
             });
         }
 

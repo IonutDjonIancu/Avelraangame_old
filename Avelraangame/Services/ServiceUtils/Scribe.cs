@@ -159,5 +159,14 @@
             ResourceNotFound
         }
         #endregion
+
+        #region TemporaryDataTable
+        public enum ServiceTempData
+        {
+            PlayerData
+        }
+        
+        
+        #endregion
     }
 }

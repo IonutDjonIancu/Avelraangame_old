@@ -1,5 +1,7 @@
 ﻿using Avelraangame.Data;
 using Avelraangame.Models;
+using Avelraangame.Services.ServiceUtils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -21,6 +23,11 @@ namespace Avelraangame.Services
             return Context.Players.Where(s => s.Name == name).FirstOrDefault();
         }
 
+        public Player GetPlayerById(Guid id)
+        {
+            return Context.Players.Where(s => s.Id == id).FirstOrDefault();
+        }
+
         public void SavePlayer(Player player)
         {
             Context.Players.Add(player);
@@ -29,7 +36,7 @@ namespace Avelraangame.Services
         
         public List<string> GetPlayersNames()
         {
-            return Context.Players.Select(s => s.Name).ToList();
+            return Context.Players.OrderBy(s => s.Name).Select(s => s.Name).ToList();
         }
 
         public int GetPlayersCount()
@@ -51,5 +58,69 @@ namespace Avelraangame.Services
         }
         #endregion
 
+        #region Temps
+        public void SaveTempPlayerData(string keyPlayerInfo, string values)
+        {
+            var temps = new TemporaryData()
+            {
+                Id = Guid.NewGuid(),
+                Key = keyPlayerInfo,
+                Value = values
+            };
+
+            var oldValue = Context.TemporaryData
+                .Where(s => s.Key == keyPlayerInfo)
+                .FirstOrDefault();
+
+
+            if (oldValue != null)
+            {
+                oldValue.Value = values;
+                Context.TemporaryData.Update(oldValue);
+            }
+            else
+            {
+                Context.TemporaryData.Add(temps);
+
+            }
+            
+            Context.SaveChanges();
+        }
+
+        public string GetTempPlayerData(string keyPlayerInfo)
+        {
+            return Context.TemporaryData
+                .Where(s => s.Key == keyPlayerInfo)
+                .FirstOrDefault()
+                ?.Value;
+        }
+
+        public void DeleteTempPlayerData(string keyPlayerInfo)
+        {
+            var temps = Context.TemporaryData
+                .Where(s => s.Key == keyPlayerInfo)
+                .FirstOrDefault();
+
+            Context.TemporaryData.Remove(temps);
+            Context.SaveChanges();
+        }
+
+        #endregion
+
+        #region Character
+        public void CreateCharacter(Character chr)
+        {
+            Context.Characters.Add(chr);
+            Context.SaveChanges();
+        }
+
+        public Character GetCharacterById(Guid charId)
+        {
+            return Context.Characters
+                .Where(s => s.Id == charId)
+                .FirstOrDefault();
+        }
+
+        #endregion
     }
 }

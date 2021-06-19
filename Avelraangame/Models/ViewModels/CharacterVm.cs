@@ -7,13 +7,8 @@ namespace Avelraangame.Models.ViewModels
 {
     public class CharacterVm
     {
-        public string Name { get; set; }
-
         public Guid PlayerId { get; set; }
         public string PlayerName { get; set; }
-
-
-
-
+        public int Roll { get; set; }
     }
 }

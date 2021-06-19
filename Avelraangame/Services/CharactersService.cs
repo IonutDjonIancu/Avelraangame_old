@@ -2,58 +2,82 @@
 using Avelraangame.Models.ViewModels;
 using Avelraangame.Services.ServiceUtils;
 using Avelraangame.Services.SubService;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 
 namespace Avelraangame.Services
 {
     public class CharactersService : CharacterSubService
     {
-        public CharactersService()
+        public Character GetCharacterById(Guid charId)
         {
+            return DataService.GetCharacterById(charId);
         }
 
-        public (string responseMessage, string playerId, int roll) CharacterRoll20(RequestVm request)
+        public CharacterVm CreateCharacter_storeRoll(CharacterVm charVm)
         {
-            CharacterBehalfVm charBehalfVm;
-            Guid playerId;
-
-            try
+            if (charVm.PlayerId == null || charVm.PlayerId.Equals(Guid.Empty))
             {
-                charBehalfVm = ValidateRequestDeserialization_CharacterBehalfVm(request.Message);
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.ResourceNotFound, ": playerId is null."));
+            }
+            else
+            {
+                ValidatePlayerById(charVm.PlayerId);
+            }
+
+            if (string.IsNullOrWhiteSpace(charVm.PlayerName))
+            {
+                var playersService = new PlayersService();
+                charVm.PlayerName = playersService.GetPlayerById(charVm.PlayerId).Name;
+            }
+
+            ValidateCharacterRoll(charVm.Roll);
+
+            return charVm;
+        }
+
+        public (string responseMessage, string playerId, string roll) CreateCharacter_roll20(RequestVm request)
+        {
+            CharacterVm charVm;
+
+            charVm = ValidateRequestDeserialization(request.Message);
                 
-                if (charBehalfVm.PlayerId == null || charBehalfVm.PlayerId.Equals(Guid.Empty))
-                {
-                    playerId = ValidatePlayer(charBehalfVm.PlayerName).Id;
-                }
-                else
-                {
-                    playerId = charBehalfVm.PlayerId;
-                }
-            }
-            catch (Exception ex)
+            if (charVm.PlayerId == null || charVm.PlayerId.Equals(Guid.Empty))
             {
-                return (string.Concat(Scribe.ShortMessages.Failure, ": ", ex.Message), null, 0);
+                var player = ValidatePlayerByName(charVm.PlayerName);
+                charVm.PlayerId = player.Id;
             }
 
-            var roll = Dice.Roll_d_20();
-            
-            var characterDiceVm = new CharacterDiceVm
+            charVm.Roll = Dice.Roll_d_20();
+
+            ValidateCharDiceBeforeReturn(charVm.PlayerId.ToString(), charVm.Roll);
+
+            return (JsonConvert.SerializeObject(charVm), charVm.PlayerId.ToString(), charVm.Roll.ToString());
+        }
+
+        /// <summary>
+        /// Adds stats roll and playerId to the newly created character, returns characterId.
+        /// </summary>
+        /// <param name="roll"></param>
+        /// <param name="playerId"></param>
+        /// <returns></returns>
+        public Guid CreateCharacter_step1(CharacterVm charVm)
+        {
+            ValidateCharVm(charVm);
+
+            var chr = new Character()
             {
-                PlayerId = playerId,
-                DiceRoll = roll
+                Id = Guid.NewGuid(),
+                EntityLevel = GetEntityLevelByRoll(charVm.Roll),
+                StatsRoll = charVm.Roll,
+                IsAlive = true,
+                PlayerId = charVm.PlayerId
             };
 
-            return (JsonConvert.SerializeObject(characterDiceVm), playerId.ToString(), roll);
+            DataService.CreateCharacter(chr);
+
+            return chr.Id;
         }
-
-
-
-
-
-
 
     }
 }

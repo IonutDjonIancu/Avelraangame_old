@@ -15,23 +15,69 @@ namespace Avelraangame.Services.Base
             DataService = new DataService();
         }
 
-        protected CharacterBehalfVm ValidateRequestDeserialization_CharacterBehalfVm(string request)
+        protected void ValidateCharacterRoll(int roll)
         {
-            CharacterBehalfVm charBehalfVm;
+            if (roll == 0)
+            {
+                throw new Exception(string.Concat(Scribe.ShortMessages.Failure, ": character roll was 0."));
+            }
+        }
+
+        protected void ValidatePlayerById(Guid playerId)
+        {
+            var playerService = new PlayersService();
+
+            var player = playerService.GetPlayerById(playerId);
+
+            if (player == null)
+            {
+            }
+        }
+
+        protected void ValidateCharVm(CharacterVm charVm)
+        {
+            if (charVm.PlayerId == null ||
+                charVm.PlayerId == Guid.Empty)
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.ResourceNotFound, ": player id is missing."));
+            }
+
+            if (string.IsNullOrWhiteSpace(charVm.PlayerName))
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.ResourceNotFound, ": player name is missing."));
+            }
+        }
+
+        protected void ValidateCharDiceBeforeReturn(string playerId, int roll)
+        {
+            if (string.IsNullOrWhiteSpace(playerId))
+            {
+                throw new Exception(message: Scribe.ShortMessages.ResourceNotFound.ToString());
+            }
+
+            if (roll == 0)
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.Failure, ": character roll was 0"));
+            }
+        }
+
+        protected CharacterVm ValidateRequestDeserialization(string request)
+        {
+            CharacterVm charVm;
 
             try
             {
-                charBehalfVm = JsonConvert.DeserializeObject<CharacterBehalfVm>(request);
+                charVm = JsonConvert.DeserializeObject<CharacterVm>(request);
             }
             catch (Exception ex)
             {
                 throw new Exception(message: string.Concat(Scribe.ShortMessages.BadRequest, ": ", ex.Message));
             }
 
-            return charBehalfVm;
+            return charVm;
         }
 
-        protected Player ValidatePlayer(string playerName)
+        protected Player ValidatePlayerByName(string playerName)
         {
             var player = DataService.GetPlayerByName(playerName);
 
