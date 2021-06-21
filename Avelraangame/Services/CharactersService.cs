@@ -9,10 +9,25 @@ namespace Avelraangame.Services
 {
     public class CharactersService : CharacterSubService
     {
-        public Character GetCharacterById(Guid charId)
-        {
-            return DataService.GetCharacterById(charId);
-        }
+        //public CharacterVm GetCharacterById(Guid charId)
+        //{
+        //    var chr = DataService.GetCharacterById(charId);
+        //    var proto = 
+
+        //    var charVm = new CharacterVm
+        //    {
+        //        CharacterId = chr.Id,
+        //        PlayerId = cchr.PlayerId,
+                
+        //        Stats = chr.StatsBase,
+
+
+        //    };
+
+
+
+        //    return charVm;
+        //}
 
         public CharacterVm CreateCharacter_storeRoll(CharacterVm charVm)
         {
@@ -31,7 +46,7 @@ namespace Avelraangame.Services
                 charVm.PlayerName = playersService.GetPlayerById(charVm.PlayerId).Name;
             }
 
-            ValidateCharacterRoll(charVm.Roll);
+            ValidateCharacterRoll(charVm.StatsRoll);
 
             return charVm;
         }
@@ -48,11 +63,11 @@ namespace Avelraangame.Services
                 charVm.PlayerId = player.Id;
             }
 
-            charVm.Roll = Dice.Roll_d_20();
+            charVm.StatsRoll = Dice.Roll_d_20();
 
-            ValidateCharDiceBeforeReturn(charVm.PlayerId.ToString(), charVm.Roll);
+            ValidateCharDiceBeforeReturn(charVm.PlayerId.ToString(), charVm.StatsRoll);
 
-            return (JsonConvert.SerializeObject(charVm), charVm.PlayerId.ToString(), charVm.Roll.ToString());
+            return (JsonConvert.SerializeObject(charVm), charVm.PlayerId.ToString(), charVm.StatsRoll.ToString());
         }
 
         /// <summary>
@@ -61,23 +76,25 @@ namespace Avelraangame.Services
         /// <param name="roll"></param>
         /// <param name="playerId"></param>
         /// <returns></returns>
-        public Guid CreateCharacter_step1(CharacterVm charVm)
-        {
-            ValidateCharVm(charVm);
+        //public Guid CreateCharacter_step1(CharacterVm charVm)
+        //{
+        //    ValidateCharVm(charVm);
 
-            var chr = new Character()
-            {
-                Id = Guid.NewGuid(),
-                EntityLevel = GetEntityLevelByRoll(charVm.Roll),
-                StatsRoll = charVm.Roll,
-                IsAlive = true,
-                PlayerId = charVm.PlayerId
-            };
+        //    var chr = new Character()
+        //    {
+        //        Id = Guid.NewGuid(),
+        //        PlayerId = charVm.PlayerId,
 
-            DataService.CreateCharacter(chr);
+        //        StatsBase = JsonConvert.SerializeObject(GenerateStatsBase()),
+        //        ExpertiseBase = JsonConvert.SerializeObject(GenerateExpertiseBase()),
+        //        AssetsBase = JsonConvert.SerializeObject(GenerateAssetsBase()),
+        //        Logbook = JsonConvert.SerializeObject(GenerateLogbookBase(charVm)),
+        //    };
 
-            return chr.Id;
-        }
+        //    DataService.SaveCharacter(chr);
+
+        //    return chr.Id;
+        //}
 
     }
 }

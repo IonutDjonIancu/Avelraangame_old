@@ -115,7 +115,7 @@ $(storeStatsBtn).on("click", function () {
 
             var data = JSON.parse(response.Data);
 
-            $(storeStatsPlaceholder).text(data.Roll);
+            $(storeStatsPlaceholder).text(data.StatsRoll);
 
         },
         error: function (err) {
@@ -161,9 +161,9 @@ function charRoll20() {
 
             playerThatCallsId = data.PlayerId; // once this is set all the other calls make sense, otherwise they will return
 
-            console.log(data.PlayerId, data.Roll);
+            console.log(data.PlayerId, data.StatsRoll);
 
-            $(statsPlaceholder).text(data.Roll);
+            $(statsPlaceholder).text(data.StatsRoll);
 
         },
         error: function (err) {

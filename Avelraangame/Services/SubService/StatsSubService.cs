@@ -1,4 +1,4 @@
-﻿using Avelraangame.Models.ModelProps;
+﻿using Avelraangame.Models.ModelScraps;
 using Avelraangame.Services.ServiceUtils;
 using System;
 
@@ -6,24 +6,24 @@ namespace Avelraangame.Services.SubService
 {
     public class StatsSubService
     {
-        public ItemProperties ReturnRandomStatIncreaseForItem(ItemProperties props, int increasedBy)
+        public ItemBonuses ReturnRandomStatIncreaseForItem(ItemBonuses bonuses, int increasedBy)
         {
             var randomSkill = Dice.Roll_min_to_max(0, 3);
 
             switch (randomSkill)
             {
                 case 0:
-                    props.Stats_toStrength += increasedBy;
-                    return props;
+                    bonuses.ToStrength += increasedBy;
+                    return bonuses;
                 case 1:
-                    props.Stats_toToughness += increasedBy;
-                    return props;
+                    bonuses.ToToughness += increasedBy;
+                    return bonuses;
                 case 2:
-                    props.Stats_toAwareness += increasedBy;
-                    return props;
+                    bonuses.ToAwareness += increasedBy;
+                    return bonuses;
                 case 3:
-                    props.Stats_toAbstract += increasedBy;
-                    return props;
+                    bonuses.ToAbstract += increasedBy;
+                    return bonuses;
                 default:
                     throw new Exception(message: Scribe.Error_Switch_notCoveredCase);
             }

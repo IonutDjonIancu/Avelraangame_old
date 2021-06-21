@@ -185,7 +185,7 @@ namespace Avelraangame.Controllers
                 }
                 if (int.TryParse(roll.ToString(), out var rollValue))
                 {
-                    charVm.Roll = rollValue;
+                    charVm.StatsRoll = rollValue;
                 }
 
                 responseVm.Data = JsonConvert.SerializeObject(charService.CreateCharacter_storeRoll(charVm));
@@ -248,9 +248,9 @@ namespace Avelraangame.Controllers
                 {
                     int.TryParse(value.ToString(), out var rollValue);
 
-                    charVm.Roll = rollValue;
+                    charVm.StatsRoll = rollValue;
 
-                    charId = characterService.CreateCharacter_step1(charVm);
+                    //charId = characterService.CreateCharacter_step1(charVm);
                 }
 
                 responseVm.Data = charId.ToString();

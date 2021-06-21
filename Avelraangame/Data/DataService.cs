@@ -56,6 +56,14 @@ namespace Avelraangame.Services
         {
             return Context.Items.Count();
         }
+
+        public List<Item> GetEquippedItemsByCharId(Guid charId)
+        {
+            return Context.Items
+                .Where(s => s.CharacterId == charId & s.IsEquipped == true)
+                .ToList();
+        }
+
         #endregion
 
         #region Temps
@@ -108,7 +116,7 @@ namespace Avelraangame.Services
         #endregion
 
         #region Character
-        public void CreateCharacter(Character chr)
+        public void SaveCharacter(Character chr)
         {
             Context.Characters.Add(chr);
             Context.SaveChanges();

@@ -4,14 +4,16 @@ using Avelraangame.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Avelraangame.Migrations
 {
     [DbContext(typeof(AvelraanContext))]
-    partial class AvelraanContextModelSnapshot : ModelSnapshot
+    [Migration("20210621110814_major_refactoring_of_ItemsAndCharacterModels")]
+    partial class major_refactoring_of_ItemsAndCharacterModels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,20 +40,11 @@ namespace Avelraangame.Migrations
                     b.Property<int>("Experience")
                         .HasColumnType("int");
 
-                    b.Property<int>("Harm")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Health")
-                        .HasColumnType("int");
-
                     b.Property<bool>("IsAlive")
                         .HasColumnType("bit");
 
                     b.Property<string>("Logbook")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Mana")
-                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .HasMaxLength(100)

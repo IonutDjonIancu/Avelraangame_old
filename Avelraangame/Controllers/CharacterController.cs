@@ -27,24 +27,6 @@ namespace Avelraangame.Controllers
                 return RedirectToAction("Index", "Character");
             }
 
-            var playerService = new PlayersService();
-            var charService = new CharactersService();
-
-            if (!Guid.TryParse(characterId, out var charId))
-            {
-                return RedirectToAction("Index", "Character");
-            }
-
-            var character = charService.GetCharacterById(charId);
-
-            if (character == null)
-            {
-                return RedirectToAction("Index", "Character");
-            }
-
-            ViewData.Add("characterId", character.Id);
-            ViewData.Add("statsRoll", character.StatsRoll);
-
             return View();
         }
 
