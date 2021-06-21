@@ -31,7 +31,7 @@ namespace Avelraangame.Services.SubService
                 InSlot = ItemUtils.Slots.Supplies,
             };
 
-            item.Slots = GenerateItemSlotsByType(item.Type).ToString();
+            item.Slots = JsonConvert.SerializeObject(GenerateItemSlotsByType(item.Type));
             item.Name = GenerateItemNameByLevelAndType(item.Level, item.Type);
             item.Worth = GenerateItemWorthByLevelAndType(item.Level, item.Type);
             item.IsConsumable = IsConsumable(item.Type);

@@ -15,7 +15,7 @@ namespace Avelraangame.Models.ViewModels
 
         public string Name { get; set; }
 
-        public ItemUtils.Types Type { get; set; }
+        public string Type { get; set; }
 
         public int Level { get; set; }
 
@@ -40,29 +40,14 @@ namespace Avelraangame.Models.ViewModels
             Id = item.Id;
             CharacterId = item.CharacterId;
             Name = item.Name;
-            Type = item.Type;
+            Type = item.Type.ToString();
             Level = item.Level;
             IsEquipped = item.IsEquipped;
             Worth = item.Worth;
             InSlot = item.InSlot;
-            Slots = ConvertItemSlots(item.Slots);
+            Slots = JsonConvert.DeserializeObject<List<ItemUtils.Slots>>(item.Slots);
             Bonuses = JsonConvert.DeserializeObject<ItemBonuses>(item.Bonuses);
             IsConsumable = item.IsConsumable;
-        }
-
-        private List<ItemUtils.Slots> ConvertItemSlots(string slots)
-        {
-            List<string> stringsInSlots = slots.Split(",").ToList();
-
-            var myList = new List<ItemUtils.Slots>();
-
-            foreach (var item in stringsInSlots)
-            {
-                var a = int.Parse(item);
-                myList.Add((ItemUtils.Slots)a);
-            }
-
-            return myList;
         }
 
     }
