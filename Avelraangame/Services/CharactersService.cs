@@ -1,43 +1,51 @@
 ﻿using Avelraangame.Models;
+using Avelraangame.Models.ModelScraps;
 using Avelraangame.Models.ViewModels;
 using Avelraangame.Services.ServiceUtils;
 using Avelraangame.Services.SubService;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 
 namespace Avelraangame.Services
 {
     public class CharactersService : CharacterSubService
     {
-        //public CharacterVm GetCharacterById(Guid charId)
-        //{
-        //    var chr = DataService.GetCharacterById(charId);
-        //    var proto = 
+        /// <summary>
+        /// Gets the list of characters by player name.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public List<CharacterVm> GetCharacters(RequestVm request)
+        {
+            var charVm = ValidateRequestDeserialization(request.Message);
 
-        //    var charVm = new CharacterVm
-        //    {
-        //        CharacterId = chr.Id,
-        //        PlayerId = cchr.PlayerId,
-                
-        //        Stats = chr.StatsBase,
+            var playerId = ValidatePlayerByName(charVm.PlayerName).Id;
 
+            var list = DataService.GetCharactersByPlayerId(playerId);
 
-        //    };
+            var returnList = new List<CharacterVm>();
 
+            foreach (var item in list)
+            {
+                var charvm = new CharacterVm
+                {
+                    CharacterId = item.Id,
+                    PlayerId = item.PlayerId,
+                    PlayerName = item.Player.Name
+                };
 
+                returnList.Add(charvm);
+            }
 
-        //    return charVm;
-        //}
+            return returnList;
+        }
 
         public CharacterVm CreateCharacter_storeRoll(CharacterVm charVm)
         {
             if (charVm.PlayerId == null || charVm.PlayerId.Equals(Guid.Empty))
             {
                 throw new Exception(message: string.Concat(Scribe.ShortMessages.ResourceNotFound, ": playerId is null."));
-            }
-            else
-            {
-                ValidatePlayerById(charVm.PlayerId);
             }
 
             if (string.IsNullOrWhiteSpace(charVm.PlayerName))
@@ -46,12 +54,12 @@ namespace Avelraangame.Services
                 charVm.PlayerName = playersService.GetPlayerById(charVm.PlayerId).Name;
             }
 
-            ValidateCharacterRoll(charVm.StatsRoll);
+            ValidateCharacterRoll(charVm.Logbook.StatsRoll);
 
             return charVm;
         }
 
-        public (string responseMessage, string playerId, string roll) CreateCharacter_roll20(RequestVm request)
+        public (string responseMessage, Guid playerId, int roll) CreateCharacter_roll20(RequestVm request)
         {
             CharacterVm charVm;
 
@@ -63,11 +71,11 @@ namespace Avelraangame.Services
                 charVm.PlayerId = player.Id;
             }
 
-            charVm.StatsRoll = Dice.Roll_d_20();
+            charVm.Logbook.StatsRoll = Dice.Roll_d_20();
 
-            ValidateCharDiceBeforeReturn(charVm.PlayerId.ToString(), charVm.StatsRoll);
+            ValidateCharDiceBeforeReturn(charVm.PlayerId, charVm.Logbook.StatsRoll);
 
-            return (JsonConvert.SerializeObject(charVm), charVm.PlayerId.ToString(), charVm.StatsRoll.ToString());
+            return (JsonConvert.SerializeObject(charVm), charVm.PlayerId, charVm.Logbook.StatsRoll);
         }
 
         /// <summary>
@@ -76,25 +84,16 @@ namespace Avelraangame.Services
         /// <param name="roll"></param>
         /// <param name="playerId"></param>
         /// <returns></returns>
-        //public Guid CreateCharacter_step1(CharacterVm charVm)
-        //{
-        //    ValidateCharVm(charVm);
+        public Guid CreateCharacter_step1(CharacterVm charVm)
+        {
+            ValidateCharVm(charVm);
 
-        //    var chr = new Character()
-        //    {
-        //        Id = Guid.NewGuid(),
-        //        PlayerId = charVm.PlayerId,
+            var chr = GenerateHumanCharacter(charVm);
 
-        //        StatsBase = JsonConvert.SerializeObject(GenerateStatsBase()),
-        //        ExpertiseBase = JsonConvert.SerializeObject(GenerateExpertiseBase()),
-        //        AssetsBase = JsonConvert.SerializeObject(GenerateAssetsBase()),
-        //        Logbook = JsonConvert.SerializeObject(GenerateLogbookBase(charVm)),
-        //    };
+            DataService.SaveCharacter(chr);
 
-        //    DataService.SaveCharacter(chr);
-
-        //    return chr.Id;
-        //}
+            return chr.Id;
+        }
 
     }
 }

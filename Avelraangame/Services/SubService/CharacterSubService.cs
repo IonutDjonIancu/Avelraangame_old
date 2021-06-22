@@ -40,6 +40,45 @@ namespace Avelraangame.Services.SubService
             }
         }
 
+
+        public Character GenerateHumanCharacter(CharacterVm charVm)
+        {
+            var roll = charVm.Logbook.StatsRoll;
+
+            var logbook = new Logbook
+            {
+                StatsRoll = roll,
+                EntityLevel = GetEntityLevelByRoll(roll)
+            };
+
+            var chr = new Character
+            {
+                Id = Guid.NewGuid(),
+                PlayerId = charVm.PlayerId,
+                Name = null,
+
+                Strength = 10,
+                Toughness = 10,
+                Awareness = 10,
+                Abstract = 10,
+
+                Experience = 0,
+                DRM = 0,
+                Wealth = 0,
+
+                Health = 10,
+                Mana = 0,
+                Harm = 1,
+
+                IsAlive = true,
+                Logbook = JsonConvert.SerializeObject(logbook)
+            };
+
+            return chr;
+        }
+
+
+
         //public StatsBase GenerateStatsBase()
         //{
         //    var stats = new StatsBase

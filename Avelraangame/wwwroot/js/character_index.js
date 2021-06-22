@@ -1,7 +1,8 @@
 ﻿// URLs
-const Character_Roll20URL = "api/palantir/Character_Roll20";
-const Character_StoreRollURL = "api/palantir/Character_StoreRoll";
-const Character_AddCharacterURL = "api/palantir/Character_AddCharacter";
+const Character_Roll20URL = "/api/palantir/Character_Roll20";
+const Character_StoreRollURL = "/api/palantir/Character_StoreRoll";
+const Character_AddCharacterURL = "/api/palantir/Character_AddCharacter";
+
 
 // divIDs
 const playerPlaceholder = "#playerPlaceholder";
@@ -17,7 +18,7 @@ let playerThatCallsId;
 // objects
 let contentTypeObj = {
     json: "application/json",
-    text: "text/plain"
+    text: "text"
 }
 
 
@@ -32,6 +33,9 @@ let contentTypeObj = {
 
 
 // events
+
+
+
 $(saveBtn).on("click", function () {
 
     if (!playerThatCallsId) {
@@ -62,7 +66,7 @@ $(saveBtn).on("click", function () {
 
             var data = response.Data;
 
-            window.location = `character/CreateCharacter?characterId=${data}`;
+            window.location = `/Character/Character_create`;
         },
         error: function (err) {
             console.log(err);
@@ -115,7 +119,7 @@ $(storeStatsBtn).on("click", function () {
 
             var data = JSON.parse(response.Data);
 
-            $(storeStatsPlaceholder).text(data.StatsRoll);
+            $(storeStatsPlaceholder).text(data.Logbook.StatsRoll);
 
         },
         error: function (err) {
@@ -161,9 +165,9 @@ function charRoll20() {
 
             playerThatCallsId = data.PlayerId; // once this is set all the other calls make sense, otherwise they will return
 
-            console.log(data.PlayerId, data.StatsRoll);
+            console.log(data.PlayerId, data.Logbook.StatsRoll);
 
-            $(statsPlaceholder).text(data.StatsRoll);
+            $(statsPlaceholder).text(data.Logbook.StatsRoll);
 
         },
         error: function (err) {

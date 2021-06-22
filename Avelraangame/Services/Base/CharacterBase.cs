@@ -48,9 +48,9 @@ namespace Avelraangame.Services.Base
             }
         }
 
-        protected void ValidateCharDiceBeforeReturn(string playerId, int roll)
+        protected void ValidateCharDiceBeforeReturn(Guid playerId, int roll)
         {
-            if (string.IsNullOrWhiteSpace(playerId))
+            if (playerId == null || playerId == Guid.Empty)
             {
                 throw new Exception(message: Scribe.ShortMessages.ResourceNotFound.ToString());
             }
@@ -79,6 +79,11 @@ namespace Avelraangame.Services.Base
 
         protected Player ValidatePlayerByName(string playerName)
         {
+            if (string.IsNullOrWhiteSpace(playerName))
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.ResourceNotFound, ": ", $"player: {playerName}"));
+            }
+
             var player = DataService.GetPlayerByName(playerName);
 
             if (player == null)

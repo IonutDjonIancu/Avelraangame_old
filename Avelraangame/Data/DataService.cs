@@ -129,6 +129,13 @@ namespace Avelraangame.Services
                 .FirstOrDefault();
         }
 
+        public List<Character> GetCharactersByPlayerId(Guid playerId)
+        {
+            return Context.Characters
+                .Where(s => s.PlayerId.Equals(playerId))
+                .ToList();
+        }
+
         #endregion
     }
 }
