@@ -11,7 +11,7 @@ namespace Avelraangame.Services
     public class DataService
     {
         private AvelraanContext Context { get; set; }
-        
+
         public DataService()
         {
             Context = new AvelraanContext();
@@ -56,6 +56,14 @@ namespace Avelraangame.Services
         {
             return Context.Items.Count();
         }
+
+        public List<Item> GetEquippedItemsByCharId(Guid charId)
+        {
+            return Context.Items
+                .Where(s => s.CharacterId == charId & s.IsEquipped == true)
+                .ToList();
+        }
+
         #endregion
 
         #region Temps
@@ -108,7 +116,7 @@ namespace Avelraangame.Services
         #endregion
 
         #region Character
-        public void CreateCharacter(Character chr)
+        public void SaveCharacter(Character chr)
         {
             Context.Characters.Add(chr);
             Context.SaveChanges();
@@ -119,6 +127,21 @@ namespace Avelraangame.Services
             return Context.Characters
                 .Where(s => s.Id == charId)
                 .FirstOrDefault();
+        }
+
+        public List<Character> GetCharactersByPlayerId(Guid playerId)
+        {
+            return Context.Characters
+                .Where(s => s.PlayerId.Equals(playerId))
+                .ToList();
+        }
+
+
+        public List<Character> GetCharactersDraftByPlayerId(Guid playerId)
+        {
+            return Context.Characters
+                .Where(s => s.PlayerId.Equals(playerId) & s.IsDraft.Equals(true))
+                .ToList();
         }
 
         #endregion

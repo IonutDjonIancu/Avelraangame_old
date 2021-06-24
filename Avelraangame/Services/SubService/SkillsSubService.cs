@@ -1,4 +1,4 @@
-﻿using Avelraangame.Models.ModelProps;
+﻿using Avelraangame.Models.ModelScraps;
 using Avelraangame.Services.ServiceUtils;
 using System;
 
@@ -6,60 +6,60 @@ namespace Avelraangame.Services.SubService
 {
     public class SkillsSubService
     {
-        public ItemProperties ReturnRandomSkillIncreaseForItem(ItemProperties props, int increasedBy)
+        public Bonuses ReturnRandomSkillIncreaseForItem(Bonuses bonuses, int increasedBy)
         {
             var randomSkill = Dice.Roll_min_to_max(0, 15);
 
             switch (randomSkill)
             {
                 case 0:
-                    props.Skills_toApothecary += increasedBy;
-                    return props;
+                    bonuses.ToApothecary += increasedBy;
+                    return bonuses;
                 case 1:
-                    props.Skills_toArcane += increasedBy;
-                    return props;
+                    bonuses.ToArcane += increasedBy;
+                    return bonuses;
                 case 2:
-                    props.Skills_toDodge += increasedBy;
-                    return props;
+                    bonuses.ToDodge += increasedBy;
+                    return bonuses;
                 case 3:
-                    props.Skills_toHide += increasedBy;
-                    return props;
+                    bonuses.ToHide += increasedBy;
+                    return bonuses;
                 case 4:
-                    props.Skills_toMelee += increasedBy;
-                    return props;
+                    bonuses.ToMelee += increasedBy;
+                    return bonuses;
                 case 5:
-                    props.Skills_toNavigation += increasedBy;
-                    return props;
+                    bonuses.ToNavigation += increasedBy;
+                    return bonuses;
                 case 6:
-                    props.Skills_toPsionics += increasedBy;
-                    return props;
+                    bonuses.ToPsionics += increasedBy;
+                    return bonuses;
                 case 7:
-                    props.Skills_toRanged += increasedBy;
-                    return props;
+                    bonuses.ToRanged += increasedBy;
+                    return bonuses;
                 case 8:
-                    props.Skills_toResistance += increasedBy;
-                    return props;
+                    bonuses.ToResistance += increasedBy;
+                    return bonuses;
                 case 9:
-                    props.Skills_toScouting += increasedBy;
-                    return props;
+                    bonuses.ToScouting += increasedBy;
+                    return bonuses;
                 case 10:
-                    props.Skills_toSocial += increasedBy;
-                    return props;
+                    bonuses.ToSocial += increasedBy;
+                    return bonuses;
                 case 11:
-                    props.Skills_toSpot += increasedBy;
-                    return props;
+                    bonuses.ToSpot += increasedBy;
+                    return bonuses;
                 case 12:
-                    props.Skills_toSurvival += increasedBy;
-                    return props;
+                    bonuses.ToSurvival += increasedBy;
+                    return bonuses;
                 case 13:
-                    props.Skills_toTactics += increasedBy;
-                    return props;
+                    bonuses.ToTactics += increasedBy;
+                    return bonuses;
                 case 14:
-                    props.Skills_toTraps += increasedBy;
-                    return props;
+                    bonuses.ToTraps += increasedBy;
+                    return bonuses;
                 case 15:
-                    props.Skills_toUnarmed += increasedBy;
-                    return props;
+                    bonuses.ToUnarmed += increasedBy;
+                    return bonuses;
                 default:
                     throw new Exception(message: Scribe.Error_Switch_notCoveredCase);
             }

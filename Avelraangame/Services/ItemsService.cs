@@ -12,7 +12,6 @@ namespace Avelraangame.Services
         public string GenerateRandomItem()
         {
             var itemLevel = GenerateItemLevel();
-            string responseString;
             Item item;
 
             if (itemLevel == 5)
@@ -33,8 +32,7 @@ namespace Avelraangame.Services
             DataService.SaveItem(item);
             var itemVm = new ItemVm(item);
 
-            responseString = JsonConvert.SerializeObject(itemVm);
-            return responseString;
+            return JsonConvert.SerializeObject(itemVm);
         }
 
         public int GetItemsCount()

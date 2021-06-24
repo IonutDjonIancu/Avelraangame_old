@@ -14,7 +14,7 @@ namespace Avelraangame.Controllers
     [ApiController]
     public class PalantirController : Controller
     {
-        // GET: api/palantir/GetOk
+        // GET: /api/palantir/GetOk
         [HttpGet("GetOk")]
         public string GetOk()
         {
@@ -115,7 +115,7 @@ namespace Avelraangame.Controllers
         #endregion
 
         #region Characters
-        // GET: api/palantir/Character_Roll20
+        // GET: /api/palantir/Character_Roll20
         [HttpGet("Character_Roll20")]
         public string Character_Roll20([FromQuery] RequestVm request)
         {
@@ -130,7 +130,7 @@ namespace Avelraangame.Controllers
             }
 
             var characterService = new CharactersService();
-            (string response, string playerId, string roll) charRoll;
+            (string response, Guid playerId, int roll) charRoll;
 
             try
             {
@@ -157,7 +157,7 @@ namespace Avelraangame.Controllers
             return JsonConvert.SerializeObject(responseVm);
         }
 
-        // GET: api/palantir/Character_StoreRoll
+        // GET: /api/palantir/Character_StoreRoll
         [HttpGet("Character_StoreRoll")]
         public string Character_StoreRoll([FromQuery] RequestVm request)
         {
@@ -183,22 +183,19 @@ namespace Avelraangame.Controllers
                 {
                     throw new Exception(Scribe.ShortMessages.ResourceNotFound.ToString());
                 }
-                if (int.TryParse(roll.ToString(), out var rollValue))
-                {
-                    charVm.Roll = rollValue;
-                }
+                charVm.Logbook.StatsRoll = (int)roll;
 
                 responseVm.Data = JsonConvert.SerializeObject(charService.CreateCharacter_storeRoll(charVm));
                 
                 var keyPlayerIdName = string.Concat(charVm.PlayerId, charVm.PlayerName);
                 if (!TempData.TryGetValue(keyPlayerIdName, out var value))
                 {
-                    TempData.Add(keyPlayerIdName, rollValue);
+                    TempData.Add(keyPlayerIdName, charVm.Logbook.StatsRoll);
                 }
                 else
                 {
                     TempData.Remove(keyPlayerIdName);
-                    TempData.Add(keyPlayerIdName, rollValue);
+                    TempData.Add(keyPlayerIdName, charVm.Logbook.StatsRoll);
                 }
             }
             catch (Exception ex)
@@ -211,7 +208,7 @@ namespace Avelraangame.Controllers
         }
 
 
-        // GET: api/palantir/Character_AddCharacter
+        // GET: /api/palantir/Character_AddCharacter
         [HttpGet("Character_AddCharacter")]
         public string Character_AddCharacter([FromQuery] RequestVm request)
         {
@@ -248,7 +245,7 @@ namespace Avelraangame.Controllers
                 {
                     int.TryParse(value.ToString(), out var rollValue);
 
-                    charVm.Roll = rollValue;
+                    charVm.Logbook.StatsRoll = rollValue;
 
                     charId = characterService.CreateCharacter_step1(charVm);
                 }
@@ -264,14 +261,39 @@ namespace Avelraangame.Controllers
             return JsonConvert.SerializeObject(responseVm);
         }
 
-        
 
+        // GET: /api/palantir/Character_GetCharactersDraft
+        [HttpGet("Character_GetCharactersDraft")]
+        public string Character_GetCharactersDraft([FromQuery] RequestVm request)
+        {
+            var responseVm = new ResponseVm();
+            var characterService = new CharactersService();
 
+            var validateRequest = PalantirBase.ValidateRequest(request);
 
+            if (!validateRequest.Equals(Scribe.ShortMessages.Ok))
+            {
+                responseVm.Error = validateRequest.ToString();
+                return JsonConvert.SerializeObject(responseVm);
+            }
 
-        
+            List<CharacterVm> charVm;
 
-       
+            try
+            {
+                charVm = characterService.GetCharactersDraft(request);
+
+                responseVm.Data = JsonConvert.SerializeObject(charVm);
+            }
+            catch (Exception ex)
+            {
+                responseVm.Error = ex.Message;
+                return JsonConvert.SerializeObject(responseVm);
+            }
+
+            return JsonConvert.SerializeObject(responseVm);
+        }
+
 
 
 

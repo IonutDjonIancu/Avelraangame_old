@@ -1,18 +1,84 @@
 ﻿using Avelraangame.Models;
+using Avelraangame.Models.ModelScraps;
 using Avelraangame.Models.ViewModels;
 using Avelraangame.Services.ServiceUtils;
 using Avelraangame.Services.SubService;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 
 namespace Avelraangame.Services
 {
     public class CharactersService : CharacterSubService
     {
-        public Character GetCharacterById(Guid charId)
+        /// <summary>
+        /// Gets the list of characters by player name.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public List<CharacterVm> GetCharacters(RequestVm request)
         {
-            return DataService.GetCharacterById(charId);
+            var charVm = ValidateRequestDeserialization(request.Message);
+
+            var playerId = ValidatePlayerByName(charVm.PlayerName).Id;
+
+            var list = DataService.GetCharactersByPlayerId(playerId);
+
+            var returnList = new List<CharacterVm>();
+
+            foreach (var item in list)
+            {
+
+                var charvm = new CharacterVm
+                {
+                    CharacterId = item.Id,
+                    PlayerId = item?.PlayerId,
+                    PlayerName = item.Player.Name
+                };
+
+                returnList.Add(charvm);
+            }
+
+            return returnList;
         }
+
+        /// <summary>
+        /// Gets the list of draft characters by player name
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public List<CharacterVm> GetCharactersDraft(RequestVm request)
+        {
+            var charVm = ValidateRequestDeserialization(request.Message);
+
+            var playerId = ValidatePlayerByName(charVm.PlayerName).Id;
+
+            var dbCharacters = DataService.GetCharactersDraftByPlayerId(playerId);
+
+            var returnList = new List<CharacterVm>();
+
+            foreach (var chr in dbCharacters)
+            {
+                var charvm = new CharacterVm
+                {
+                    CharacterId = chr.Id,
+                    PlayerId = chr.PlayerId,
+
+                    Name = chr.Name,
+                    Race = ((CharactersUtils.Races)chr.Race).ToString(),
+                    Culture = ((CharactersUtils.Cultures)chr.Culture).ToString(),
+
+                    EntityLevel = chr.EntityLevel,
+
+                    Logbook = JsonConvert.DeserializeObject<Logbook>(chr.Logbook)
+                };
+
+                returnList.Add(charvm);
+            }
+
+            return returnList;
+        }
+
 
         public CharacterVm CreateCharacter_storeRoll(CharacterVm charVm)
         {
@@ -20,23 +86,19 @@ namespace Avelraangame.Services
             {
                 throw new Exception(message: string.Concat(Scribe.ShortMessages.ResourceNotFound, ": playerId is null."));
             }
-            else
-            {
-                ValidatePlayerById(charVm.PlayerId);
-            }
 
             if (string.IsNullOrWhiteSpace(charVm.PlayerName))
             {
                 var playersService = new PlayersService();
-                charVm.PlayerName = playersService.GetPlayerById(charVm.PlayerId).Name;
+                charVm.PlayerName = playersService.GetPlayerById(charVm.PlayerId.GetValueOrDefault())?.Name;
             }
 
-            ValidateCharacterRoll(charVm.Roll);
+            ValidateCharacterRoll(charVm.Logbook.StatsRoll);
 
             return charVm;
         }
 
-        public (string responseMessage, string playerId, string roll) CreateCharacter_roll20(RequestVm request)
+        public (string responseMessage, Guid playerId, int roll) CreateCharacter_roll20(RequestVm request)
         {
             CharacterVm charVm;
 
@@ -48,11 +110,11 @@ namespace Avelraangame.Services
                 charVm.PlayerId = player.Id;
             }
 
-            charVm.Roll = Dice.Roll_d_20();
+            charVm.Logbook.StatsRoll = Dice.Roll_d_20();
 
-            ValidateCharDiceBeforeReturn(charVm.PlayerId.ToString(), charVm.Roll);
+            ValidateCharDiceBeforeReturn(charVm.PlayerId.GetValueOrDefault(), charVm.Logbook.StatsRoll);
 
-            return (JsonConvert.SerializeObject(charVm), charVm.PlayerId.ToString(), charVm.Roll.ToString());
+            return (JsonConvert.SerializeObject(charVm), charVm.PlayerId.GetValueOrDefault(), charVm.Logbook.StatsRoll);
         }
 
         /// <summary>
@@ -65,16 +127,9 @@ namespace Avelraangame.Services
         {
             ValidateCharVm(charVm);
 
-            var chr = new Character()
-            {
-                Id = Guid.NewGuid(),
-                EntityLevel = GetEntityLevelByRoll(charVm.Roll),
-                StatsRoll = charVm.Roll,
-                IsAlive = true,
-                PlayerId = charVm.PlayerId
-            };
+            var chr = CreateHumanCharacter(charVm);
 
-            DataService.CreateCharacter(chr);
+            DataService.SaveCharacter(chr);
 
             return chr.Id;
         }

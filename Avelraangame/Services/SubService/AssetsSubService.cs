@@ -1,4 +1,4 @@
-﻿using Avelraangame.Models.ModelProps;
+﻿using Avelraangame.Models.ModelScraps;
 using Avelraangame.Services.ServiceUtils;
 using System;
 
@@ -6,30 +6,30 @@ namespace Avelraangame.Services.SubService
 {
     public class AssetsSubService
     {
-        public ItemProperties ReturnRandomAssetIncreaseForItem(ItemProperties props, int increasedBy)
+        public Bonuses ReturnRandomAssetIncreaseForItem(Bonuses bonuses, int increasedBy)
         {
             var randomSkill = Dice.Roll_min_to_max(0, 5);
 
             switch (randomSkill)
             {
                 case 0:
-                    props.Assets_toHealth += increasedBy;
-                    return props;
+                    bonuses.ToHealth += increasedBy;
+                    return bonuses;
                 case 1:
-                    props.Assets_toMana += increasedBy;
-                    return props;
+                    bonuses.ToMana += increasedBy;
+                    return bonuses;
                 case 2:
-                    props.Assets_toHarm += increasedBy;
-                    return props;
+                    bonuses.ToHarm += increasedBy;
+                    return bonuses;
                 case 3:
-                    props.Assets_toDRM += increasedBy;
-                    return props;
+                    bonuses.ToDRM += increasedBy;
+                    return bonuses;
                 case 4:
-                    props.Assets_toExperience += increasedBy;
-                    return props;
+                    bonuses.ToExperience += increasedBy;
+                    return bonuses;
                 case 5:
-                    props.Assets_toWealth += increasedBy;
-                    return props;
+                    bonuses.ToWealth += increasedBy;
+                    return bonuses;
                 default:
                     throw new Exception(message: Scribe.Error_Switch_notCoveredCase);
             }

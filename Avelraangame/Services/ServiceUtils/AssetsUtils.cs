@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Avelraangame.Models.ModelScraps;
+using Avelraangame.Models.ViewModels;
+using System.Collections.Generic;
 
 namespace Avelraangame.Services.ServiceUtils
 {
@@ -13,5 +15,13 @@ namespace Avelraangame.Services.ServiceUtils
             Scribe.Assets_Experience, // 4
             Scribe.Assets_Wealth // 5
         };
+
+        //public static int CalculateHealth(int tou, int str, int awa, int exp, int type, StatsVm baseAndBonus)
+        //{
+            
+
+
+
+        //}
     }
 }

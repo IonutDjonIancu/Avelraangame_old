@@ -2,7 +2,7 @@
 
 namespace Avelraangame.Services.ServiceUtils
 {
-    public static class ItemUtils
+    public static class ItemsUtils
     {
         public static readonly ItemTypes itemTypes = new ItemTypes();
         public static readonly ItemNames itemNames = new ItemNames();
@@ -119,6 +119,35 @@ namespace Avelraangame.Services.ServiceUtils
             itemNames.masterwork.Balanced, // 3
             itemNames.masterwork.Purified // 4
         };
+        #endregion
+
+        #region Enums
+        public enum Slots
+        {
+            Mainhand = 1,
+            Offhand,
+            Ranged,
+            Armour,
+            Trinkets,
+            Supplies // 6
+        }
+
+        public enum Types
+        {
+            Apparatus = 1,
+            Armour,
+            Axe,
+            Bow,
+            Club,
+            Crossbow,
+            Mace,
+            Polearm,
+            Shield,
+            Spear,
+            Sword,
+            Valuables,
+            Warhammer // 13
+        }
         #endregion
     }
 }

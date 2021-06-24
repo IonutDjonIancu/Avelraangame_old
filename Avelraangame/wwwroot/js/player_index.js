@@ -35,11 +35,11 @@ function createPlayer() {
 
     $.ajax({
         type: "POST",
-        url: CreateCharacterURL,
+        url: createPlayerURL,
         contentType: 'application/json',
         data: JSON.stringify(request),
         success: function (data, status, xhr) {
-            console.log(data);
+            window.location = "/character/character_index";
         },
         error: function (err) {
             console.log(err);
