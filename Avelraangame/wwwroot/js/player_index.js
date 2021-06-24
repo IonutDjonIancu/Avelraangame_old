@@ -39,7 +39,7 @@ function createPlayer() {
         contentType: 'application/json',
         data: JSON.stringify(request),
         success: function (data, status, xhr) {
-            window.location = "/character/index";
+            window.location = "/character/character_index";
         },
         error: function (err) {
             console.log(err);

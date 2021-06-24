@@ -23,10 +23,10 @@ namespace Avelraangame.Models.ViewModels
 
         public int Worth { get; set; }
 
-        public ItemUtils.Slots InSlot { get; set; }
-        public List<ItemUtils.Slots> Slots { get; set; }
+        public ItemsUtils.Slots InSlot { get; set; }
+        public List<ItemsUtils.Slots> Slots { get; set; }
 
-        public ItemBonuses Bonuses { get; set; }
+        public Bonuses Bonuses { get; set; }
 
         public bool IsConsumable { get; set; }
 
@@ -45,8 +45,8 @@ namespace Avelraangame.Models.ViewModels
             IsEquipped = item.IsEquipped;
             Worth = item.Worth;
             InSlot = item.InSlot;
-            Slots = JsonConvert.DeserializeObject<List<ItemUtils.Slots>>(item.Slots);
-            Bonuses = JsonConvert.DeserializeObject<ItemBonuses>(item.Bonuses);
+            Slots = JsonConvert.DeserializeObject<List<ItemsUtils.Slots>>(item.Slots);
+            Bonuses = JsonConvert.DeserializeObject<Bonuses>(item.Bonuses);
             IsConsumable = item.IsConsumable;
         }
 

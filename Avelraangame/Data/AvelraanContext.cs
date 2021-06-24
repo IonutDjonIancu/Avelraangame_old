@@ -11,6 +11,9 @@ namespace Avelraangame.Data
         public virtual DbSet<Player> Players { get; set; }
         public virtual DbSet<Character> Characters { get; set; }
         public virtual DbSet<TemporaryData> TemporaryData { get; set; }
+        public virtual DbSet<HeroicTraits> HeroicTraits { get; set; }
+        public virtual DbSet<NegativePerks> NegativePerks { get; set; }
+        public virtual DbSet<Party> Party { get; set; }
 
         public AvelraanContext()
         {
@@ -40,7 +43,6 @@ namespace Avelraangame.Data
             modelBuilder.Entity<Item>(entity =>
             {
                 // players will not be able to create items
-
                 entity.Property(s => s.Name)
                     .HasMaxLength(200);
             });
@@ -69,6 +71,11 @@ namespace Avelraangame.Data
                     .WithMany(s => s.Characters)
                     .HasForeignKey(s => s.PlayerId)
                     .HasPrincipalKey(s => s.Id); // unique identifier in the Player model
+
+                entity.HasOne(s => s.Party)
+                    .WithMany(s => s.Characters)
+                    .HasForeignKey(s => s.PartyId)
+                    .HasPrincipalKey(s => s.Id);
             });
 
         // Temps
@@ -79,6 +86,7 @@ namespace Avelraangame.Data
                 entity.Property(s => s.Value)
                     .HasMaxLength(255);
             });
+
         }
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

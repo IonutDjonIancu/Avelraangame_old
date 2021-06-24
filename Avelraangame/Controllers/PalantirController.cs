@@ -262,9 +262,9 @@ namespace Avelraangame.Controllers
         }
 
 
-        // GET: /api/palantir/Character_GetCharacters
-        [HttpGet("Character_GetCharacters")]
-        public string Character_GetCharacters([FromQuery] RequestVm request)
+        // GET: /api/palantir/Character_GetCharactersDraft
+        [HttpGet("Character_GetCharactersDraft")]
+        public string Character_GetCharactersDraft([FromQuery] RequestVm request)
         {
             var responseVm = new ResponseVm();
             var characterService = new CharactersService();
@@ -281,7 +281,7 @@ namespace Avelraangame.Controllers
 
             try
             {
-                charVm = characterService.GetCharacters(request);
+                charVm = characterService.GetCharactersDraft(request);
 
                 responseVm.Data = JsonConvert.SerializeObject(charVm);
             }

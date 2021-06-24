@@ -4,14 +4,16 @@ using Avelraangame.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Avelraangame.Migrations
 {
     [DbContext(typeof(AvelraanContext))]
-    partial class AvelraanContextModelSnapshot : ModelSnapshot
+    [Migration("20210624130454_added_party_on_characterModel")]
+    partial class added_party_on_characterModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -78,10 +80,10 @@ namespace Avelraangame.Migrations
                     b.Property<string>("NegativePerks")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("PartyId")
+                    b.Property<Guid>("PartyId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("PlayerId")
+                    b.Property<Guid>("PlayerId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Race")
@@ -250,11 +252,15 @@ namespace Avelraangame.Migrations
                 {
                     b.HasOne("Avelraangame.Models.Party", "Party")
                         .WithMany("Characters")
-                        .HasForeignKey("PartyId");
+                        .HasForeignKey("PartyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Avelraangame.Models.Player", "Player")
                         .WithMany("Characters")
-                        .HasForeignKey("PlayerId");
+                        .HasForeignKey("PlayerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Party");
 

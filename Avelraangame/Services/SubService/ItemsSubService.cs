@@ -28,7 +28,7 @@ namespace Avelraangame.Services.SubService
                 Level = itemLevel,
                 Type = GenerateItemType(),
                 IsEquipped = false,
-                InSlot = ItemUtils.Slots.Supplies,
+                InSlot = ItemsUtils.Slots.Supplies,
             };
 
             item.Slots = JsonConvert.SerializeObject(GenerateItemSlotsByType(item.Type));
@@ -48,113 +48,113 @@ namespace Avelraangame.Services.SubService
             return item;
         }
 
-        private List<ItemUtils.Slots> GenerateItemSlotsByType(ItemUtils.Types type)
+        private List<ItemsUtils.Slots> GenerateItemSlotsByType(ItemsUtils.Types type)
         {
-            if (type.Equals(ItemUtils.itemTypes.Apparatus))
+            if (type.Equals(ItemsUtils.itemTypes.Apparatus))
             {
-                var returnList = new List<ItemUtils.Slots>()
+                var returnList = new List<ItemsUtils.Slots>()
                     {
-                        ItemUtils.Slots.Mainhand,
-                        ItemUtils.Slots.Offhand,
-                        ItemUtils.Slots.Ranged,
-                        ItemUtils.Slots.Armour,
-                        ItemUtils.Slots.Trinkets,
-                        ItemUtils.Slots.Supplies
+                        ItemsUtils.Slots.Mainhand,
+                        ItemsUtils.Slots.Offhand,
+                        ItemsUtils.Slots.Ranged,
+                        ItemsUtils.Slots.Armour,
+                        ItemsUtils.Slots.Trinkets,
+                        ItemsUtils.Slots.Supplies
                     };
                 return returnList;
             }
-            else if (type.Equals(ItemUtils.itemTypes.Armour))
+            else if (type.Equals(ItemsUtils.itemTypes.Armour))
             {
-                var returnList = new List<ItemUtils.Slots>()
+                var returnList = new List<ItemsUtils.Slots>()
                     {
-                        ItemUtils.Slots.Armour,
-                        ItemUtils.Slots.Supplies
+                        ItemsUtils.Slots.Armour,
+                        ItemsUtils.Slots.Supplies
                     };
                 return returnList;
             }
-            else if (type.Equals(ItemUtils.itemTypes.Axe))
+            else if (type.Equals(ItemsUtils.itemTypes.Axe))
             {
-                var returnList = new List<ItemUtils.Slots>()
+                var returnList = new List<ItemsUtils.Slots>()
                     {
-                        ItemUtils.Slots.Mainhand,
-                        ItemUtils.Slots.Offhand,
-                        ItemUtils.Slots.Ranged,
-                        ItemUtils.Slots.Supplies
+                        ItemsUtils.Slots.Mainhand,
+                        ItemsUtils.Slots.Offhand,
+                        ItemsUtils.Slots.Ranged,
+                        ItemsUtils.Slots.Supplies
                     };
                 return returnList;
             }
-            else if (type.Equals(ItemUtils.itemTypes.Bow))
+            else if (type.Equals(ItemsUtils.itemTypes.Bow))
             {
-                var returnList = new List<ItemUtils.Slots>()
+                var returnList = new List<ItemsUtils.Slots>()
                     {
-                        ItemUtils.Slots.Ranged,
-                        ItemUtils.Slots.Supplies
+                        ItemsUtils.Slots.Ranged,
+                        ItemsUtils.Slots.Supplies
                     };
                 return returnList;
             }
-            else if (type.Equals(ItemUtils.itemTypes.Crossbow))
+            else if (type.Equals(ItemsUtils.itemTypes.Crossbow))
             {
-                var returnList = new List<ItemUtils.Slots>()
+                var returnList = new List<ItemsUtils.Slots>()
                     {
-                        ItemUtils.Slots.Mainhand,
-                        ItemUtils.Slots.Ranged,
-                        ItemUtils.Slots.Supplies
+                        ItemsUtils.Slots.Mainhand,
+                        ItemsUtils.Slots.Ranged,
+                        ItemsUtils.Slots.Supplies
                     };
                 return returnList;
             }
-            else if (type.Equals(ItemUtils.itemTypes.Polearm))
+            else if (type.Equals(ItemsUtils.itemTypes.Polearm))
             {
-                var returnList = new List<ItemUtils.Slots>()
+                var returnList = new List<ItemsUtils.Slots>()
                     {
-                        ItemUtils.Slots.Mainhand,
-                        ItemUtils.Slots.Supplies
+                        ItemsUtils.Slots.Mainhand,
+                        ItemsUtils.Slots.Supplies
                     };
                 return returnList;
             }
-            else if (type.Equals(ItemUtils.itemTypes.Shield))
+            else if (type.Equals(ItemsUtils.itemTypes.Shield))
             {
-                var returnList = new List<ItemUtils.Slots>()
+                var returnList = new List<ItemsUtils.Slots>()
                     {
-                        ItemUtils.Slots.Mainhand,
-                        ItemUtils.Slots.Offhand,
-                        ItemUtils.Slots.Supplies
+                        ItemsUtils.Slots.Mainhand,
+                        ItemsUtils.Slots.Offhand,
+                        ItemsUtils.Slots.Supplies
                     };
                 return returnList;
             }
-            else if (type.Equals(ItemUtils.itemTypes.Spear))
+            else if (type.Equals(ItemsUtils.itemTypes.Spear))
             {
-                var returnList = new List<ItemUtils.Slots>()
+                var returnList = new List<ItemsUtils.Slots>()
                     {
-                        ItemUtils.Slots.Mainhand,
-                        ItemUtils.Slots.Offhand,
-                        ItemUtils.Slots.Ranged,
-                        ItemUtils.Slots.Supplies
+                        ItemsUtils.Slots.Mainhand,
+                        ItemsUtils.Slots.Offhand,
+                        ItemsUtils.Slots.Ranged,
+                        ItemsUtils.Slots.Supplies
                     };
                 return returnList;
             }
-            else if (type.Equals(ItemUtils.itemTypes.Valuables))
+            else if (type.Equals(ItemsUtils.itemTypes.Valuables))
             {
-                var returnList = new List<ItemUtils.Slots>()
+                var returnList = new List<ItemsUtils.Slots>()
                     {
-                        ItemUtils.Slots.Supplies
+                        ItemsUtils.Slots.Supplies
                     };
                 return returnList;
             }
             else
             {
-                var returnList = new List<ItemUtils.Slots>()
+                var returnList = new List<ItemsUtils.Slots>()
                     {
-                        ItemUtils.Slots.Mainhand,
-                        ItemUtils.Slots.Offhand,
-                        ItemUtils.Slots.Supplies
+                        ItemsUtils.Slots.Mainhand,
+                        ItemsUtils.Slots.Offhand,
+                        ItemsUtils.Slots.Supplies
                     };
                 return returnList;
             }
         }
 
-        private bool IsConsumable(ItemUtils.Types type)
+        private bool IsConsumable(ItemsUtils.Types type)
         {
-            if (type.Equals(ItemUtils.Types.Apparatus))
+            if (type.Equals(ItemsUtils.Types.Apparatus))
             {
                 var random = Dice.Roll_min_to_max(1, 2);
 
@@ -162,7 +162,7 @@ namespace Avelraangame.Services.SubService
 
                 return false;
             }
-            else if (type.Equals(ItemUtils.Types.Valuables))
+            else if (type.Equals(ItemsUtils.Types.Valuables))
             {
                 return true;
             }
@@ -170,9 +170,9 @@ namespace Avelraangame.Services.SubService
             return false;
         }
 
-        private int GenerateItemWorthByLevelAndType(int level, ItemUtils.Types type)
+        private int GenerateItemWorthByLevelAndType(int level, ItemsUtils.Types type)
         {
-            if (type.Equals(ItemUtils.Types.Valuables)) return 0;
+            if (type.Equals(ItemsUtils.Types.Valuables)) return 0;
 
             return level switch
             {
@@ -184,25 +184,25 @@ namespace Avelraangame.Services.SubService
             };
         }
 
-        private ItemBonuses GenerateItemBonusesByLevelAndType(int level, ItemUtils.Types type)
+        private Bonuses GenerateItemBonusesByLevelAndType(int level, ItemsUtils.Types type)
         {
-            var bonuses = new ItemBonuses();
+            var bonuses = new Bonuses();
 
-            if (type.Equals(ItemUtils.Types.Armour)) return ReturnBonusesForArmour(bonuses, level);
-            else if (type.Equals(ItemUtils.Types.Shield)) return ReturnPropsForShield(bonuses, level);
-            else if (type.Equals(ItemUtils.Types.Valuables)) return ReturnPropsForValuables(bonuses, level);
-            else if (type.Equals(ItemUtils.Types.Apparatus)) return ReturnPropsForApparatus(bonuses, level);
+            if (type.Equals(ItemsUtils.Types.Armour)) return ReturnBonusesForArmour(bonuses, level);
+            else if (type.Equals(ItemsUtils.Types.Shield)) return ReturnPropsForShield(bonuses, level);
+            else if (type.Equals(ItemsUtils.Types.Valuables)) return ReturnPropsForValuables(bonuses, level);
+            else if (type.Equals(ItemsUtils.Types.Apparatus)) return ReturnPropsForApparatus(bonuses, level);
             else return ReturnPropsForWeapons(bonuses, level, type);
         }
 
 
-        private ItemBonuses ReturnPropsForWeapons(ItemBonuses bonuses, int level, ItemUtils.Types weaponType)
+        private Bonuses ReturnPropsForWeapons(Bonuses bonuses, int level, ItemsUtils.Types weaponType)
         {
             if (level == 1)
             {
                 bonuses.ToHarm = Dice.Roll_d_20() + 10;
 
-                if (weaponType.Equals(ItemUtils.Types.Sword))
+                if (weaponType.Equals(ItemsUtils.Types.Sword))
                 {
                     bonuses.ToHarm *= 2;
                 }
@@ -212,8 +212,8 @@ namespace Avelraangame.Services.SubService
             {
                 bonuses.ToHarm = Dice.Roll_d_20() + 20;
 
-                if (weaponType.Equals(ItemUtils.Types.Bow) ||
-                    weaponType.Equals(ItemUtils.Types.Crossbow))
+                if (weaponType.Equals(ItemsUtils.Types.Bow) ||
+                    weaponType.Equals(ItemsUtils.Types.Crossbow))
                 {
                     bonuses.ToRanged = Dice.Roll_d_20() + 20;
                 }
@@ -222,7 +222,7 @@ namespace Avelraangame.Services.SubService
                     bonuses.ToMelee = Dice.Roll_d_20() + 20;
                 }
 
-                if (weaponType.Equals(ItemUtils.Types.Sword))
+                if (weaponType.Equals(ItemsUtils.Types.Sword))
                 {
                     bonuses.ToHarm *= 2;
                 }
@@ -232,8 +232,8 @@ namespace Avelraangame.Services.SubService
             {
                 bonuses.ToHarm = Dice.Roll_d_20() + 40;
 
-                if (weaponType.Equals(ItemUtils.Types.Bow) ||
-                    weaponType.Equals(ItemUtils.Types.Crossbow))
+                if (weaponType.Equals(ItemsUtils.Types.Bow) ||
+                    weaponType.Equals(ItemsUtils.Types.Crossbow))
                 {
                     bonuses.ToRanged = Dice.Roll_d_20() + 40;
                 }
@@ -242,7 +242,7 @@ namespace Avelraangame.Services.SubService
                     bonuses.ToMelee = Dice.Roll_d_20() + 40;
                 }
 
-                if (weaponType.Equals(ItemUtils.Types.Sword))
+                if (weaponType.Equals(ItemsUtils.Types.Sword))
                 {
                     bonuses.ToHarm *= 4;
                 }
@@ -254,8 +254,8 @@ namespace Avelraangame.Services.SubService
             {
                 bonuses.ToHarm = Dice.Roll_d_20() + 80;
 
-                if (weaponType.Equals(ItemUtils.Types.Bow) ||
-                    weaponType.Equals(ItemUtils.Types.Crossbow))
+                if (weaponType.Equals(ItemsUtils.Types.Bow) ||
+                    weaponType.Equals(ItemsUtils.Types.Crossbow))
                 {
                     bonuses.ToRanged = Dice.Roll_d_20() + 80;
                 }
@@ -264,7 +264,7 @@ namespace Avelraangame.Services.SubService
                     bonuses.ToMelee = Dice.Roll_d_20() + 80;
                 }
 
-                if (weaponType.Equals(ItemUtils.Types.Sword))
+                if (weaponType.Equals(ItemsUtils.Types.Sword))
                 {
                     bonuses.ToHarm *= 8;
                 }
@@ -279,7 +279,7 @@ namespace Avelraangame.Services.SubService
             }
         }
 
-        private ItemBonuses ReturnPropsForApparatus(ItemBonuses bonuses, int level)
+        private Bonuses ReturnPropsForApparatus(Bonuses bonuses, int level)
         {
             if (level == 1)
             {
@@ -314,7 +314,7 @@ namespace Avelraangame.Services.SubService
             }
         }
 
-        private ItemBonuses ReturnPropsForValuables(ItemBonuses bonuses, int level)
+        private Bonuses ReturnPropsForValuables(Bonuses bonuses, int level)
         {
             if (level == 1)
             {
@@ -351,7 +351,7 @@ namespace Avelraangame.Services.SubService
             }
         }
 
-        private ItemBonuses ReturnBonusesForArmour(ItemBonuses bonuses, int level)
+        private Bonuses ReturnBonusesForArmour(Bonuses bonuses, int level)
         {
             if (level == 1)
             {
@@ -386,7 +386,7 @@ namespace Avelraangame.Services.SubService
             }
         }
 
-        private ItemBonuses ReturnPropsForShield(ItemBonuses bonuses, int level)
+        private Bonuses ReturnPropsForShield(Bonuses bonuses, int level)
         {
             if (level == 1)
             {
@@ -433,20 +433,20 @@ namespace Avelraangame.Services.SubService
             else return 1;
         }
 
-        private ItemUtils.Types GenerateItemType()
+        private ItemsUtils.Types GenerateItemType()
         {
             var index = Dice.Roll_min_to_max(1, 13);
 
-            return (ItemUtils.Types)index;
+            return (ItemsUtils.Types)index;
         }
 
-        private string GenerateItemNameByLevelAndType(int level, ItemUtils.Types type)
+        private string GenerateItemNameByLevelAndType(int level, ItemsUtils.Types type)
         {
-            if (level == 1) return $"{ItemUtils.List_of_CommonNamePrefixes[Dice.Roll_0_to_max(4)]} {type}";
-            else if (level == 2) return $"{ItemUtils.List_of_RefinedNamePrefixes[Dice.Roll_0_to_max(4)]} {type}";
-            else if (level == 3) return $"{ItemUtils.List_of_MasterworkNamePrefixes[Dice.Roll_0_to_max(4)]} {type}";
-            else if (level == 4) return $"{ItemUtils.itemNames.Heirloom} {type}";
-            else return $"{ItemUtils.itemNames.ObjectFromAfar}";
+            if (level == 1) return $"{ItemsUtils.List_of_CommonNamePrefixes[Dice.Roll_0_to_max(4)]} {type}";
+            else if (level == 2) return $"{ItemsUtils.List_of_RefinedNamePrefixes[Dice.Roll_0_to_max(4)]} {type}";
+            else if (level == 3) return $"{ItemsUtils.List_of_MasterworkNamePrefixes[Dice.Roll_0_to_max(4)]} {type}";
+            else if (level == 4) return $"{ItemsUtils.itemNames.Heirloom} {type}";
+            else return $"{ItemsUtils.itemNames.ObjectFromAfar}";
 
             // levels 5 and 6 (Artifacts and Relics) will have their own names
         }

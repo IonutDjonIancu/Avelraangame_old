@@ -4,14 +4,16 @@ using Avelraangame.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Avelraangame.Migrations
 {
     [DbContext(typeof(AvelraanContext))]
-    partial class AvelraanContextModelSnapshot : ModelSnapshot
+    [Migration("20210624121221_modified_character_and_characterVm")]
+    partial class modified_character_and_characterVm
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -78,10 +80,10 @@ namespace Avelraangame.Migrations
                     b.Property<string>("NegativePerks")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("PartyId")
+                    b.Property<Guid>("PartyId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("PlayerId")
+                    b.Property<Guid>("PlayerId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Race")
@@ -100,8 +102,6 @@ namespace Avelraangame.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("PartyId");
 
                     b.HasIndex("PlayerId");
 
@@ -192,17 +192,6 @@ namespace Avelraangame.Migrations
                     b.ToTable("NegativePerks");
                 });
 
-            modelBuilder.Entity("Avelraangame.Models.Party", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Party");
-                });
-
             modelBuilder.Entity("Avelraangame.Models.Player", b =>
                 {
                     b.Property<Guid>("Id")
@@ -248,22 +237,13 @@ namespace Avelraangame.Migrations
 
             modelBuilder.Entity("Avelraangame.Models.Character", b =>
                 {
-                    b.HasOne("Avelraangame.Models.Party", "Party")
-                        .WithMany("Characters")
-                        .HasForeignKey("PartyId");
-
                     b.HasOne("Avelraangame.Models.Player", "Player")
                         .WithMany("Characters")
-                        .HasForeignKey("PlayerId");
-
-                    b.Navigation("Party");
+                        .HasForeignKey("PlayerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Player");
-                });
-
-            modelBuilder.Entity("Avelraangame.Models.Party", b =>
-                {
-                    b.Navigation("Characters");
                 });
 
             modelBuilder.Entity("Avelraangame.Models.Player", b =>

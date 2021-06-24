@@ -1,6 +1,6 @@
 ﻿namespace Avelraangame.Models.ModelScraps
 {
-    public class ItemBonuses
+    public class Bonuses
     {
         // stats
         public int ToStrength { get; set; }

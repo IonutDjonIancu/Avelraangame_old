@@ -12,9 +12,9 @@ namespace Avelraangame.Models
         public string Name { get; set; }
         public int Level { get; set; }
         public bool IsEquipped { get; set; }
-        public ItemUtils.Types Type { get; set; }
+        public ItemsUtils.Types Type { get; set; }
 
-        public ItemUtils.Slots InSlot { get; set; }
+        public ItemsUtils.Slots InSlot { get; set; }
         public string Slots { get; set; }
 
         public bool IsConsumable { get; set; }

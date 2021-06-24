@@ -11,7 +11,7 @@ namespace Avelraangame.Services
     public class DataService
     {
         private AvelraanContext Context { get; set; }
-        
+
         public DataService()
         {
             Context = new AvelraanContext();
@@ -133,6 +133,14 @@ namespace Avelraangame.Services
         {
             return Context.Characters
                 .Where(s => s.PlayerId.Equals(playerId))
+                .ToList();
+        }
+
+
+        public List<Character> GetCharactersDraftByPlayerId(Guid playerId)
+        {
+            return Context.Characters
+                .Where(s => s.PlayerId.Equals(playerId) & s.IsDraft.Equals(true))
                 .ToList();
         }
 

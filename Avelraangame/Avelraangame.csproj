@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\media\background\" />
+    <Folder Include="wwwroot\media\images\humans\" />
   </ItemGroup>
 
 </Project>

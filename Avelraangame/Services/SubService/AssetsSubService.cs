@@ -6,7 +6,7 @@ namespace Avelraangame.Services.SubService
 {
     public class AssetsSubService
     {
-        public ItemBonuses ReturnRandomAssetIncreaseForItem(ItemBonuses bonuses, int increasedBy)
+        public Bonuses ReturnRandomAssetIncreaseForItem(Bonuses bonuses, int increasedBy)
         {
             var randomSkill = Dice.Roll_min_to_max(0, 5);
 

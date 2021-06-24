@@ -2,7 +2,7 @@
 
 namespace Avelraangame.Services.ServiceUtils
 {
-    public static class ItemUtils
+    public static class ItemsUtils
     {
         public static readonly ItemTypes itemTypes = new ItemTypes();
         public static readonly ItemNames itemNames = new ItemNames();
