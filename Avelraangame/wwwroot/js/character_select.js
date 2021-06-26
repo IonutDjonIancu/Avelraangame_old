@@ -28,13 +28,6 @@ $(players).on("change", function () {
 });
 
 
-//$(characterBtn).on("click", function () {
-
-//    console.log(this.id);
-
-//});
-
-
 // functions
 function getCharactersByPlayerName(playerName) {
 
@@ -75,11 +68,14 @@ function getCharactersByPlayerName(playerName) {
 
                 $(characterBtn).on("click", function () {
 
-                    console.log({
-                        charId: this.id,
-                        player: playerId
-                    });
+                    var character = {
+                        CharacterId: this.id,
+                        PlayerId: playerId
+                    }
 
+                    var request2 = JSON.stringify(character)
+
+                    window.location = `/Character/Character_model?request=${request2}`;
                 });
             }
 
@@ -95,15 +91,15 @@ function getCharactersByPlayerName(playerName) {
 
 function drawCharacter(id, race, culture, name, portraitNr) {
     var btnStyle = `
-<button id="${id}" title="${culture, race}" class="btn btn-outline-info characterBtn">${name}</button>
+<button id="${id}" title="${culture} ${race}" class="btn btn-outline-info characterBtn">
+    ${name}
+    <span>
+        <img style="border-radius:10px" src="../media/images/humans/human${portraitNr}.png"/>
+    </span>
+</button>
 `;
 
-    var imgStyle = `
-<img id="${id}" style="border-radius:20px" title="${name}, ${culture} ${race}" src="../media/images/humans/human${portraitNr}.png"/>
-`;
-
-    $(charactersPool).append(imgStyle);
-
+    $(charactersPool).append(btnStyle);
 }
 
 

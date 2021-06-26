@@ -12,8 +12,10 @@ const saveBtn = "#saveBtn";
 const statsPlaceholder = "#statsPlaceholder";
 const storeStatsPlaceholder = "#storeStatsPlaceholder";
 const players = "#players";
+const charName = "#charName";
 let playerAccount;
 let playerThatCallsId;
+
 
 // objects
 let contentTypeObj = {
@@ -35,16 +37,23 @@ let contentTypeObj = {
 // events
 
 
-
 $(saveBtn).on("click", function () {
+
+    var name = $(charName).val();
 
     if (!playerThatCallsId) {
         return;
     }
 
+    if (name.length < 1) {
+        window.alert("Name?");
+        return;
+    }
+
     var object = {
         PlayerId: playerThatCallsId,
-        PlayerName: playerAccount
+        PlayerName: playerAccount,
+        Name: name
     }
     var request = {
         message: JSON.stringify(object)
@@ -64,9 +73,7 @@ $(saveBtn).on("click", function () {
                 return;
             }
 
-            var data = response.Data;
-
-            window.location = `/Character/Character_create`;
+            window.location = `/Character/Character_select`;
         },
         error: function (err) {
             console.log(err);

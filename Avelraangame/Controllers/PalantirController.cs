@@ -31,7 +31,7 @@ namespace Avelraangame.Controllers
 
             try
             {
-                responseVm.Data = itemService.GenerateRandomItem();
+                responseVm.Data = JsonConvert.SerializeObject(itemService.GenerateRandomItem());
             }
             catch (Exception ex)
             {
@@ -115,6 +115,42 @@ namespace Avelraangame.Controllers
         #endregion
 
         #region Characters
+        // GET: /api/palantir/Character_GetCharacter
+        [HttpGet("Character_GetCharacter")]
+        public string Character_GetCharacter([FromQuery] RequestVm request)
+        {
+            var responseVm = new ResponseVm();
+
+            var validateRequest = PalantirBase.ValidateRequest(request);
+
+            if (!validateRequest.Equals(Scribe.ShortMessages.Ok))
+            {
+                responseVm.Error = validateRequest.ToString();
+                return JsonConvert.SerializeObject(responseVm);
+            }
+
+            CharacterCalculatedVm charVm;
+            var characters = new CharactersService();
+            
+            try
+            {
+                charVm = characters.GetCalculatedCharacter(request);
+
+                responseVm.Data = JsonConvert.SerializeObject(charVm);
+            }
+            catch (Exception ex)
+            {
+                responseVm.Error = ex.Message;
+                return JsonConvert.SerializeObject(responseVm);
+            }
+
+            responseVm.Data = JsonConvert.SerializeObject(charVm);
+
+            return JsonConvert.SerializeObject(responseVm);
+        }
+
+
+
         // GET: /api/palantir/Character_Roll20
         [HttpGet("Character_Roll20")]
         public string Character_Roll20([FromQuery] RequestVm request)

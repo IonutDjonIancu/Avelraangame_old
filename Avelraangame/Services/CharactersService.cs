@@ -11,6 +11,62 @@ namespace Avelraangame.Services
 {
     public class CharactersService : CharacterSubService
     {
+        public ItemsService Items { get; set; }
+        public PlayersService Players { get; set; }
+        public TempsService Temps { get; set; }
+
+        public CharactersService()
+        {
+            Items = new ItemsService();
+            Players = new PlayersService();
+            Temps = new TempsService();
+        }
+
+        public Character GetCharacterById(Guid charId)
+        {
+            return DataService.GetCharacterById(charId);
+        }
+
+        public CharacterCalculatedVm GetCalculatedCharacter(RequestVm request)
+        {
+            var reqCharVm = ValidateRequestDeserialization(request.Message);
+            Players.IsPlayerValid(reqCharVm.PlayerId.GetValueOrDefault());
+            IsCharacterValid(reqCharVm.PlayerId.GetValueOrDefault(), reqCharVm.CharacterId);
+
+            var chr = GetCharacterById(reqCharVm.CharacterId);
+
+            if (chr == null)
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.ResourceNotFound, ": character not found."));
+            }
+
+            var tempBonuses = Temps.GetTempInfosByCharacterId(chr.Id);
+            var retTempBonusesList = new List<TempsVm>();
+
+            foreach (var item in tempBonuses)
+            {
+                var tembo = new TempsVm(item);
+
+                retTempBonusesList.Add(tembo);
+            }
+
+            var charVm = new CharacterVm(chr)
+            {
+                Bonuses = retTempBonusesList
+            };
+
+            var result = new CharacterCalculatedVm(charVm);
+
+            return result;
+        }
+
+        public bool IsCharacterValid(Guid playerId, Guid charId)
+        {
+            ValidateCharacterById(playerId, charId);
+
+            return true;
+        }
+
         /// <summary>
         /// Gets the list of characters by player name.
         /// </summary>
@@ -70,7 +126,8 @@ namespace Avelraangame.Services
 
                     EntityLevel = chr.EntityLevel,
 
-                    Logbook = JsonConvert.DeserializeObject<Logbook>(chr.Logbook)
+                    Logbook = JsonConvert.DeserializeObject<Logbook>(chr.Logbook),
+                    Supplies = Items.GetSuppliesItemsByCharacterId(chr.Id)
                 };
 
                 returnList.Add(charvm);
@@ -130,6 +187,10 @@ namespace Avelraangame.Services
             var chr = CreateHumanCharacter(charVm);
 
             DataService.SaveCharacter(chr);
+
+            Temps.SaveTempCharInfo(chr.Id, TempUtils.BonusTo.Stats, charVm.Logbook.StatsRoll + (10 * chr.EntityLevel));
+            Temps.SaveTempCharInfo(chr.Id, TempUtils.BonusTo.Skills, 20);
+
 
             return chr.Id;
         }

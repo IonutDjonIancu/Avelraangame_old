@@ -10,7 +10,7 @@ namespace Avelraangame.Data
         public virtual DbSet<Item> Items { get; set; }
         public virtual DbSet<Player> Players { get; set; }
         public virtual DbSet<Character> Characters { get; set; }
-        public virtual DbSet<TemporaryData> TemporaryData { get; set; }
+        public virtual DbSet<TempInfo> Temps { get; set; }
         public virtual DbSet<HeroicTraits> HeroicTraits { get; set; }
         public virtual DbSet<NegativePerks> NegativePerks { get; set; }
         public virtual DbSet<Party> Party { get; set; }
@@ -79,12 +79,16 @@ namespace Avelraangame.Data
             });
 
         // Temps
-            modelBuilder.Entity<TemporaryData>(entity =>
+            modelBuilder.Entity<TempInfo>(entity =>
             {
-                entity.Property(s => s.Key)
+                entity.Property(s => s.Description)
                     .HasMaxLength(255);
-                entity.Property(s => s.Value)
-                    .HasMaxLength(255);
+                entity.Property(s => s.Value);
+
+                entity.HasOne(s => s.Character)
+                    .WithMany(s => s.Temps)
+                    .HasForeignKey(s => s.CharacterId)
+                    .HasPrincipalKey(s => s.Id);
             });
 
         }

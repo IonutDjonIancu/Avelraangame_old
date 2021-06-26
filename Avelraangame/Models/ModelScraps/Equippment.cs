@@ -1,16 +1,14 @@
-﻿using System;
+﻿using Avelraangame.Models.ViewModels;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Avelraangame.Models.ModelScraps
 {
     public class Equippment
     {
-        public Item Armour { get; set; }
-        public Item Mainhand { get; set; }
-        public Item Offhand { get; set; }
-        public Item Ranged { get; set; }
-        public List<Item> Trinkets { get; set; }
+        public ItemVm Armour { get; set; }
+        public ItemVm Mainhand { get; set; }
+        public ItemVm Offhand { get; set; }
+        public ItemVm Ranged { get; set; }
+        public List<ItemVm> Trinkets { get; set; }
     }
 }
