@@ -9,6 +9,13 @@ namespace Avelraangame.Services
 {
     public class PlayersService : PlayersSubService
     {
+        public bool IsPlayerValid(Guid playerid)
+        {
+            ValidatePlayerById(playerid);
+
+            return true;
+        }
+
         public string CreatePlayer(RequestVm request)
         {
             PlayerVm playerVm;

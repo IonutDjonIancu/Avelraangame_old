@@ -15,22 +15,43 @@ namespace Avelraangame.Services.Base
             DataService = new DataService();
         }
 
+        protected void ValidateCharacterById(Guid playerId, Guid charId)
+        {
+            if (playerId.Equals(Guid.Empty) || playerId == null)
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.ResourceNotFound, ": playerId is invalid or missing."));
+            }
+
+            if (charId.Equals(Guid.Empty) || charId == null)
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.ResourceNotFound, ": charId is invalid or missing."));
+            }
+
+            try
+            {
+                DataService.GetCharacterById(charId);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.ResourceNotFound, $": {ex.Message}."));
+            }
+        }
+
+        protected string ValidateCharacterName(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                return Scribe.Characters_GenericName;
+            }
+
+            return string.Concat(char.ToUpper(name[0]), name.Substring(1));
+        }
+
         protected void ValidateCharacterRoll(int roll)
         {
             if (roll == 0)
             {
                 throw new Exception(string.Concat(Scribe.ShortMessages.Failure, ": character roll was 0."));
-            }
-        }
-
-        protected void ValidatePlayerById(Guid playerId)
-        {
-            var playerService = new PlayersService();
-
-            var player = playerService.GetPlayerById(playerId);
-
-            if (player == null)
-            {
             }
         }
 

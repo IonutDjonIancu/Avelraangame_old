@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "CreateCharacter";
+    ViewData["Title"] = "Character";
 }
 
 @{
@@ -7,15 +7,17 @@
 }
 
 <br />
-<p style="color:navajowhite">Create character</p>
+<p style="color:navajowhite">Select character</p>
 <div class="btn-group">
-    <a class="btn btn-outline-dark btn-sm" asp-controller="Character" asp-action="Character_index">Roll</a>
-    <a class="btn btn-outline-dark btn-sm" asp-controller="Character" asp-action="Character_create">Distribute</a>
+    <a class="btn btn-outline-dark btn-sm" asp-controller="Character" asp-action="Character_index">Index</a>
+    <a class="btn btn-outline-dark btn-sm" asp-controller="Character" asp-action="Character_roll">Roll</a>
+    <a class="btn btn-outline-dark btn-sm" asp-controller="Character" asp-action="Character_select">Select</a>
+    <a class="btn btn-outline-dark btn-sm" asp-controller="Character" asp-action="Character_model">Model</a>
 </div>
     
 
 <div class="text-left jumbotron" style="opacity:0.7; background-color:black; color:navajowhite">
-    <p style="color:navajowhite">Distribute stats for character</p>
+    <p style="color:navajowhite">Select character</p>
     <div>
         <select class="btn btn-outline-light" aria-label="playersSelect" name="players" id="players">
             <option selected>Select a player</option>
@@ -28,11 +30,11 @@
     </div>
     <hr />
     <div id="charactersPool">
-
+        @* characters information goes here *@
     </div>
 
 </div>
 
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<script src="~/js/character_create.js"></script>
+<script src="~/js/character_select.js"></script>

@@ -20,11 +20,47 @@ namespace Avelraangame.Services.SubService
             Stats = new StatsSubService();
         }
 
-        protected Item GenerateNormalItem(int itemLevel)
+        protected Item GenerateNormalArmour(int itemLevel)
         {
             var item = new Item
             {
                 Id = Guid.NewGuid(),
+                Level = itemLevel,
+                Type = ItemsUtils.Types.Armour,
+                IsEquipped = true,
+                InSlot = ItemsUtils.Slots.Armour
+            };
+
+            item.Name = GenerateItemNameByLevelAndType(itemLevel, ItemsUtils.Types.Armour);
+            item.Worth = GenerateItemWorthByLevelAndType(itemLevel, ItemsUtils.Types.Armour);
+            item.IsConsumable = false;
+
+            var bonuses = GenerateItemBonusesByLevelAndType(itemLevel, ItemsUtils.Types.Armour);
+
+            if (bonuses.ToWealth > 0)
+            {
+                item.Worth += bonuses.ToWealth;
+            }
+
+            item.Bonuses = JsonConvert.SerializeObject(bonuses);
+
+
+            return item;
+        }
+
+
+        protected Item GenerateNormalItem(int itemLevel, string charId = null)
+        {
+            var characterId = Guid.Empty;
+            if (!string.IsNullOrWhiteSpace(charId))
+            {
+                characterId = Guid.Parse(charId);
+            }
+
+            var item = new Item
+            {
+                Id = Guid.NewGuid(),
+                CharacterId = characterId,
                 Level = itemLevel,
                 Type = GenerateItemType(),
                 IsEquipped = false,

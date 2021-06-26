@@ -10,8 +10,18 @@ using System.Linq;
 
 namespace Avelraangame.Services.SubService
 {
+
     public class CharacterSubService : CharacterBase
     {
+        private TempsService Temps { get; set; }
+        private ItemsService Items { get; set; }
+
+        public CharacterSubService()
+        {
+            Temps = new TempsService();
+            Items = new ItemsService();
+        }
+
         protected int GetEntityLevelByRoll(int roll)
         {
             if (roll < 20)
@@ -47,6 +57,7 @@ namespace Avelraangame.Services.SubService
             var logbook = new Logbook
             {
                 StatsRoll = roll,
+                ItemsRoll = Dice.Roll_min_to_max(2, 12),
                 PortraitNr = Dice.Roll_min_to_max(1, 7)
             };
 
@@ -55,7 +66,7 @@ namespace Avelraangame.Services.SubService
                 Id = Guid.NewGuid(),
                 PlayerId = charVm.PlayerId,
 
-                Name = "Markus",
+                Name = ValidateCharacterName(charVm.Name),
                 Race = (int)CharactersUtils.Races.Human,
                 Culture = (int)CharactersUtils.Cultures.Danarian,
 
@@ -77,6 +88,34 @@ namespace Avelraangame.Services.SubService
                 IsDraft = true,
                 Logbook = JsonConvert.SerializeObject(logbook)
             };
+
+            var trinks = new List<ItemVm>();
+
+            for (int i = 0; i < 6; i++)
+            {
+                var a = Items.GenerateRandomItem();
+                trinks.Add(a);
+            }
+
+            var equipp = new Equippment
+            {
+                Armour = Items.GenerateRandomItem(),
+                Mainhand = Items.GenerateRandomItem(),
+                Offhand = Items.GenerateRandomItem(),
+                Ranged = Items.GenerateRandomItem(),
+                Trinkets = trinks,
+            };
+
+            var itemsInSupplies = new List<ItemVm>();
+
+            for (int i = 0; i < logbook.ItemsRoll; i++)
+            {
+                var item = Items.GenerateRandomItem(chr.Id.ToString());
+                itemsInSupplies.Add(item);
+            }
+
+            chr.Equippment = JsonConvert.SerializeObject(equipp);
+            chr.Supplies = JsonConvert.SerializeObject(itemsInSupplies);
 
             return chr;
         }

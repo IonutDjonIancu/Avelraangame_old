@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Avelraangame.Models
 {
@@ -39,5 +40,7 @@ namespace Avelraangame.Models
 
         public Player Player { get; set; }
         public Party Party { get; set; }
+
+        public ICollection<TempInfo> Temps { get; set; }
     }
 }

@@ -31,6 +31,25 @@ namespace Avelraangame.Services.Base
             return playerVm;
         }
 
+        protected void ValidatePlayerById(Guid playerId)
+        {
+            if (playerId.Equals(Guid.Empty) || playerId == null)
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.ResourceNotFound, ": playerId is invalid or missing."));
+            }
+
+
+            try
+            {
+                DataService.GetPlayerById(playerId);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.ResourceNotFound, $": {ex.Message}."));
+            }
+
+        }
+
         protected void ValidatePlayerDetails(PlayerVm playerVm)
         {
             ValidateName(playerVm.Name);
