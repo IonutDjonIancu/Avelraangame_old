@@ -11,21 +11,38 @@ namespace Avelraangame.Services
 {
     public class CharactersService : CharacterSubService
     {
-        public ItemsService Items { get; set; }
-        public PlayersService Players { get; set; }
-        public TempsService Temps { get; set; }
-
-        public CharactersService()
-        {
-            Items = new ItemsService();
-            Players = new PlayersService();
-            Temps = new TempsService();
-        }
-
         public Character GetCharacterById(Guid charId)
         {
             return DataService.GetCharacterById(charId);
         }
+
+        public CharacterVm GetCharacterLevelUp(RequestVm request)
+        {
+            var charVm = ValidateRequestDeserialization(request.Message);
+            ValidatePlayerAndCharacter(charVm.PlayerId.GetValueOrDefault(), charVm.CharacterId);
+
+
+            var tempBonuses = Temps.GetTempInfosByCharacterId(charVm.CharacterId);
+            if (tempBonuses.Count.Equals(0))
+            {
+                return charVm;
+            }
+
+            var listOfTempBonuses = new List<TempsVm>();
+
+            foreach (var bonus in tempBonuses)
+            {
+                var tembo = new TempsVm(bonus);
+
+                listOfTempBonuses.Add(tembo);
+            }
+
+            charVm.Bonuses = listOfTempBonuses;
+
+            return charVm;
+        }
+
+
 
         public CharacterCalculatedVm GetCalculatedCharacter(RequestVm request)
         {
@@ -85,12 +102,7 @@ namespace Avelraangame.Services
             foreach (var item in list)
             {
 
-                var charvm = new CharacterVm
-                {
-                    CharacterId = item.Id,
-                    PlayerId = item?.PlayerId,
-                    PlayerName = item.Player.Name
-                };
+                var charvm = new CharacterVm(item);
 
                 returnList.Add(charvm);
             }
@@ -103,38 +115,38 @@ namespace Avelraangame.Services
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public List<CharacterVm> GetCharactersDraft(RequestVm request)
-        {
-            var charVm = ValidateRequestDeserialization(request.Message);
+        //public List<CharacterVm> GetCharactersDraft(RequestVm request)
+        //{
+        //    var charVm = ValidateRequestDeserialization(request.Message);
 
-            var playerId = ValidatePlayerByName(charVm.PlayerName).Id;
+        //    var playerId = ValidatePlayerByName(charVm.PlayerName).Id;
 
-            var dbCharacters = DataService.GetCharactersDraftByPlayerId(playerId);
+        //    var dbCharacters = DataService.GetCharactersDraftByPlayerId(playerId);
 
-            var returnList = new List<CharacterVm>();
+        //    var returnList = new List<CharacterVm>();
 
-            foreach (var chr in dbCharacters)
-            {
-                var charvm = new CharacterVm
-                {
-                    CharacterId = chr.Id,
-                    PlayerId = chr.PlayerId,
+        //    foreach (var chr in dbCharacters)
+        //    {
+        //        var charvm = new CharacterVm
+        //        {
+        //            CharacterId = chr.Id,
+        //            PlayerId = chr.PlayerId,
 
-                    Name = chr.Name,
-                    Race = ((CharactersUtils.Races)chr.Race).ToString(),
-                    Culture = ((CharactersUtils.Cultures)chr.Culture).ToString(),
+        //            Name = chr.Name,
+        //            Race = ((CharactersUtils.Races)chr.Race).ToString(),
+        //            Culture = ((CharactersUtils.Cultures)chr.Culture).ToString(),
 
-                    EntityLevel = chr.EntityLevel,
+        //            EntityLevel = chr.EntityLevel,
 
-                    Logbook = JsonConvert.DeserializeObject<Logbook>(chr.Logbook),
-                    Supplies = Items.GetSuppliesItemsByCharacterId(chr.Id)
-                };
+        //            Logbook = JsonConvert.DeserializeObject<Logbook>(chr.Logbook),
+        //            Supplies = Items.GetSuppliesItemsByCharacterId(chr.Id)
+        //        };
 
-                returnList.Add(charvm);
-            }
+        //        returnList.Add(charvm);
+        //    }
 
-            return returnList;
-        }
+        //    return returnList;
+        //}
 
 
         public CharacterVm CreateCharacter_storeRoll(CharacterVm charVm)

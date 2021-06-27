@@ -31,6 +31,7 @@ namespace Avelraangame.Models.ViewModels
         public int Mana { get; set; }
 
         public bool IsAlive { get; set; }
+        public bool HasLevelup { get; set; }
         public bool InParty { get; set; }
         public Guid? PartyId { get; set; }
 
@@ -77,6 +78,7 @@ namespace Avelraangame.Models.ViewModels
             Mana = chr.Mana;
 
             IsAlive = chr.IsAlive;
+            HasLevelup = chr.HasLevelup;
             InParty = chr.InParty;
             PartyId = chr.PartyId;
 

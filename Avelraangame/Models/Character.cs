@@ -27,7 +27,7 @@ namespace Avelraangame.Models
         public int Harm { get; set; }
 
         public bool IsAlive { get; set; }
-        public bool IsDraft { get; set; }
+        public bool HasLevelup { get; set; }
         public bool InParty { get; set; }
         public Guid? PartyId { get; set; }
 

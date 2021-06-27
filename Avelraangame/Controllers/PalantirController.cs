@@ -115,6 +115,41 @@ namespace Avelraangame.Controllers
         #endregion
 
         #region Characters
+        // GET: /api/palantir/Character_GetCharacterLevelUp
+        [HttpGet("Character_GetCharacterLevelUp")]
+        public string Character_GetCharacterLevelUp([FromQuery] RequestVm request)
+        {
+            var responseVm = new ResponseVm();
+
+            var validateRequest = PalantirBase.ValidateRequest(request);
+
+            if (!validateRequest.Equals(Scribe.ShortMessages.Ok))
+            {
+                responseVm.Error = validateRequest.ToString();
+                return JsonConvert.SerializeObject(responseVm);
+            }
+
+            CharacterVm charVm;
+            var characters = new CharactersService();
+
+            try
+            {
+                charVm = characters.GetCharacterLevelUp(request);
+
+                responseVm.Data = JsonConvert.SerializeObject(charVm);
+            }
+            catch (Exception ex)
+            {
+                responseVm.Error = ex.Message;
+                return JsonConvert.SerializeObject(responseVm);
+            }
+
+            responseVm.Data = JsonConvert.SerializeObject(charVm);
+
+            return JsonConvert.SerializeObject(responseVm);
+        }
+
+
         // GET: /api/palantir/Character_GetCharacter
         [HttpGet("Character_GetCharacter")]
         public string Character_GetCharacter([FromQuery] RequestVm request)
@@ -298,9 +333,9 @@ namespace Avelraangame.Controllers
         }
 
 
-        // GET: /api/palantir/Character_GetCharactersDraft
-        [HttpGet("Character_GetCharactersDraft")]
-        public string Character_GetCharactersDraft([FromQuery] RequestVm request)
+        // GET: /api/palantir/Character_GetCharacters
+        [HttpGet("Character_GetCharacters")]
+        public string Character_GetCharacters([FromQuery] RequestVm request)
         {
             var responseVm = new ResponseVm();
             var characterService = new CharactersService();
@@ -317,7 +352,7 @@ namespace Avelraangame.Controllers
 
             try
             {
-                charVm = characterService.GetCharactersDraft(request);
+                charVm = characterService.GetCharacters(request);
 
                 responseVm.Data = JsonConvert.SerializeObject(charVm);
             }

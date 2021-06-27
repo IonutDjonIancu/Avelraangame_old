@@ -33,6 +33,28 @@ namespace Avelraangame.Controllers
             return View();
         }
 
+        public IActionResult Character_levelup([FromQuery] string request)
+        {
+            CharacterVm charVm;
+
+            if (request == null)
+            {
+                return RedirectToAction("Character_select", "Character");
+            }
+
+            try
+            {
+                charVm = JsonConvert.DeserializeObject<CharacterVm>(request);
+            }
+            catch (System.Exception)
+            {
+                return RedirectToAction("Character_select", "Character");
+            }
+
+
+            return View();
+        }
+
         public IActionResult Character_model([FromQuery]string request)
         {
             CharacterVm charVm;

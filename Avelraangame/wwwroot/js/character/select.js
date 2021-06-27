@@ -1,8 +1,9 @@
 ﻿// URLs
-const getCharactersURL = "/api/palantir/Character_GetCharactersDraft";
+const getCharactersURL = "/api/palantir/Character_GetCharacters";
 
-// divIDs
+// divs
 const players = "#players";
+const levelUpCharactersPool = "#levelUpCharactersPool"
 const charactersPool = "#charactersPool"
 const characterBtn = ".characterBtn";
 let characters;
@@ -52,6 +53,8 @@ function getCharactersByPlayerName(playerName) {
             }
 
             $(charactersPool).empty();
+            $(levelUpCharactersPool).empty();
+
             var data = JSON.parse(response.Data);
 
             if (data.length) {
@@ -63,7 +66,8 @@ function getCharactersByPlayerName(playerName) {
                         data[i].Race,
                         data[i].Culture,
                         data[i].Name,
-                        data[i].Logbook.PortraitNr);
+                        data[i].Logbook.PortraitNr,
+                        data[i].HasLevelup);
                 }
 
                 $(characterBtn).on("click", function () {
@@ -75,7 +79,14 @@ function getCharactersByPlayerName(playerName) {
 
                     var request2 = JSON.stringify(character)
 
-                    window.location = `/Character/Character_model?request=${request2}`;
+
+                    if (this.hasAttribute("draggable")) {
+                        window.location = `/Character/Character_levelup?request=${request2}`;
+                    } else {
+                        window.location = `/Character/Character_model?request=${request2}`;
+                    }
+
+
                 });
             }
 
@@ -89,17 +100,29 @@ function getCharactersByPlayerName(playerName) {
 }
 
 
-function drawCharacter(id, race, culture, name, portraitNr) {
-    var btnStyle = `
-<button id="${id}" title="${culture} ${race}" class="btn btn-outline-info characterBtn">
-    ${name}
-    <span>
-        <img style="border-radius:10px" src="../media/images/humans/human${portraitNr}.png"/>
-    </span>
-</button>
-`;
+function drawCharacter(id, race, culture, name, portraitNr, hasLevelup) {
 
-    $(charactersPool).append(btnStyle);
+    if (hasLevelup == true) {
+        var btnStyle = `
+            <button draggable="true" id="${id}" title="${culture} ${race}" class="btn btn-outline-info characterBtn">
+                ${name}
+                <span>
+                    <img style="border-radius:10px" src="../media/images/humans/human${portraitNr}.png"/>
+                </span>
+            </button>
+            `;
+        $(levelUpCharactersPool).append(btnStyle);
+    } else {
+        var btnStyle = `
+            <button id="${id}" title="${culture} ${race}" class="btn btn-outline-info characterBtn">
+                ${name}
+                <span>
+                    <img style="border-radius:10px" src="../media/images/humans/human${portraitNr}.png"/>
+                </span>
+            </button>
+            `;
+        $(charactersPool).append(btnStyle);
+    }
 }
 
 

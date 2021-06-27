@@ -9,10 +9,16 @@ namespace Avelraangame.Services.Base
     public class CharacterBase
     {
         protected DataService DataService { get; set; }
+        protected PlayersService Players { get; set; }
+        public ItemsService Items { get; set; }
+        public TempsService Temps { get; set; }
 
         protected CharacterBase()
         {
             DataService = new DataService();
+            Players = new PlayersService();
+            Items = new ItemsService();
+            Temps = new TempsService();
         }
 
         protected void ValidateCharacterById(Guid playerId, Guid charId)
@@ -80,6 +86,12 @@ namespace Avelraangame.Services.Base
             {
                 throw new Exception(message: string.Concat(Scribe.ShortMessages.Failure, ": character roll was 0"));
             }
+        }
+
+        protected void ValidatePlayerAndCharacter(Guid playerId, Guid charId)
+        {
+            Players.IsPlayerValid(playerId);
+            ValidateCharacterById(playerId, charId);
         }
 
         protected CharacterVm ValidateRequestDeserialization(string request)

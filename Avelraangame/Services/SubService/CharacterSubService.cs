@@ -85,7 +85,7 @@ namespace Avelraangame.Services.SubService
                 Harm = 1,
 
                 IsAlive = true,
-                IsDraft = true,
+                HasLevelup = true,
                 Logbook = JsonConvert.SerializeObject(logbook)
             };
 

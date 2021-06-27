@@ -1,38 +1,19 @@
 ﻿// URLs
-const getCharacterURL = "/api/palantir/Character_GetCharacter";
+const Character_GetCharacterLevelUp = "/api/palantir/Character_GetCharacterLevelUp";
 
-
-
-
-// divIDs
-const character = "#modelPool";
+// divs
+const modelJumbo = "#modelJumbo";
 let playerId;
 let characterId;
-
-
-// on page load
-
-
 
 
 
 // on page load
 getURIinfo();
-getCharacter(playerId, characterId);
+getCharacterLevelUp(playerId, characterId);
 
 
 // events
-
-
-
-
-
-
-
-
-
-
-
 
 
 // functions
@@ -43,14 +24,9 @@ function getURIinfo() {
 
     playerId = c.PlayerId;
     characterId = c.CharacterId;
-
-    console.log(playerId);
-    console.log(characterId);
-
 }
 
-function getCharacter(playerId, characterId) {
-
+function getCharacterLevelUp(playerId, characterId) {
     var object = {
         PlayerId: playerId,
         CharacterId: characterId
@@ -61,7 +37,7 @@ function getCharacter(playerId, characterId) {
 
     $.ajax({
         type: "GET",
-        url: getCharacterURL,
+        url: Character_GetCharacterLevelUp,
         contentType: "text",
         data: request,
         success: function (resp) {
@@ -81,14 +57,6 @@ function getCharacter(playerId, characterId) {
     });
 
 }
-
-
-
-
-
-
-
-
 
 
 

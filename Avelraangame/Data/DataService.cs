@@ -112,7 +112,7 @@ namespace Avelraangame.Services
         public List<Character> GetCharactersDraftByPlayerId(Guid playerId)
         {
             return Context.Characters
-                .Where(s => s.PlayerId.Equals(playerId) & s.IsDraft.Equals(true))
+                .Where(s => s.PlayerId.Equals(playerId) & s.HasLevelup.Equals(true))
                 .ToList();
         }
 
