@@ -16,6 +16,11 @@ namespace Avelraangame.Services
             return true;
         }
 
+        public void ValidatePlayerId(Guid playerId)
+        {
+            ValidatePlayerGuid(playerId);
+        }
+
         public string CreatePlayer(RequestVm request)
         {
             PlayerVm playerVm;

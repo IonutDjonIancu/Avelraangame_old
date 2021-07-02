@@ -15,6 +15,15 @@ namespace Avelraangame.Services.Base
             DataService = new DataService();
         }
 
+        protected void ValidatePlayerGuid(Guid playerId)
+        {
+            if (playerId.Equals(Guid.Empty) ||
+                playerId.Equals(null))
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.BadRequest, ": playerId is missing or invalid."));
+            }
+        }
+
         protected PlayerVm ValidateRequestDeserialization_PlayerVm(string request)
         {
             PlayerVm playerVm;

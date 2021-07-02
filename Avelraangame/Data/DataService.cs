@@ -85,12 +85,24 @@ namespace Avelraangame.Services
             return Context.Temps.Where(s => s.CharacterId == charId).ToList();
         } 
 
+        public void RemoveTempsInfo(List<TempInfo> temps)
+        {
+            Context.RemoveRange(temps);
+            Context.SaveChanges();
+        }
+
         #endregion
 
         #region Character
         public void SaveCharacter(Character chr)
         {
             Context.Characters.Add(chr);
+            Context.SaveChanges();
+        }
+
+        public void UpdateCharacter(Character chr)
+        {
+            Context.Characters.Update(chr);
             Context.SaveChanges();
         }
 
