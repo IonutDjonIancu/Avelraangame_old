@@ -17,6 +17,17 @@ namespace Avelraangame.Services
             return DataService.GetCharacterById(charId);
         }
 
+        public CharacterVm GetCharacter(RequestVm request)
+        {
+            var reqCharVm = ValidateRequestDeserialization(request.Message);
+            ValidateCharacterById(reqCharVm.PlayerId.GetValueOrDefault(), reqCharVm.CharacterId);
+
+            var chr = DataService.GetCharacterById(reqCharVm.CharacterId);
+            var charVm = GetCalculatedCharacter(chr);
+
+            return charVm;
+        }
+
         public CharacterVm GetCharacterWithLevelUp(RequestVm request)
         {
             var requestCharVm = ValidateRequestDeserialization(request.Message);

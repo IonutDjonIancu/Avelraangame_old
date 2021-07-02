@@ -1,5 +1,5 @@
 ﻿// URLs
-const getCharacterURL = "/api/palantir/Character_GetCharacter";
+const Character_GetCharacter = "/api/palantir/Character_GetCharacter";
 
 
 
@@ -61,7 +61,7 @@ function getCharacter(playerId, characterId) {
 
     $.ajax({
         type: "GET",
-        url: getCharacterURL,
+        url: Character_GetCharacter,
         contentType: "text",
         data: request,
         success: function (resp) {
@@ -85,9 +85,9 @@ function getCharacter(playerId, characterId) {
 
 function drawCharacter(data) {
     showName(data.Name, data.Logbook.PortraitNr);
-    showStats(data.Strength, data.Toughness, data.Awareness, data.Abstract);
-    showExpertise(data.Experience, data.DRM, data.Wealth);
-    showAssets(data.Health, data.Mana, data.Harm);
+    showStats(data.Stats);
+    showExpertise(data.Expertise, data.Logbook.Wealth);
+    showAssets(data.Assets);
 }
 
 function showName(name, portraitNr) {
@@ -101,13 +101,13 @@ function showName(name, portraitNr) {
     $(nameDiv).append(html);
 }
 
-function showStats(str, tou, awa, abs) {
+function showStats(stats) {
     var html = `
 <div class="list-group">
-  <a href="#" class="list-group-item list-group-item-action list-group-item-success">Strength <b>${str}</b></a>
-  <a href="#" class="list-group-item list-group-item-action list-group-item-success">Toughness <b>${tou}</b></a>
-  <a href="#" class="list-group-item list-group-item-action list-group-item-success">Awareness <b>${awa}</b></a>
-  <a href="#" class="list-group-item list-group-item-action list-group-item-success">Abstract <b>${abs}</b></a>
+  <a href="#" class="list-group-item list-group-item-action list-group-item-success">Strength <b>${stats.Strength}</b></a>
+  <a href="#" class="list-group-item list-group-item-action list-group-item-success">Toughness <b>${stats.Toughness}</b></a>
+  <a href="#" class="list-group-item list-group-item-action list-group-item-success">Awareness <b>${stats.Awareness}</b></a>
+  <a href="#" class="list-group-item list-group-item-action list-group-item-success">Abstract <b>${stats.Abstract}</b></a>
 </div>
 `;
 
@@ -115,12 +115,12 @@ function showStats(str, tou, awa, abs) {
     $(statsDiv).append(html);
 }
 
-function showExpertise(exp, drm, wealth) {
+function showExpertise(expertise, wealth) {
     var html = `
 <div class="list-group">
-  <a href="#" class="list-group-item list-group-item-action list-group-item-success">Experience <b>${exp}</b></a>
-  <a href="#" class="list-group-item list-group-item-action list-group-item-success">DRM <b>${drm}</b></a>
-  <a href="#" class="list-group-item list-group-item-action list-group-item-success">Wealth <b>${wealth}</b></a>
+  <a href="#" class="list-group-item list-group-item-action list-group-item-info">Experience <b>${expertise.Experience}</b></a>
+  <a href="#" class="list-group-item list-group-item-action list-group-item-info">DRM <b>${expertise.DRM}</b></a>
+  <a href="#" class="list-group-item list-group-item-action list-group-item-info">Wealth <b>${wealth}</b></a>
 </div>
 `;
 
@@ -128,12 +128,12 @@ function showExpertise(exp, drm, wealth) {
     $(expertiseDiv).append(html);
 }
 
-function showAssets(health, mana, harm) {
+function showAssets(assets) {
     var html = `
 <div class="list-group">
-  <a href="#" class="list-group-item list-group-item-action list-group-item-success">Health <b>${health}</b></a>
-  <a href="#" class="list-group-item list-group-item-action list-group-item-success">Mana <b>${mana}</b></a>
-  <a href="#" class="list-group-item list-group-item-action list-group-item-success">Harm <b>${harm}</b></a>
+  <a href="#" class="list-group-item list-group-item-action list-group-item-warning">Health <b>${assets.Health}</b></a>
+  <a href="#" class="list-group-item list-group-item-action list-group-item-warning">Mana <b>${assets.Mana}</b></a>
+  <a href="#" class="list-group-item list-group-item-action list-group-item-warning">Harm <b>${assets.Harm}</b></a>
 </div>
 `;
 

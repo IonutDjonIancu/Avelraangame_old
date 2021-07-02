@@ -179,39 +179,39 @@ namespace Avelraangame.Controllers
         }
 
 
-        //// GET: /api/palantir/Character_GetCharacter
-        //[HttpGet("Character_GetCharacter")]
-        //public string Character_GetCharacter([FromQuery] RequestVm request)
-        //{
-        //    var responseVm = new ResponseVm();
+        // GET: /api/palantir/Character_GetCharacter
+        [HttpGet("Character_GetCharacter")]
+        public string Character_GetCharacter([FromQuery] RequestVm request)
+        {
+            var responseVm = new ResponseVm();
 
-        //    var validateRequest = PalantirBase.ValidateRequest(request);
+            var validateRequest = PalantirBase.ValidateRequest(request);
 
-        //    if (!validateRequest.Equals(Scribe.ShortMessages.Ok))
-        //    {
-        //        responseVm.Error = validateRequest.ToString();
-        //        return JsonConvert.SerializeObject(responseVm);
-        //    }
+            if (!validateRequest.Equals(Scribe.ShortMessages.Ok))
+            {
+                responseVm.Error = validateRequest.ToString();
+                return JsonConvert.SerializeObject(responseVm);
+            }
 
-        //    CharacterCalculatedVm charVm;
-        //    var characters = new CharactersService();
-            
-        //    try
-        //    {
-        //        charVm = characters.GetCalculatedCharacter(request);
+            CharacterVm charVm;
+            var characters = new CharactersService();
 
-        //        responseVm.Data = JsonConvert.SerializeObject(charVm);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        responseVm.Error = ex.Message;
-        //        return JsonConvert.SerializeObject(responseVm);
-        //    }
+            try
+            {
+                charVm = characters.GetCharacter(request);
 
-        //    responseVm.Data = JsonConvert.SerializeObject(charVm);
+                responseVm.Data = JsonConvert.SerializeObject(charVm);
+            }
+            catch (Exception ex)
+            {
+                responseVm.Error = ex.Message;
+                return JsonConvert.SerializeObject(responseVm);
+            }
 
-        //    return JsonConvert.SerializeObject(responseVm);
-        //}
+            responseVm.Data = JsonConvert.SerializeObject(charVm);
+
+            return JsonConvert.SerializeObject(responseVm);
+        }
 
 
 
