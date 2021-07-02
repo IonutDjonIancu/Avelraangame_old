@@ -12,6 +12,7 @@
     <a class="btn btn-outline-dark btn-sm" asp-controller="Character" asp-action="Character_index">Index</a>
     <a class="btn btn-outline-dark btn-sm" asp-controller="Character" asp-action="Character_roll">Roll</a>
     <a class="btn btn-outline-dark btn-sm" asp-controller="Character" asp-action="Character_select">Select</a>
+    <a class="btn btn-outline-dark btn-sm" asp-controller="Character" asp-action="Character_levelup">Levelup</a>
     <a class="btn btn-outline-dark btn-sm" asp-controller="Character" asp-action="Character_model">Model</a>
 </div>
     
@@ -29,6 +30,12 @@
         <p id="playerPlaceholder" style="float:right"></p>
     </div>
     <hr />
+    <p style="color:navajowhite">Ready to level up</p>
+    <div id="levelUpCharactersPool">
+        @* draft characters information goes here *@
+    </div>
+    <hr />
+    <p style="color:navajowhite">Ready to fight</p>
     <div id="charactersPool">
         @* characters information goes here *@
     </div>
@@ -37,4 +44,4 @@
 
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<script src="~/js/character_select.js"></script>
+<script src="~/js/character/select.js"></script>

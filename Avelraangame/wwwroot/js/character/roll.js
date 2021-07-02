@@ -73,7 +73,7 @@ $(saveBtn).on("click", function () {
                 return;
             }
 
-            window.location = `/Character/Character_select`;
+            window.location = "/Character/Character_select";
         },
         error: function (err) {
             console.log(err);

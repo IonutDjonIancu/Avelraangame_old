@@ -2,6 +2,7 @@
 using Avelraangame.Models.ViewModels;
 using Avelraangame.Services.ServiceUtils;
 using Newtonsoft.Json;
+using NUnit.Framework;
 using System;
 
 namespace Avelraangame.Services.Base
@@ -9,13 +10,26 @@ namespace Avelraangame.Services.Base
     public class CharacterBase
     {
         protected DataService DataService { get; set; }
+        protected PlayersService Players { get; set; }
+        protected ItemsService Items { get; set; }
+        protected TempsService Temps { get; set; }
 
         protected CharacterBase()
         {
             DataService = new DataService();
+            Players = new PlayersService();
+            Items = new ItemsService();
+            Temps = new TempsService();
         }
 
-        protected void ValidateCharacterById(Guid playerId, Guid charId)
+        protected bool IsCharacterValid(Guid playerId, Guid charId)
+        {
+            ValidateCharacterByIdAndReturn(playerId, charId);
+
+            return true;
+        }
+
+        protected Character ValidateCharacterByIdAndReturn(Guid playerId, Guid charId)
         {
             if (playerId.Equals(Guid.Empty) || playerId == null)
             {
@@ -27,14 +41,18 @@ namespace Avelraangame.Services.Base
                 throw new Exception(message: string.Concat(Scribe.ShortMessages.ResourceNotFound, ": charId is invalid or missing."));
             }
 
+            Character character;
+
             try
             {
-                DataService.GetCharacterById(charId);
+                character = DataService.GetCharacterById(charId);
             }
             catch (Exception ex)
             {
                 throw new Exception(message: string.Concat(Scribe.ShortMessages.ResourceNotFound, $": {ex.Message}."));
             }
+
+            return character;
         }
 
         protected string ValidateCharacterName(string name)
@@ -79,6 +97,43 @@ namespace Avelraangame.Services.Base
             if (roll == 0)
             {
                 throw new Exception(message: string.Concat(Scribe.ShortMessages.Failure, ": character roll was 0"));
+            }
+        }
+
+        protected Character ValidatePlayerAndCharacterAndReturn(Guid playerId, Guid charId)
+        {
+            Players.IsPlayerValid(playerId);
+            var chr = ValidateCharacterByIdAndReturn(playerId, charId);
+
+            return chr;
+        }
+
+        protected void ValidateCharacterById(Guid playerId, Guid charId)
+        {
+            Players.ValidatePlayerId(playerId);
+            ValidateCharacterId(charId);
+
+            var chr = DataService.GetCharacterById(charId);
+
+            if (chr.Equals(null))
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.ResourceNotFound, ": character not found."));
+            }
+
+            Assert.That(chr.PlayerId.Equals(playerId));
+
+            if (!chr.PlayerId.Equals(playerId))
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.Failure, ": character not bound to requested playerId."));
+            }
+        }
+
+        protected void ValidateCharacterId(Guid charId)
+        {
+            if (charId.Equals(Guid.Empty) || 
+                charId.Equals(null))
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.BadRequest, ": characterId is missing or invalid."));
             }
         }
 

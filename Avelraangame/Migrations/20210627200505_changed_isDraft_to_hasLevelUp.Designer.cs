@@ -4,14 +4,16 @@ using Avelraangame.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Avelraangame.Migrations
 {
     [DbContext(typeof(AvelraanContext))]
-    partial class AvelraanContextModelSnapshot : ModelSnapshot
+    [Migration("20210627200505_changed_isDraft_to_hasLevelUp")]
+    partial class changed_isDraft_to_hasLevelUp
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -26,17 +28,35 @@ namespace Avelraangame.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Assets")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Abstract")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Awareness")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Culture")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DRM")
+                        .HasColumnType("int");
+
+                    b.Property<int>("EntityLevel")
+                        .HasColumnType("int");
 
                     b.Property<string>("Equippment")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Expertise")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Experience")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Harm")
+                        .HasColumnType("int");
 
                     b.Property<bool>("HasLevelup")
                         .HasColumnType("bit");
+
+                    b.Property<int>("Health")
+                        .HasColumnType("int");
 
                     b.Property<string>("HeroicTraits")
                         .HasColumnType("nvarchar(max)");
@@ -49,6 +69,9 @@ namespace Avelraangame.Migrations
 
                     b.Property<string>("Logbook")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Mana")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .HasMaxLength(100)
@@ -63,14 +86,20 @@ namespace Avelraangame.Migrations
                     b.Property<Guid?>("PlayerId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Skills")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Race")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Stats")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Strength")
+                        .HasColumnType("int");
 
                     b.Property<string>("Supplies")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Toughness")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Wealth")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

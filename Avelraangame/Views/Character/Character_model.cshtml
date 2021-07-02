@@ -8,12 +8,24 @@
     <a class="btn btn-outline-dark btn-sm" asp-controller="Character" asp-action="Character_index">Index</a>
     <a class="btn btn-outline-dark btn-sm" asp-controller="Character" asp-action="Character_roll">Roll</a>
     <a class="btn btn-outline-dark btn-sm" asp-controller="Character" asp-action="Character_select">Select</a>
+    <a class="btn btn-outline-dark btn-sm" asp-controller="Character" asp-action="Character_levelup">Levelup</a>
     <a class="btn btn-outline-dark btn-sm" asp-controller="Character" asp-action="Character_model">Model</a>
 </div>
 
 
-<div id="modelPool" class="text-left jumbotron" style="opacity:0.7; background-color:black; color:navajowhite">
-    
+<div id="modelJumbo" class="text-left jumbotron" style="opacity:0.7; background-color:black; color:navajowhite">
+    <div id="nameDiv">
+        @* name and portrait *@
+    </div> <hr />
+    <div id="statsDiv">
+        @* stats *@
+    </div> <hr />
+    <div id="expertiseDiv">
+        @* expertise *@
+    </div> <hr />
+    <div id="assetsDiv">
+        @* assets *@
+    </div> <hr />
 
 
 
@@ -21,4 +33,4 @@
 
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<script src="~/js/Character_model.js"></script>
+<script src="~/js/Character/model.js"></script>

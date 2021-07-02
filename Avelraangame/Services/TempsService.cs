@@ -33,6 +33,11 @@ namespace Avelraangame.Services
         }
 
 
+        public void RemoveTempsInfo(List<TempInfo> temps)
+        {
+            DataService.RemoveTempsInfo(temps);
+        }
+
 
 
     }
