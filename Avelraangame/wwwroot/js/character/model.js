@@ -10,6 +10,7 @@ const nameDiv = "#nameDiv";
 const statsDiv = "#statsDiv";
 const expertiseDiv = "#expertiseDiv";
 const assetsDiv = "#assetsDiv";
+const suppliesDiv = "#suppliesDiv";
 let playerId;
 let characterId;
 
@@ -88,6 +89,7 @@ function drawCharacter(data) {
     showStats(data.Stats);
     showExpertise(data.Expertise, data.Logbook.Wealth);
     showAssets(data.Assets);
+    showSupplies(data.Supplies);
 }
 
 function showName(name, portraitNr) {
@@ -103,11 +105,11 @@ function showName(name, portraitNr) {
 
 function showStats(stats) {
     var html = `
-<div class="list-group">
-  <a href="#" class="list-group-item list-group-item-action list-group-item-success">Strength <b>${stats.Strength}</b></a>
-  <a href="#" class="list-group-item list-group-item-action list-group-item-success">Toughness <b>${stats.Toughness}</b></a>
-  <a href="#" class="list-group-item list-group-item-action list-group-item-success">Awareness <b>${stats.Awareness}</b></a>
-  <a href="#" class="list-group-item list-group-item-action list-group-item-success">Abstract <b>${stats.Abstract}</b></a>
+<div class="btn-group">
+    <button class="btn btn-sm btn-success">Strength <b>${stats.Strength}</b></button>
+    <button class="btn btn-sm btn-success">Toughness <b>${stats.Toughness}</b></button>
+    <button class="btn btn-sm btn-success">Awareness <b>${stats.Awareness}</b></button>
+    <button class="btn btn-sm btn-success">Abstract <b>${stats.Abstract}</b></button>
 </div>
 `;
 
@@ -117,10 +119,10 @@ function showStats(stats) {
 
 function showExpertise(expertise, wealth) {
     var html = `
-<div class="list-group">
-  <a href="#" class="list-group-item list-group-item-action list-group-item-info">Experience <b>${expertise.Experience}</b></a>
-  <a href="#" class="list-group-item list-group-item-action list-group-item-info">DRM <b>${expertise.DRM}</b></a>
-  <a href="#" class="list-group-item list-group-item-action list-group-item-info">Wealth <b>${wealth}</b></a>
+<div class="btn-group">
+    <button class="btn btn-sm btn-info">Experience <b>${expertise.Experience}</b></button>
+    <button class="btn btn-sm btn-info">DRM <b>${expertise.DRM}</b></button>
+    <button class="btn btn-sm btn-info">Wealth <b>${wealth}</b></button>
 </div>
 `;
 
@@ -130,10 +132,10 @@ function showExpertise(expertise, wealth) {
 
 function showAssets(assets) {
     var html = `
-<div class="list-group">
-  <a href="#" class="list-group-item list-group-item-action list-group-item-warning">Health <b>${assets.Health}</b></a>
-  <a href="#" class="list-group-item list-group-item-action list-group-item-warning">Mana <b>${assets.Mana}</b></a>
-  <a href="#" class="list-group-item list-group-item-action list-group-item-warning">Harm <b>${assets.Harm}</b></a>
+<div class="btn-group">
+    <button class="btn btn-sm btn-warning">Health <b>${assets.Health}</b></button>
+    <button class="btn btn-sm btn-warning">Mana <b>${assets.Mana}</b></button>
+    <button class="btn btn-sm btn-warning">Harm <b>${assets.Harm}</b></button>
 </div>
 `;
 
@@ -141,8 +143,51 @@ function showAssets(assets) {
     $(assetsDiv).append(html);
 }
 
+function showSupplies(supplies) {
+    $(suppliesDiv).empty();
+
+    for (var i = 0; i < supplies.length; i++) {
+
+        var nr = getRandomNr(50);
+
+        var html = `
+            <img id="item_${supplies[i].Id}" title="${supplies[i].Name}" style="border-radius:10px" src="../media/images/items/item${nr}.png" />
+            <div class="btn-group-vertical">
+                <button id="equipp" class="btn btn-sm btn-outline-dark">Equipp</button>
+                <button id="details_${supplies[i].Id}" class="btn btn-sm btn-outline-dark details">Details</button>
+            </div>
+        `;
+
+        $(suppliesDiv).append(html);
+    }
+
+    addDetailsEvent(supplies);
+}
+
+function getRandomNr(max) {
+    return Math.floor(Math.random() * max + 1);
+}
+
+function addDetailsEvent(supplies) {
+    $(".details").on("click", function () {
+        var itemId = this.id.split("_")[1];
 
 
+        for (var i = 0; i < supplies.length; i++) {
+            if (supplies[i].Id == itemId) {
+
+                var text = `${supplies[i].Name}\n
+Type: ${supplies[i].Type}\n
+Worth: ${supplies[i].Worth}`;
+
+                window.alert(text);
+
+                break;
+            }
+        }
+
+    });
+}
 
 
 

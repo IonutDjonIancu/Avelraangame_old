@@ -24,6 +24,7 @@
   <ItemGroup>
     <Folder Include="wwwroot\media\background\" />
     <Folder Include="wwwroot\media\images\humans\" />
+    <Folder Include="wwwroot\media\images\items\" />
   </ItemGroup>
 
 </Project>
