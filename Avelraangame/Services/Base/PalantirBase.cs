@@ -1,23 +1,22 @@
 ﻿using Avelraangame.Models.ViewModels;
 using Avelraangame.Services.ServiceUtils;
+using System;
 
 namespace Avelraangame.Services.Base
 {
     public static class PalantirBase
     {
-        public static Scribe.ShortMessages ValidateRequest(RequestVm request)
+        public static void ValidateRequest(RequestVm request)
         {
-            if (request == null)
+            if (request.Equals(null))
             {
-                return Scribe.ShortMessages.BadRequest;
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.BadRequest, ": request is in bad format."));
             }
 
             if (string.IsNullOrWhiteSpace(request.Message))
             {
-                return Scribe.ShortMessages.BadRequest;
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.BadRequest, ": request message is missing."));
             }
-
-            return Scribe.ShortMessages.Ok;
         }
     }
 }

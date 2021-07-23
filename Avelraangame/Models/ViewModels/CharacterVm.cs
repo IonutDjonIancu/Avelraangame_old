@@ -8,7 +8,7 @@ namespace Avelraangame.Models.ViewModels
     public class CharacterVm
     {
         public Guid CharacterId { get; set; }
-        public Guid? PlayerId { get; set; }
+        public Guid PlayerId { get; set; }
         public string PlayerName { get; set; }
 
         public string Name { get; set; }
@@ -44,7 +44,7 @@ namespace Avelraangame.Models.ViewModels
         public CharacterVm(Character chr)
         {
             CharacterId = chr.Id;
-            PlayerId = chr.PlayerId;
+            PlayerId = chr.PlayerId.GetValueOrDefault();
             PlayerName = chr.Player?.Name;
             Name = chr.Name;
 
