@@ -18,6 +18,11 @@ namespace Avelraangame.Services
         }
 
         #region Player
+        public bool PlayerExists(string playerName)
+        {
+            return Context.Players.Where(s => s.Name.Equals(playerName)).Any();
+        }
+
         public Player GetPlayerByName(string name)
         {
             return Context.Players.Where(s => s.Name == name).FirstOrDefault();

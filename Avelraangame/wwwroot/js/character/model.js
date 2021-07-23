@@ -1,9 +1,5 @@
 ﻿// URLs
-const Character_GetCharacter = "/api/palantir/Character_GetCharacter";
-
-
-
-
+const GetCharacter = "/api/palantir/GetCharacter";
 // divIDs
 const modelJumbo = "#modelJumbo";
 const nameDiv = "#nameDiv";
@@ -11,7 +7,9 @@ const statsDiv = "#statsDiv";
 const expertiseDiv = "#expertiseDiv";
 const assetsDiv = "#assetsDiv";
 const suppliesDiv = "#suppliesDiv";
+const suppliesNr = "#suppliesNr";
 let playerId;
+let playerName;
 let characterId;
 
 
@@ -22,7 +20,8 @@ let characterId;
 
 
 // on page load
-getURIinfo();
+establishPlayer();
+establishCharacter();
 getCharacter(playerId, characterId);
 
 
@@ -41,14 +40,6 @@ getCharacter(playerId, characterId);
 
 
 // functions
-function getURIinfo() {
-    var a = window.location.href.split("=")[1];
-    var b = decodeURIComponent(a);
-    var c = JSON.parse(b);
-
-    playerId = c.PlayerId;
-    characterId = c.CharacterId;
-}
 
 function getCharacter(playerId, characterId) {
 
@@ -62,7 +53,7 @@ function getCharacter(playerId, characterId) {
 
     $.ajax({
         type: "GET",
-        url: Character_GetCharacter,
+        url: GetCharacter,
         contentType: "text",
         data: request,
         success: function (resp) {
@@ -145,6 +136,7 @@ function showAssets(assets) {
 
 function showSupplies(supplies) {
     $(suppliesDiv).empty();
+    $(suppliesNr).append(`${supplies.length} items`);
 
     for (var i = 0; i < supplies.length; i++) {
 
@@ -188,6 +180,16 @@ Worth: ${supplies[i].Worth}`;
 
     });
 }
+
+function establishPlayer() {
+    playerName = localStorage.getItem("playerName");
+    playerId = localStorage.getItem("playerId");
+}
+
+function establishCharacter() {
+    characterId = localStorage.getItem("characterId");
+}
+
 
 
 

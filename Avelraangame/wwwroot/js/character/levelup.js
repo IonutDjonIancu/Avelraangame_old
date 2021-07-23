@@ -1,7 +1,6 @@
 ﻿// URLs
-const Character_GetCharacterLevelUp = "/api/palantir/Character_GetCharacterLevelUp";
-const Character_PostCharacterLevelUp = "/api/palantir/Character_PostCharacterLevelUp";
-
+const GetCharacterLevelup = "/api/palantir/GetCharacterLevelup";
+const LevelupCharacter = "/api/palantir/LevelupCharacter";
 // divs
 const modelJumbo = "#modelJumbo";
 const nameDiv = "#nameDiv";
@@ -11,31 +10,28 @@ const skillsRollDiv = "#skillsRollDiv";
 const skillsDiv = "#skillsDiv";
 const saveBtn = "#saveBtn";
 let playerId;
+let playerName;
 let characterId;
-
 // objs
 
 
 
-
 // on page load
-getURIinfo();
-getCharacterLevelUp(playerId, characterId);
+establishPlayer();
+establishCharacter();
+
+if (!characterId) {
+    window.location = `/Character/Character_select`;
+} else {
+    getCharacterLevelUp(playerId, characterId);
+}
+
 
 
 // events
 
 
 // functions
-function getURIinfo() {
-    var a = window.location.href.split("=")[1];
-    var b = decodeURIComponent(a);
-    var c = JSON.parse(b);
-
-    playerId = c.PlayerId;
-    characterId = c.CharacterId;
-}
-
 function getCharacterLevelUp(playerId, characterId) {
     var object = {
         PlayerId: playerId,
@@ -47,7 +43,7 @@ function getCharacterLevelUp(playerId, characterId) {
 
     $.ajax({
         type: "GET",
-        url: Character_GetCharacterLevelUp,
+        url: GetCharacterLevelup,
         contentType: "text",
         data: request,
         success: function (resp) {
@@ -55,11 +51,16 @@ function getCharacterLevelUp(playerId, characterId) {
 
             if (response.Error) {
                 console.log(response.Error);
+                window.location = `/Character/Character_select`;
                 return;
             }
 
             var data = JSON.parse(response.Data);
             console.log(data);
+
+            if (data.HasLevelup == false) {
+                window.location = `/Character/Character_select`;
+            }
 
             drawCharacter(data);
             addPlusMinusEventsStats();
@@ -492,7 +493,7 @@ function addSaveBtnEvent() {
         };
 
         $.ajax({
-            url: Character_PostCharacterLevelUp,
+            url: LevelupCharacter,
             type: "POST",
             contentType: "application/json",
             data: JSON.stringify(request),
@@ -506,4 +507,13 @@ function addSaveBtnEvent() {
             }
         });
     });
+}
+
+function establishPlayer() {
+    playerName = localStorage.getItem("playerName");
+    playerId = localStorage.getItem("playerId");
+}
+
+function establishCharacter() {
+    characterId = localStorage.getItem("characterId");
 }

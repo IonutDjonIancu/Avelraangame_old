@@ -17,7 +17,7 @@ namespace Avelraangame.Tests
 
             var playerVm = new PlayerVm()
             {
-                Name = name,
+                PlayerName = name,
                 Ward = ward,
                 Wardcheck = wardCheck
             };
@@ -29,7 +29,7 @@ namespace Avelraangame.Tests
 
             playerService.CreatePlayer(requestVm);
 
-            Assert.That(() => playerService.GetPlayerByName(name).Name == name);
+            Assert.That(() => playerService.GetPlayerIdByName(requestVm).Equals(name));
 
         }
     }

@@ -190,8 +190,9 @@ namespace Avelraangame.Services.SubService
             return chr;
         }
 
-        protected CharacterVm GetCalculatedCharacter(Character chr)
+        protected CharacterVm GetCalculatedCharacter(Guid charId)
         {
+            var chr = DataService.GetCharacterById(charId);
             var charVm = new CharacterVm(chr);
 
             charVm.Stats.Strength = FormulaStr(charVm);

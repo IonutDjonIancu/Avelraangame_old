@@ -10,71 +10,32 @@ namespace Avelraangame.Controllers
     {
         public IActionResult Character_index()
         {
+            var playersService = new PlayersService();
+
+            var list = JsonConvert.DeserializeObject<List<string>>(playersService.GetAllPlayers());
+
+            ViewData.Add("listOfPlayers", list);
             return View();
         }
 
         public IActionResult Character_roll()
         {
-            var playersService = new PlayersService();
-
-            var list = JsonConvert.DeserializeObject<List<string>>(playersService.GetAllPlayers());
-            
-            ViewData.Add("listOfPlayers", list);
             return View();
         }
 
         public IActionResult Character_select()
         {
-            var playersService = new PlayersService();
-
-            var list = JsonConvert.DeserializeObject<List<string>>(playersService.GetAllPlayers());
-
-            ViewData.Add("listOfPlayers", list);
             return View();
         }
 
-        public IActionResult Character_levelup([FromQuery] string request)
+        public IActionResult Character_levelup()
         {
-            CharacterVm charVm;
-
-            if (request == null)
-            {
-                return RedirectToAction("Character_select", "Character");
-            }
-
-            try
-            {
-                charVm = JsonConvert.DeserializeObject<CharacterVm>(request);
-            }
-            catch (System.Exception)
-            {
-                return RedirectToAction("Character_select", "Character");
-            }
-
-
             return View();
         }
 
-        public IActionResult Character_model([FromQuery]string request)
+        public IActionResult Character_model()
         {
-            CharacterVm charVm;
-
-            if (request == null)
-            {
-                return RedirectToAction("Character_select", "Character");
-            }
-
-            try
-            {
-                charVm = JsonConvert.DeserializeObject<CharacterVm>(request);
-            }
-            catch (System.Exception)
-            {
-                return RedirectToAction("Character_select", "Character");
-            }
-
-
-            return View();
+           return View();
         }
 
        

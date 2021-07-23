@@ -1,5 +1,5 @@
 ﻿// URLs
-const getCharactersURL = "/api/palantir/Character_GetCharacters";
+const GetPlayerCharacters = "/api/palantir/GetPlayerCharacters";
 
 // divs
 const players = "#players";
@@ -8,31 +8,29 @@ const charactersPool = "#charactersPool"
 const characterBtn = ".characterBtn";
 let characters;
 let playerId;
-
-
-
+let playerName;
 
 // on page load
+establishPlayer();
+
+if (!playerId) {
+    window.location = `/Character/Character_index`;
+} else {
+    getCharactersPerPlayer();
+}
 
 
 
 
 // events
-$(players).on("change", function () {
 
-    var playerName = $(players)[0].value;
-
-    getCharactersByPlayerName(playerName);
-
-    
-
-});
 
 
 // functions
-function getCharactersByPlayerName(playerName) {
+function getCharactersPerPlayer() {
 
     var object = {
+        PlayerId: playerId,
         PlayerName: playerName
     }
     var request = {
@@ -41,8 +39,8 @@ function getCharactersByPlayerName(playerName) {
 
     $.ajax({
         type: "GET",
-        url: getCharactersURL,
-        contentType: "text",
+        url: GetPlayerCharacters,
+        contentType: "application/text",
         data: request,
         success: function (resp) {
             var response = JSON.parse(resp);
@@ -81,9 +79,12 @@ function getCharactersByPlayerName(playerName) {
 
 
                     if (this.hasAttribute("draggable")) {
-                        window.location = `/Character/Character_levelup?request=${request2}`;
+
+                        localStorage.setItem("characterId", this.id);
+                        window.location = `/Character/Character_levelup`;
                     } else {
-                        window.location = `/Character/Character_model?request=${request2}`;
+                        localStorage.setItem("characterId", this.id);
+                        window.location = `/Character/Character_model`;
                     }
 
 
@@ -126,7 +127,10 @@ function drawCharacter(id, race, culture, name, portraitNr, hasLevelup) {
 }
 
 
-
+function establishPlayer() {
+    playerName = localStorage.getItem("playerName");
+    playerId = localStorage.getItem("playerId");
+}
 
 
 

@@ -2,7 +2,8 @@
 {
     public class PlayerVm
     {
-        public string Name { get; set; }
+        public string PlayerId { get; set; }
+        public string PlayerName { get; set; }
         public string Ward { get; set; }
         public string Wardcheck { get; set; }
     }

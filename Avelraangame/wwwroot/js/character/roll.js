@@ -1,7 +1,7 @@
 ﻿// URLs
-const Character_Roll20URL = "/api/palantir/Character_Roll20";
-const Character_StoreRollURL = "/api/palantir/Character_StoreRoll";
-const Character_AddCharacterURL = "/api/palantir/Character_AddCharacter";
+const CharacterCreationRoll20 = "/api/palantir/CharacterCreationRoll20";
+const StoreRoll = "/api/palantir/StoreRoll";
+const CreateCharacter = "/api/palantir/CreateCharacter";
 
 
 // divIDs
@@ -13,20 +13,15 @@ const statsPlaceholder = "#statsPlaceholder";
 const storeStatsPlaceholder = "#storeStatsPlaceholder";
 const players = "#players";
 const charName = "#charName";
-let playerAccount;
-let playerThatCallsId;
-
-
-// objects
-let contentTypeObj = {
-    json: "application/json",
-    text: "text"
-}
-
+let playerName;
+let playerId;
 
 
 // on page load
-
+establishPlayer();
+if (!playerId) {
+    window.location = `/Character/Character_index`;
+}
 
 
 
@@ -35,24 +30,22 @@ let contentTypeObj = {
 
 
 // events
-
-
 $(saveBtn).on("click", function () {
 
     var name = $(charName).val();
 
-    if (!playerThatCallsId) {
+    if (!playerId) {
         return;
     }
 
     if (name.length < 1) {
-        window.alert("Name?");
+        window.alert("Character name?");
         return;
     }
 
     var object = {
-        PlayerId: playerThatCallsId,
-        PlayerName: playerAccount,
+        PlayerId: playerId,
+        PlayerName: playerName,
         Name: name
     }
     var request = {
@@ -61,10 +54,10 @@ $(saveBtn).on("click", function () {
 
 
     $.ajax({
-        type: "GET",
-        url: Character_AddCharacterURL,
-        contentType: contentTypeObj.text,
-        data: request,
+        type: "POST",
+        url: CreateCharacter,
+        contentType: "application/json",
+        data: JSON.stringify(request),
         success: function (resp) {
             var response = JSON.parse(resp);
 
@@ -82,15 +75,6 @@ $(saveBtn).on("click", function () {
 
 });
 
-$(players).on("change", function () {
-
-    var account = $(players)[0].value;
-
-    $(playerPlaceholder).text(account);
-    playerAccount = account;
-    playerThatCallsId = "00000000-0000-0000-0000-000000000000";
-});
-
 $(rollStatsBtn).on("click", function () {
 
     charRoll20();
@@ -99,13 +83,13 @@ $(rollStatsBtn).on("click", function () {
 
 $(storeStatsBtn).on("click", function () {
 
-    if (!playerThatCallsId) {
+    if (!playerId) {
         return;
     }
 
     var object = {
-        PlayerId: playerThatCallsId,
-        PlayerName: playerAccount
+        PlayerId: playerId,
+        PlayerName: playerName
     }
     var request = {
         message: JSON.stringify(object)
@@ -113,8 +97,8 @@ $(storeStatsBtn).on("click", function () {
 
     $.ajax({
         type: "GET",
-        url: Character_StoreRollURL,
-        contentType: contentTypeObj.text,
+        url: StoreRoll,
+        contentType: "text",
         data: request,
         success: function (resp) {
             var response = JSON.parse(resp);
@@ -126,7 +110,7 @@ $(storeStatsBtn).on("click", function () {
 
             var data = JSON.parse(response.Data);
 
-            $(storeStatsPlaceholder).text(data.Logbook.StatsRoll);
+            $(storeStatsPlaceholder).text(data);
 
         },
         error: function (err) {
@@ -142,14 +126,14 @@ $(storeStatsBtn).on("click", function () {
 
 function charRoll20() {
 
-    if (!playerAccount) {
-        window.alert("Set the account first.");
+    if (!playerId) {
+        window.location = "/Character/Character_index";
         return;
     }
 
     var object = {
-        PlayerId: playerThatCallsId,
-        PlayerName: playerAccount
+        PlayerId: playerId,
+        PlayerName: playerName
     }
     var request = {
         message: JSON.stringify(object)
@@ -157,8 +141,8 @@ function charRoll20() {
 
     $.ajax({
         type: "GET",
-        url: Character_Roll20URL,
-        contentType: contentTypeObj.text,
+        url: CharacterCreationRoll20,
+        contentType: "text",
         data: request,
         success: function (resp) {
             var response = JSON.parse(resp);
@@ -170,7 +154,6 @@ function charRoll20() {
 
             data = JSON.parse(response.Data);
 
-            playerThatCallsId = data.PlayerId; // once this is set all the other calls make sense, otherwise they will return
 
             console.log(data.PlayerId, data.Logbook.StatsRoll);
 
@@ -183,6 +166,11 @@ function charRoll20() {
     });
 }
 
+
+function establishPlayer() {
+    playerName = localStorage.getItem("playerName");
+    playerId = localStorage.getItem("playerId");
+}
 
 
 
