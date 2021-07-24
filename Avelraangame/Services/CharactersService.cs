@@ -11,111 +11,7 @@ namespace Avelraangame.Services
 {
     public class CharactersService : CharacterSubService
     {
-        /// <summary>
-        /// Gets the list of characters by player name.
-        /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
-        public List<CharacterVm> GetCharacters(RequestVm request)
-        {
-            var charVm = ValidateRequestDeserialization(request.Message);
-
-            var playerId = ValidatePlayerByName(charVm.PlayerName).Id;
-
-            var list = DataService.GetCharactersByPlayerId(playerId);
-
-            var returnList = new List<CharacterVm>();
-
-            foreach (var item in list)
-            {
-
-                var charvm = new CharacterVm
-                {
-                    CharacterId = item.Id,
-                    PlayerId = item?.PlayerId,
-                    PlayerName = item.Player.Name
-                };
-
-                returnList.Add(charvm);
-            }
-
-            return returnList;
-        }
-
-        /// <summary>
-        /// Gets the list of draft characters by player name
-        /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
-        public List<CharacterVm> GetCharactersDraft(RequestVm request)
-        {
-            var charVm = ValidateRequestDeserialization(request.Message);
-
-            var playerId = ValidatePlayerByName(charVm.PlayerName).Id;
-
-            var dbCharacters = DataService.GetCharactersDraftByPlayerId(playerId);
-
-            var returnList = new List<CharacterVm>();
-
-            foreach (var chr in dbCharacters)
-            {
-                var charvm = new CharacterVm
-                {
-                    CharacterId = chr.Id,
-                    PlayerId = chr.PlayerId,
-
-                    Name = chr.Name,
-                    Race = ((CharactersUtils.Races)chr.Race).ToString(),
-                    Culture = ((CharactersUtils.Cultures)chr.Culture).ToString(),
-
-                    EntityLevel = chr.EntityLevel,
-
-                    Logbook = JsonConvert.DeserializeObject<Logbook>(chr.Logbook)
-                };
-
-                returnList.Add(charvm);
-            }
-
-            return returnList;
-        }
-
-
-        public CharacterVm CreateCharacter_storeRoll(CharacterVm charVm)
-        {
-            if (charVm.PlayerId == null || charVm.PlayerId.Equals(Guid.Empty))
-            {
-                throw new Exception(message: string.Concat(Scribe.ShortMessages.ResourceNotFound, ": playerId is null."));
-            }
-
-            if (string.IsNullOrWhiteSpace(charVm.PlayerName))
-            {
-                var playersService = new PlayersService();
-                charVm.PlayerName = playersService.GetPlayerById(charVm.PlayerId.GetValueOrDefault())?.Name;
-            }
-
-            ValidateCharacterRoll(charVm.Logbook.StatsRoll);
-
-            return charVm;
-        }
-
-        public (string responseMessage, Guid playerId, int roll) CreateCharacter_roll20(RequestVm request)
-        {
-            CharacterVm charVm;
-
-            charVm = ValidateRequestDeserialization(request.Message);
-                
-            if (charVm.PlayerId == null || charVm.PlayerId.Equals(Guid.Empty))
-            {
-                var player = ValidatePlayerByName(charVm.PlayerName);
-                charVm.PlayerId = player.Id;
-            }
-
-            charVm.Logbook.StatsRoll = Dice.Roll_d_20();
-
-            ValidateCharDiceBeforeReturn(charVm.PlayerId.GetValueOrDefault(), charVm.Logbook.StatsRoll);
-
-            return (JsonConvert.SerializeObject(charVm), charVm.PlayerId.GetValueOrDefault(), charVm.Logbook.StatsRoll);
-        }
+        #region Business logic
 
         /// <summary>
         /// Adds stats roll and playerId to the newly created character, returns characterId.
@@ -123,7 +19,7 @@ namespace Avelraangame.Services
         /// <param name="roll"></param>
         /// <param name="playerId"></param>
         /// <returns></returns>
-        public Guid CreateCharacter_step1(CharacterVm charVm)
+        public string CreateCharacter(CharacterVm charVm) // must refactor to POST method
         {
             ValidateCharVm(charVm);
 
@@ -131,8 +27,128 @@ namespace Avelraangame.Services
 
             DataService.SaveCharacter(chr);
 
-            return chr.Id;
+            Temps.SaveTempCharInfo(chr.Id, TempUtils.BonusTo.Stats, charVm.Logbook.StatsRoll + (10 * GetEntityLevelByRoll(charVm.Logbook.StatsRoll)));
+            Temps.SaveTempCharInfo(chr.Id, TempUtils.BonusTo.Skills, 20);
+
+            return string.Concat(Scribe.ShortMessages.Success);
         }
+
+        public string SaveCharacterWithLevelUp(RequestVm request)
+        {
+            var charVm = ValidateRequestDeserialization(request.Message);
+            ValidateCharacterById(charVm.PlayerId, charVm.CharacterId);
+
+            // first get the unmodified character from db
+            var chr = DataService.GetCharacterById(charVm.CharacterId);
+            // get the temp data associated with the char
+            var temps = Temps.GetTempInfosByCharacterId(charVm.CharacterId);
+            // compare and throw if necessary
+            CompareTempsWithRequest(charVm, chr, temps);
+
+            // set new values
+            chr.Stats = JsonConvert.SerializeObject(charVm.Stats);
+            chr.Skills = JsonConvert.SerializeObject(charVm.Skills);
+            // remove levelup marker
+            chr.HasLevelup = false;
+
+            try
+            {
+                DataService.UpdateCharacter(chr);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.Failure, $": {ex.Message}."));
+            }
+
+            Temps.RemoveTempsInfo(temps);
+
+            return string.Concat(Scribe.ShortMessages.Success);
+        }
+
+        public (string responseMessage, string keyPlayerId, int roll) CharacterCreationRoll20(RequestVm request)
+        {
+            var charVm = ValidateRequestDeserialization(request.Message);
+            Players.ValidatePlayerByIdNamePair(charVm.PlayerId, charVm.PlayerName);
+
+            charVm.Logbook.StatsRoll = Dice.Roll_d_20();
+
+            ValidateCharDiceBeforeReturn(charVm.PlayerId, charVm.Logbook.StatsRoll);
+
+            return (JsonConvert.SerializeObject(charVm), charVm.PlayerId.ToString(), charVm.Logbook.StatsRoll);
+        }
+
+        public CharacterVm StoreRollValidation(RequestVm request)
+        {
+            var charVm = ValidateRequestDeserialization(request.Message);
+            Players.ValidatePlayerByIdNamePair(charVm.PlayerId, charVm.PlayerName);
+
+            return charVm;
+        }
+        #endregion
+
+        #region Getters
+        public string GetCharacter(RequestVm request)
+        {
+            var reqCharVm = ValidateRequestDeserialization(request.Message);
+            ValidateCharacterByPlayerId(reqCharVm.CharacterId, reqCharVm.PlayerId);
+
+            var charVm = GetCalculatedCharacter(reqCharVm.CharacterId);
+
+            return JsonConvert.SerializeObject(charVm);
+        }
+
+        public string GetCharacterWithLevelUp(RequestVm request)
+        {
+            var reqCharVm = ValidateRequestDeserialization(request.Message);
+            ValidateCharacterByPlayerId(reqCharVm.CharacterId, reqCharVm.PlayerId);
+
+            var charVm = new CharacterVm(DataService.GetCharacterById(reqCharVm.CharacterId));
+
+            var tempBonuses = Temps.GetTempInfosByCharacterId(reqCharVm.CharacterId);
+            if (tempBonuses.Count.Equals(0))
+            {
+                return JsonConvert.SerializeObject(reqCharVm);
+            }
+
+            var listOfTempBonuses = new List<TempsVm>();
+
+            foreach (var bonus in tempBonuses)
+            {
+                listOfTempBonuses.Add(new TempsVm(bonus));
+            }
+
+            charVm.Bonuses = listOfTempBonuses;
+
+            return JsonConvert.SerializeObject(charVm);
+        }
+
+
+        /// <summary>
+        /// Gets the list of characters by a combination of player id and player name.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public string GetCharactersByPlayer(RequestVm request)
+        {
+            var charVm = ValidateRequestDeserialization(request.Message);
+            Players.ValidatePlayerByIdNamePair(charVm.PlayerId, charVm.PlayerName);
+
+            var list = DataService.GetCharactersByPlayerId(charVm.PlayerId);
+
+            var returnList = new List<CharacterVm>();
+
+            foreach (var item in list)
+            {
+                returnList.Add(new CharacterVm(item));
+            }
+
+            return JsonConvert.SerializeObject(returnList);
+        }
+
+        #endregion
+
+        #region Validators
+        #endregion
 
     }
 }

@@ -1,5 +1,5 @@
 ﻿using Avelraangame.Models.ModelScraps;
-using Avelraangame.Services.ServiceUtils;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
@@ -8,28 +8,18 @@ namespace Avelraangame.Models.ViewModels
     public class CharacterVm
     {
         public Guid CharacterId { get; set; }
-        public Guid? PlayerId { get; set; }
+        public Guid PlayerId { get; set; }
         public string PlayerName { get; set; }
 
         public string Name { get; set; }
-        public string Race { get; set; }
-        public string Culture { get; set; }
 
-        public int Strength { get; set; }
-        public int Toughness { get; set; }
-        public int Awareness { get; set; }
-        public int Abstract { get; set; }
-
-        public int EntityLevel { get; set; }
-        public int Experience { get; set; }
-        public int DRM { get; set; }
-        public int Wealth { get; set; }
-
-        public int Harm { get; set; }
-        public int Health { get; set; }
-        public int Mana { get; set; }
+        public Stats Stats { get; set; }
+        public Assets Assets { get; set; }
+        public Expertise Expertise { get; set; }
+        public Skills Skills { get; set; }
 
         public bool IsAlive { get; set; }
+        public bool HasLevelup { get; set; }
         public bool InParty { get; set; }
         public Guid? PartyId { get; set; }
 
@@ -40,7 +30,8 @@ namespace Avelraangame.Models.ViewModels
 
 
         public Logbook Logbook { get; set; }
-        public List<Item> Supplies { get; set; }
+        public List<ItemVm> Supplies { get; set; }
+        public List<TempsVm> Bonuses { get; set; }
 
         public CharacterVm()
         {
@@ -48,6 +39,61 @@ namespace Avelraangame.Models.ViewModels
             HeroicTraits = new List<HeroicTraits>();
             NegativePerks = new List<NegativePerks>();
             Logbook = new Logbook();
+        }
+
+        public CharacterVm(Character chr)
+        {
+            CharacterId = chr.Id;
+            PlayerId = chr.PlayerId.GetValueOrDefault();
+            PlayerName = chr.Player?.Name;
+            Name = chr.Name;
+
+            IsAlive = chr.IsAlive;
+            HasLevelup = chr.HasLevelup;
+            InParty = chr.InParty;
+            PartyId = chr.PartyId;
+
+            if (!string.IsNullOrWhiteSpace(chr.Stats))
+            {
+                Stats = JsonConvert.DeserializeObject<Stats>(chr.Stats);
+            }
+            if (!string.IsNullOrWhiteSpace(chr.Expertise))
+            {
+                Expertise = JsonConvert.DeserializeObject<Expertise>(chr.Expertise);
+            }
+            if (!string.IsNullOrWhiteSpace(chr.Assets))
+            {
+                Assets = JsonConvert.DeserializeObject<Assets>(chr.Assets);
+            }
+            if (!string.IsNullOrWhiteSpace(chr.Skills))
+            {
+                Skills = JsonConvert.DeserializeObject<Skills>(chr.Skills);
+            }
+            if (!string.IsNullOrWhiteSpace(chr.Logbook))
+            {
+                Logbook = JsonConvert.DeserializeObject<Logbook>(chr.Logbook);
+            }
+            
+            if (!string.IsNullOrWhiteSpace(chr.Equippment))
+            {
+                Equippment = JsonConvert.DeserializeObject<Equippment>(chr.Equippment);
+            }
+
+            if (!string.IsNullOrWhiteSpace(chr.HeroicTraits))
+            {
+                HeroicTraits = JsonConvert.DeserializeObject<List<HeroicTraits>>(chr.HeroicTraits);
+            }
+
+            if (!string.IsNullOrWhiteSpace(chr.NegativePerks))
+            {
+                NegativePerks = JsonConvert.DeserializeObject<List<NegativePerks>>(chr.NegativePerks);
+            }
+
+            if (!string.IsNullOrWhiteSpace(chr.Supplies))
+            {
+                Supplies = JsonConvert.DeserializeObject<List<ItemVm>>(chr.Supplies);
+            }
+
         }
     }
 }

@@ -1,0 +1,30 @@
+﻿@{
+    ViewData["Title"] = "Character";
+}
+
+<br />
+<div class="btn-group">
+    <a class="btn btn-outline-dark btn-sm" asp-controller="Character" asp-action="Character_index">Index</a>
+    <a class="btn btn-outline-dark btn-sm" asp-controller="Character" asp-action="Character_roll">Roll</a>
+    <a class="btn btn-outline-dark btn-sm" asp-controller="Character" asp-action="Character_select">Select</a>
+    <a class="btn btn-outline-dark btn-sm" asp-controller="Character" asp-action="Character_levelup">Levelup</a>
+    <a class="btn btn-outline-dark btn-sm" asp-controller="Character" asp-action="Character_model">Model</a>
+</div>
+
+
+<div id="modelJumbo" class="text-left jumbotron" style="opacity:0.7; background-color:black; color:navajowhite">
+    <div id="nameDiv"></div>
+    <div id="statsRollDiv"></div>
+    <div id="statsDiv"></div>
+    <hr />
+    <div id="skillsRollDiv"></div>
+    <div id="skillsDiv"></div>
+    <div>
+        <button id="saveBtn" class="btn btn-outline-success" style="float:right">Save</button>
+    </div>
+</div>
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="~/js/character/levelup.js"></script>

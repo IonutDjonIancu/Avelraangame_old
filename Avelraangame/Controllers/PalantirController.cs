@@ -31,7 +31,7 @@ namespace Avelraangame.Controllers
 
             try
             {
-                responseVm.Data = itemService.GenerateRandomItem();
+                responseVm.Data = JsonConvert.SerializeObject(itemService.GenerateRandomItem());
             }
             catch (Exception ex)
             {
@@ -61,39 +61,11 @@ namespace Avelraangame.Controllers
         }
         #endregion
 
-
         #region Players
-        // POST: api/palantir/createplayer
-        [HttpPost("CreatePlayer")]
-        public string CreatePlayer([FromBody] RequestVm request)
-        {
-            var responseVm = new ResponseVm();
-
-            var validateRequest = PalantirBase.ValidateRequest(request);
-
-            if (!validateRequest.Equals(Scribe.ShortMessages.Ok))
-            {
-                responseVm.Error = validateRequest.ToString();
-                return JsonConvert.SerializeObject(responseVm);
-            }
-
-            var playersService = new PlayersService();
-
-            try
-            {
-                responseVm.Data = playersService.CreatePlayer(request);
-            }
-            catch (Exception ex)
-            {
-                responseVm.Error = ex.Message;
-            }
-
-            return JsonConvert.SerializeObject(responseVm);
-        }
-        
-        // GET: api/palantir/GetAllPlayers
-        [HttpGet("GetAllPlayers")]
-        public string GetAllPlayers()
+        #region GET
+        // GET: api/palantir/GetPlayersNames
+        [HttpGet("GetPlayersNames")]
+        public string GetPlayersNames()
         {
             var responseVm = new ResponseVm();
             var playersService = new PlayersService();
@@ -111,42 +83,64 @@ namespace Avelraangame.Controllers
             return JsonConvert.SerializeObject(responseVm);
         }
 
-
-        #endregion
-
-        #region Characters
-        // GET: /api/palantir/Character_Roll20
-        [HttpGet("Character_Roll20")]
-        public string Character_Roll20([FromQuery] RequestVm request)
+        // GET: api/palantir/GetPlayerIdByName
+        [HttpGet("GetPlayerIdByName")]
+        public string GetPlayerIdByName([FromQuery] RequestVm request)
         {
             var responseVm = new ResponseVm();
-
-            var validateRequest = PalantirBase.ValidateRequest(request);
-
-            if (!validateRequest.Equals(Scribe.ShortMessages.Ok))
-            {
-                responseVm.Error = validateRequest.ToString();
-                return JsonConvert.SerializeObject(responseVm);
-            }
-
-            var characterService = new CharactersService();
-            (string response, Guid playerId, int roll) charRoll;
+            var playersService = new PlayersService();
 
             try
             {
-                charRoll = characterService.CreateCharacter_roll20(request);
-                responseVm.Data = charRoll.response;
-                var keyPlayerId = charRoll.playerId.ToString();
-                if (!TempData.TryGetValue(keyPlayerId, out var value))
-                {
-                    TempData.Add(keyPlayerId, charRoll.roll);
-                }
-                else
-                {
-                    TempData.Remove(keyPlayerId);
-                    TempData.Add(keyPlayerId, charRoll.roll);
-                }
+                PalantirBase.ValidateRequest(request);
+                responseVm.Data = playersService.GetPlayerIdByName(request);
+            }
+            catch (Exception ex)
+            {
+                responseVm.Error = ex.Message;
+                return JsonConvert.SerializeObject(responseVm);
+            }
 
+            return JsonConvert.SerializeObject(responseVm);
+        }
+        #endregion
+        #region POST
+        // POST: api/palantir/CreatePlayer
+        [HttpPost("CreatePlayer")]
+        public string CreatePlayer([FromBody] RequestVm request)
+        {
+            var responseVm = new ResponseVm();
+            var playersService = new PlayersService();
+
+            try
+            {
+                PalantirBase.ValidateRequest(request);
+                responseVm.Data = playersService.CreatePlayer(request);
+            }
+            catch (Exception ex)
+            {
+                responseVm.Error = ex.Message;
+                return JsonConvert.SerializeObject(responseVm);
+            }
+
+            return JsonConvert.SerializeObject(responseVm);
+        }
+        #endregion
+        #endregion
+
+        #region Characters
+        #region GET
+        // GET: /api/palantir/GetPlayerCharacters
+        [HttpGet("GetPlayerCharacters")]
+        public string GetPlayerCharacters([FromQuery] RequestVm request)
+        {
+            var responseVm = new ResponseVm();
+            var characterService = new CharactersService();
+
+            try
+            {
+                PalantirBase.ValidateRequest(request);
+                responseVm.Data = characterService.GetCharactersByPlayer(request);
             }
             catch (Exception ex)
             {
@@ -157,46 +151,38 @@ namespace Avelraangame.Controllers
             return JsonConvert.SerializeObject(responseVm);
         }
 
-        // GET: /api/palantir/Character_StoreRoll
-        [HttpGet("Character_StoreRoll")]
-        public string Character_StoreRoll([FromQuery] RequestVm request)
+        // GET: /api/palantir/StoreRoll
+        [HttpGet("StoreRoll")]
+        public string StoreRoll([FromQuery] RequestVm request)
         {
             var responseVm = new ResponseVm();
-            var charService = new CharactersService();
-
-            var validateRequest = PalantirBase.ValidateRequest(request);
-
-            if (!validateRequest.Equals(Scribe.ShortMessages.Ok))
-            {
-                responseVm.Error = validateRequest.ToString();
-                return JsonConvert.SerializeObject(responseVm);
-            }
-
-            CharacterVm charVm;
+            var charactersService = new CharactersService();
 
             try
             {
-                charVm = JsonConvert.DeserializeObject<CharacterVm>(request.Message);
-
+                PalantirBase.ValidateRequest(request);
+                var charVm = charactersService.StoreRollValidation(request);
                 var keyPlayerId = charVm.PlayerId.ToString();
+                
                 if (!TempData.TryGetValue(keyPlayerId, out var roll))
                 {
                     throw new Exception(Scribe.ShortMessages.ResourceNotFound.ToString());
                 }
-                charVm.Logbook.StatsRoll = (int)roll;
-
-                responseVm.Data = JsonConvert.SerializeObject(charService.CreateCharacter_storeRoll(charVm));
-                
+            
                 var keyPlayerIdName = string.Concat(charVm.PlayerId, charVm.PlayerName);
+
                 if (!TempData.TryGetValue(keyPlayerIdName, out var value))
                 {
-                    TempData.Add(keyPlayerIdName, charVm.Logbook.StatsRoll);
+                    TempData.Add(keyPlayerIdName, roll);
                 }
                 else
                 {
                     TempData.Remove(keyPlayerIdName);
-                    TempData.Add(keyPlayerIdName, charVm.Logbook.StatsRoll);
+                    TempData.Add(keyPlayerIdName, roll);
                 }
+
+                responseVm.Data = roll.ToString();
+
             }
             catch (Exception ex)
             {
@@ -207,38 +193,94 @@ namespace Avelraangame.Controllers
             return JsonConvert.SerializeObject(responseVm);
         }
 
+        // GET: /api/palantir/CharacterCreationRoll20
+        [HttpGet("CharacterCreationRoll20")]
+        public string CharacterCreationRoll20([FromQuery] RequestVm request)
+        {
+            var responseVm = new ResponseVm();
+            var charactersService = new CharactersService();
 
-        // GET: /api/palantir/Character_AddCharacter
-        [HttpGet("Character_AddCharacter")]
-        public string Character_AddCharacter([FromQuery] RequestVm request)
+            try
+            {
+                PalantirBase.ValidateRequest(request);
+                var (responseMessage, keyPlayerId, roll) = charactersService.CharacterCreationRoll20(request);
+                responseVm.Data = responseMessage;
+
+                if (!TempData.TryGetValue(keyPlayerId, out var _))
+                {
+                    TempData.Add(keyPlayerId, roll);
+                }
+                else
+                {
+                    TempData.Remove(keyPlayerId);
+                    TempData.Add(keyPlayerId, roll);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                responseVm.Error = ex.Message;
+                return JsonConvert.SerializeObject(responseVm);
+            }
+
+            return JsonConvert.SerializeObject(responseVm);
+        }
+
+        // GET: /api/palantir/GetCharacter
+        [HttpGet("GetCharacter")]
+        public string GetCharacter([FromQuery] RequestVm request)
+        {
+            var responseVm = new ResponseVm();
+            var charactersService = new CharactersService();
+
+            try
+            {
+                PalantirBase.ValidateRequest(request);
+                responseVm.Data = charactersService.GetCharacter(request);
+            }
+            catch (Exception ex)
+            {
+
+                responseVm.Error = ex.Message;
+                return JsonConvert.SerializeObject(responseVm);
+            }
+
+            return JsonConvert.SerializeObject(responseVm);
+        }
+
+        // GET: /api/palantir/GetCharacterLevelup
+        [HttpGet("GetCharacterLevelup")]
+        public string GetCharacterLevelup([FromQuery] RequestVm request)
+        {
+            var responseVm = new ResponseVm();
+            var charactersService = new CharactersService();
+
+            try
+            {
+                PalantirBase.ValidateRequest(request);
+                responseVm.Data = charactersService.GetCharacterWithLevelUp(request);
+            }
+            catch (Exception ex)
+            {
+                responseVm.Error = ex.Message;
+                return JsonConvert.SerializeObject(responseVm);
+            }
+
+            return JsonConvert.SerializeObject(responseVm);
+        }
+        #endregion
+        #region POST
+        // POST: /api/palantir/CreateCharacter
+        [HttpPost("CreateCharacter")]
+        public string CreateCharacter([FromBody] RequestVm request)
         {
             var responseVm = new ResponseVm();
             var characterService = new CharactersService();
 
-            var validateRequest = PalantirBase.ValidateRequest(request);
-
-            if (!validateRequest.Equals(Scribe.ShortMessages.Ok))
-            {
-                responseVm.Error = validateRequest.ToString();
-                return JsonConvert.SerializeObject(responseVm);
-            }
-
-            CharacterVm charVm;
-            var charId = Guid.Empty;
-
             try
             {
-                charVm = JsonConvert.DeserializeObject<CharacterVm>(request.Message);
-            }
-            catch (Exception)
-            {
-
-                responseVm.Error = Scribe.ShortMessages.BadRequest.ToString();
-                return JsonConvert.SerializeObject(responseVm);
-            }
-
-            try
-            {
+                PalantirBase.ValidateRequest(request);
+                var charVm = JsonConvert.DeserializeObject<CharacterVm>(request.Message);
                 var keyPlayerIdName = string.Concat(charVm.PlayerId.ToString(), charVm.PlayerName);
 
                 if (TempData.TryGetValue(keyPlayerIdName, out var value))
@@ -247,10 +289,12 @@ namespace Avelraangame.Controllers
 
                     charVm.Logbook.StatsRoll = rollValue;
 
-                    charId = characterService.CreateCharacter_step1(charVm);
+                    responseVm.Data = characterService.CreateCharacter(charVm);
                 }
-
-                responseVm.Data = charId.ToString();
+                else
+                {
+                    throw new Exception(message: string.Concat(Scribe.ShortMessages.Failure, ": "));
+                }
             }
             catch (Exception ex)
             {
@@ -261,29 +305,17 @@ namespace Avelraangame.Controllers
             return JsonConvert.SerializeObject(responseVm);
         }
 
-
-        // GET: /api/palantir/Character_GetCharactersDraft
-        [HttpGet("Character_GetCharactersDraft")]
-        public string Character_GetCharactersDraft([FromQuery] RequestVm request)
+        // POST: /api/palantir/LevelupCharacter
+        [HttpPost("LevelupCharacter")]
+        public string LevelupCharacter([FromBody] RequestVm request)
         {
             var responseVm = new ResponseVm();
-            var characterService = new CharactersService();
-
-            var validateRequest = PalantirBase.ValidateRequest(request);
-
-            if (!validateRequest.Equals(Scribe.ShortMessages.Ok))
-            {
-                responseVm.Error = validateRequest.ToString();
-                return JsonConvert.SerializeObject(responseVm);
-            }
-
-            List<CharacterVm> charVm;
+            var characters = new CharactersService();
 
             try
             {
-                charVm = characterService.GetCharactersDraft(request);
-
-                responseVm.Data = JsonConvert.SerializeObject(charVm);
+                PalantirBase.ValidateRequest(request);
+                responseVm.Data = characters.SaveCharacterWithLevelUp(request);
             }
             catch (Exception ex)
             {
@@ -293,10 +325,7 @@ namespace Avelraangame.Controllers
 
             return JsonConvert.SerializeObject(responseVm);
         }
-
-
-
-
+        #endregion
         #endregion
 
 

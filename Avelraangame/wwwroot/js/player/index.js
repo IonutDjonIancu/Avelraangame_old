@@ -1,5 +1,5 @@
 ﻿// URLs
-const createPlayerURL = "api/palantir/createplayer";
+const CreatePlayer = "api/palantir/CreatePlayer";
 // divIDs
 const nameField = "#nameField";
 const wardField = "#wardField";
@@ -9,10 +9,7 @@ const saveBtn = "#saveBtn";
 // events
 $(saveBtn).on('click', function () {
 
-
     createPlayer();
-   
-
 });
 
 
@@ -24,24 +21,26 @@ function createPlayer() {
     var wardcheckValue = $(wardcheckField)[0].value;
 
     var object = {
-        name: nameValue,
-        ward: wardValue,
-        wardcheck: wardcheckValue
+        PlayerName: nameValue,
+        Ward: wardValue,
+        Wardcheck: wardcheckValue
     }
     var request = {
-        message: JSON.stringify(object)
+        Message: JSON.stringify(object)
     }
 
 
     $.ajax({
         type: "POST",
-        url: createPlayerURL,
+        url: CreatePlayer,
         contentType: 'application/json',
         data: JSON.stringify(request),
-        success: function (data, status, xhr) {
+        success: function () {
+            localStorage.clear();
             window.location = "/character/character_index";
         },
         error: function (err) {
+            window.alert(err);
             console.log(err);
         },
     });

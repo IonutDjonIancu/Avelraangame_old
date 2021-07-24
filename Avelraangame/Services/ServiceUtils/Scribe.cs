@@ -5,6 +5,10 @@
         // should keep the typed constant short!
         // Valuables are always last in any list
 
+        #region Characters
+        public const string Characters_GenericName = "Marqus";
+        #endregion
+
         #region Stats
         public const string Stats_Strength = "Strength";
         public const string Stats_Toughness = "Toughness";

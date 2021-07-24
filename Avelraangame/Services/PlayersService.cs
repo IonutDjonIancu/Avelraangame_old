@@ -9,19 +9,20 @@ namespace Avelraangame.Services
 {
     public class PlayersService : PlayersSubService
     {
+        #region Business logic
         public string CreatePlayer(RequestVm request)
         {
             PlayerVm playerVm;
 
-            playerVm = ValidateRequestDeserialization_PlayerVm(request.Message);
+            playerVm = ValidateRequestDeserialization(request.Message);
             ValidatePlayerDetails(playerVm);
-            ValidatePlayerUnicity(playerVm.Name);
+            ValidatePlayerUnicity(playerVm.PlayerName);
             ValidateNumberOfPlayers();
 
             var player = new Player()
             {
                 Id = Guid.NewGuid(),
-                Name = playerVm.Name,
+                Name = playerVm.PlayerName,
                 Ward = playerVm.Ward,
                 LastLogin = DateTime.Now
             };
@@ -30,10 +31,48 @@ namespace Avelraangame.Services
 
             return Scribe.ShortMessages.Success.ToString();
         }
+        #endregion
 
-        public Player GetPlayerByName(string name)
+        #region Validators
+        public bool IsPlayerValid(Guid playerid)
         {
-            return DataService.GetPlayerByName(name);
+            try
+            {
+                ValidatePlayerById(playerid);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public void ValidatePlayerByIdNamePair(Guid playerId, string playerName)
+        {
+            ValidatePlayerIdNamePair(playerId, playerName);
+        }
+
+        public new void ValidatePlayerId(Guid playerId)
+        {
+            base.ValidatePlayerId(playerId);
+        }
+
+        public new void ValidatePlayerName(string playerName)
+        {
+            base.ValidatePlayerName(playerName);
+        }
+        #endregion
+
+        #region Getters
+        public string GetPlayerIdByName(RequestVm request)
+        {
+            var playerVm = ValidateRequestDeserialization(request.Message);
+            ValidatePlayerName(playerVm.PlayerName);
+
+            var playerId = DataService.GetPlayerByName(playerVm.PlayerName).Id;
+
+            return playerId.ToString();
         }
 
         public Player GetPlayerById(Guid id)
@@ -45,5 +84,6 @@ namespace Avelraangame.Services
         {
             return JsonConvert.SerializeObject(DataService.GetPlayersNames());
         }
+        #endregion
     }
 }

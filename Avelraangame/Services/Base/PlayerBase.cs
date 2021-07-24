@@ -1,4 +1,5 @@
-﻿using Avelraangame.Models.ViewModels;
+﻿using Avelraangame.Models;
+using Avelraangame.Models.ViewModels;
 using Avelraangame.Services.ServiceUtils;
 using Newtonsoft.Json;
 using System;
@@ -15,7 +16,50 @@ namespace Avelraangame.Services.Base
             DataService = new DataService();
         }
 
-        protected PlayerVm ValidateRequestDeserialization_PlayerVm(string request)
+        protected void ValidatePlayerByName(string playerName)
+        {
+            ValidatePlayerName(playerName);
+
+            var playerExists = DataService.PlayerExists(playerName);
+
+            if (!playerExists)
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.ResourceNotFound, $": player: {playerName}"));
+            }
+        }
+
+        protected void ValidatePlayerIdNamePair(Guid playerId, string playerName)
+        {
+            ValidatePlayerName(playerName);
+            ValidatePlayerId(playerId);
+            ValidatePlayerById(playerId);
+
+            var player = DataService.GetPlayerById(playerId);
+
+            if (!player.Id.Equals(playerId))
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.BadRequest, ": player name does not match its id."));
+            }
+        }
+
+        protected void ValidatePlayerId(Guid playerId)
+        {
+            if (playerId.Equals(Guid.Empty) ||
+                playerId.Equals(null))
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.BadRequest, ": player id is missing or invalid."));
+            }
+        }
+
+        protected void ValidatePlayerName(string playerName)
+        {
+            if (string.IsNullOrWhiteSpace(playerName))
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.BadRequest, ": player name is missing or invalid."));
+            }
+        }
+
+        protected PlayerVm ValidateRequestDeserialization(string request)
         {
             PlayerVm playerVm;
 
@@ -25,16 +69,36 @@ namespace Avelraangame.Services.Base
             }
             catch (Exception ex)
             {
-                throw new Exception(message: string.Concat(Scribe.ShortMessages.BadRequest, ": ", ex.Message));
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.BadRequest, $": {ex.Message}"));
             }
 
             return playerVm;
         }
 
+        protected void ValidatePlayerById(Guid playerId)
+        {
+            ValidatePlayerId(playerId);
+
+            Player player;
+            try
+            {
+                player = DataService.GetPlayerById(playerId);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.Failure, $": {ex.Message}."));
+            }
+
+            if (player.Equals(null))
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.ResourceNotFound, ": player not found."));
+            }
+        }
+
         protected void ValidatePlayerDetails(PlayerVm playerVm)
         {
-            ValidateName(playerVm.Name);
-            ValidateWard(playerVm.Ward, playerVm.Wardcheck);
+            ValidatePlayerName(playerVm.PlayerName);
+            ValidateWards(playerVm.Ward, playerVm.Wardcheck);
         }
 
         protected void ValidatePlayerUnicity(string name)
@@ -43,7 +107,7 @@ namespace Avelraangame.Services.Base
 
             if (playerExists)
             {
-                throw new Exception(message: Scribe.Error_Player_alreadyExists);
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.Failure, ": player exists."));
             }
         }
 
@@ -51,9 +115,9 @@ namespace Avelraangame.Services.Base
         {
             var numOfPlayers = DataService.GetPlayersCount();
 
-            if (numOfPlayers > 100)
+            if (numOfPlayers >= 100)
             {
-                throw new Exception(message: Scribe.Error_Player_playersLimitReached);
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.Failure, ": number of player accounts reached."));
             }
         }
 
@@ -61,19 +125,30 @@ namespace Avelraangame.Services.Base
 
         // privates
 
-        private void ValidateWard(string ward, string wardCheck)
+        private void ValidateWards(string ward, string wardCheck)
         {
-            if (string.IsNullOrWhiteSpace(ward)) { throw new Exception(message: $"Ward {Scribe.Error_AttributeIsMissing}"); }
-            if (string.IsNullOrWhiteSpace(wardCheck)) { throw new Exception(message: $"Wardcheck {Scribe.Error_AttributeIsMissing}"); }
-            if (ward.Length > 4) { throw new Exception(message: Scribe.Error_Player_wardTooLong); }
-            if (!wardCheck.Equals(ward)) { throw new Exception(message: Scribe.Error_Player_wardCheckNotEqualsWard); }
+            if (string.IsNullOrWhiteSpace(ward)) 
+            { 
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.Failure, ": ward is missing or invalid.")); 
+            }
+
+            if (string.IsNullOrWhiteSpace(wardCheck)) 
+            { 
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.Failure, ": wardcheck is missing or invalid.")); 
+            }
+
+            if (ward.Length > 4) 
+            { 
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.BadRequest, ": ward is too long, 4 characters maximum.")); 
+            }
+
+            if (!wardCheck.Equals(ward)) 
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.Failure, ": wards don't match.")); 
+            }
         }
 
-        private void ValidateName(string name)
-        {
-            if (string.IsNullOrWhiteSpace(name)) { throw new Exception(message: $"Name {Scribe.Error_AttributeIsMissing}"); }
-            if (name.Length > 50) { throw new Exception(message: Scribe.Error_Player_nameTooLong); }
-        }
+        
 
 
 

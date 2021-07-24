@@ -26,32 +26,17 @@ namespace Avelraangame.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("Abstract")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Awareness")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Culture")
-                        .HasColumnType("int");
-
-                    b.Property<int>("DRM")
-                        .HasColumnType("int");
-
-                    b.Property<int>("EntityLevel")
-                        .HasColumnType("int");
+                    b.Property<string>("Assets")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Equippment")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Experience")
-                        .HasColumnType("int");
+                    b.Property<string>("Expertise")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Harm")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Health")
-                        .HasColumnType("int");
+                    b.Property<bool>("HasLevelup")
+                        .HasColumnType("bit");
 
                     b.Property<string>("HeroicTraits")
                         .HasColumnType("nvarchar(max)");
@@ -62,14 +47,8 @@ namespace Avelraangame.Migrations
                     b.Property<bool>("IsAlive")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsDraft")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Logbook")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Mana")
-                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .HasMaxLength(100)
@@ -84,20 +63,14 @@ namespace Avelraangame.Migrations
                     b.Property<Guid?>("PlayerId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("Race")
-                        .HasColumnType("int");
+                    b.Property<string>("Skills")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Strength")
-                        .HasColumnType("int");
+                    b.Property<string>("Stats")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Supplies")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Toughness")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Wealth")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -227,23 +200,30 @@ namespace Avelraangame.Migrations
                     b.ToTable("Players");
                 });
 
-            modelBuilder.Entity("Avelraangame.Models.TemporaryData", b =>
+            modelBuilder.Entity("Avelraangame.Models.TempInfo", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Key")
+                    b.Property<int>("BonusTo")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("CharacterId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<string>("Value")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                    b.Property<int>("Value")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.ToTable("TemporaryData");
+                    b.HasIndex("CharacterId");
+
+                    b.ToTable("Temps");
                 });
 
             modelBuilder.Entity("Avelraangame.Models.Character", b =>
@@ -259,6 +239,22 @@ namespace Avelraangame.Migrations
                     b.Navigation("Party");
 
                     b.Navigation("Player");
+                });
+
+            modelBuilder.Entity("Avelraangame.Models.TempInfo", b =>
+                {
+                    b.HasOne("Avelraangame.Models.Character", "Character")
+                        .WithMany("Temps")
+                        .HasForeignKey("CharacterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Character");
+                });
+
+            modelBuilder.Entity("Avelraangame.Models.Character", b =>
+                {
+                    b.Navigation("Temps");
                 });
 
             modelBuilder.Entity("Avelraangame.Models.Party", b =>

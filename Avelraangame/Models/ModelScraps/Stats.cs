@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Avelraangame.Models.ViewModels
+﻿namespace Avelraangame.Models.ModelScraps
 {
-    public class StatsVm
+    public class Stats
     {
         public int Strength { get; set; }
         public int Toughness { get; set; }

@@ -2,6 +2,7 @@
 using Avelraangame.Models.ViewModels;
 using Avelraangame.Services.ServiceUtils;
 using Newtonsoft.Json;
+using NUnit.Framework;
 using System;
 
 namespace Avelraangame.Services.Base
@@ -9,31 +10,100 @@ namespace Avelraangame.Services.Base
     public class CharacterBase
     {
         protected DataService DataService { get; set; }
+        protected PlayersService Players { get; set; }
+        protected ItemsService Items { get; set; }
+        protected TempsService Temps { get; set; }
 
         protected CharacterBase()
         {
             DataService = new DataService();
+            Players = new PlayersService();
+            Items = new ItemsService();
+            Temps = new TempsService();
         }
+        
+        #region Business logic
+        #endregion
 
-        protected void ValidateCharacterRoll(int roll)
+        #region Getters
+        #endregion
+
+        #region Validators
+        protected void ValidateCharacterId(Guid charId)
         {
-            if (roll == 0)
+            if (charId.Equals(Guid.Empty) || charId.Equals(null))
             {
-                throw new Exception(string.Concat(Scribe.ShortMessages.Failure, ": character roll was 0."));
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.BadRequest, ": character id is missing or is invalid."));
             }
         }
 
-        protected void ValidatePlayerById(Guid playerId)
+        protected void ValidateCharacterByPlayerId(Guid charId, Guid playerId)
         {
-            var playerService = new PlayersService();
+            ValidateCharacterId(charId);
+            Players.ValidatePlayerId(playerId);
 
-            var player = playerService.GetPlayerById(playerId);
+            var chr = DataService.GetCharacterById(charId);
 
-            if (player == null)
+            if (chr.Equals(null))
             {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.ResourceNotFound, ": character not found."));
+            }
+
+            if (!chr.PlayerId.Equals(playerId))
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.Failure, ": character does not match player."));
             }
         }
 
+
+        #endregion
+
+
+
+
+
+        protected bool IsCharacterValid(Guid playerId, Guid charId)
+        {
+            ValidateCharacterByIdAndReturn(playerId, charId);
+
+            return true;
+        }
+
+        protected Character ValidateCharacterByIdAndReturn(Guid playerId, Guid charId)
+        {
+            if (playerId.Equals(Guid.Empty) || playerId == null)
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.ResourceNotFound, ": playerId is invalid or missing."));
+            }
+
+            if (charId.Equals(Guid.Empty) || charId == null)
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.ResourceNotFound, ": charId is invalid or missing."));
+            }
+
+            Character character;
+
+            try
+            {
+                character = DataService.GetCharacterById(charId);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.ResourceNotFound, $": {ex.Message}."));
+            }
+
+            return character;
+        }
+
+        protected string ValidateCharacterName(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                return Scribe.Characters_GenericName;
+            }
+
+            return string.Concat(char.ToUpper(name[0]), name.Substring(1));
+        }
         protected void ValidateCharVm(CharacterVm charVm)
         {
             if (charVm.PlayerId == null ||
@@ -61,6 +131,32 @@ namespace Avelraangame.Services.Base
             }
         }
 
+        protected Character ValidatePlayerAndCharacterAndReturn(Guid playerId, Guid charId)
+        {
+            Players.IsPlayerValid(playerId);
+            var chr = ValidateCharacterByIdAndReturn(playerId, charId);
+
+            return chr;
+        }
+
+        protected void ValidateCharacterById(Guid playerId, Guid charId)
+        {
+            Players.ValidatePlayerId(playerId);
+            ValidateCharacterId(charId);
+
+            var chr = DataService.GetCharacterById(charId);
+
+            if (chr.Equals(null))
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.ResourceNotFound, ": character not found."));
+            }
+
+            if (!chr.PlayerId.Equals(playerId))
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.Failure, ": character not bound to requested playerId."));
+            }
+        }
+
         protected CharacterVm ValidateRequestDeserialization(string request)
         {
             CharacterVm charVm;
@@ -77,21 +173,6 @@ namespace Avelraangame.Services.Base
             return charVm;
         }
 
-        protected Player ValidatePlayerByName(string playerName)
-        {
-            if (string.IsNullOrWhiteSpace(playerName))
-            {
-                throw new Exception(message: string.Concat(Scribe.ShortMessages.ResourceNotFound, ": ", $"player: {playerName}"));
-            }
-
-            var player = DataService.GetPlayerByName(playerName);
-
-            if (player == null)
-            {
-                throw new Exception(message: string.Concat(Scribe.ShortMessages.ResourceNotFound, ": ", $"player: {playerName}"));
-            }
-
-            return player;
-        }
+        
     }
 }

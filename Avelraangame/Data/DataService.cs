@@ -18,6 +18,11 @@ namespace Avelraangame.Services
         }
 
         #region Player
+        public bool PlayerExists(string playerName)
+        {
+            return Context.Players.Where(s => s.Name.Equals(playerName)).Any();
+        }
+
         public Player GetPlayerByName(string name)
         {
             return Context.Players.Where(s => s.Name == name).FirstOrDefault();
@@ -57,6 +62,13 @@ namespace Avelraangame.Services
             return Context.Items.Count();
         }
 
+        public List<Item> GetSuppliesItemsByCharacterId(Guid charId)
+        {
+            return Context.Items
+                .Where(s => s.CharacterId == charId & s.IsEquipped == false)
+                .ToList();
+        } 
+
         public List<Item> GetEquippedItemsByCharId(Guid charId)
         {
             return Context.Items
@@ -67,49 +79,20 @@ namespace Avelraangame.Services
         #endregion
 
         #region Temps
-        public void SaveTempPlayerData(string keyPlayerInfo, string values)
+        public void SaveTempCharacterInfo(TempInfo temps)
         {
-            var temps = new TemporaryData()
-            {
-                Id = Guid.NewGuid(),
-                Key = keyPlayerInfo,
-                Value = values
-            };
-
-            var oldValue = Context.TemporaryData
-                .Where(s => s.Key == keyPlayerInfo)
-                .FirstOrDefault();
-
-
-            if (oldValue != null)
-            {
-                oldValue.Value = values;
-                Context.TemporaryData.Update(oldValue);
-            }
-            else
-            {
-                Context.TemporaryData.Add(temps);
-
-            }
-            
+            Context.Temps.Add(temps);
             Context.SaveChanges();
         }
 
-        public string GetTempPlayerData(string keyPlayerInfo)
+        public List<TempInfo> GetTempInfosByCharacterId(Guid charId)
         {
-            return Context.TemporaryData
-                .Where(s => s.Key == keyPlayerInfo)
-                .FirstOrDefault()
-                ?.Value;
-        }
+            return Context.Temps.Where(s => s.CharacterId == charId).ToList();
+        } 
 
-        public void DeleteTempPlayerData(string keyPlayerInfo)
+        public void RemoveTempsInfo(List<TempInfo> temps)
         {
-            var temps = Context.TemporaryData
-                .Where(s => s.Key == keyPlayerInfo)
-                .FirstOrDefault();
-
-            Context.TemporaryData.Remove(temps);
+            Context.RemoveRange(temps);
             Context.SaveChanges();
         }
 
@@ -119,6 +102,12 @@ namespace Avelraangame.Services
         public void SaveCharacter(Character chr)
         {
             Context.Characters.Add(chr);
+            Context.SaveChanges();
+        }
+
+        public void UpdateCharacter(Character chr)
+        {
+            Context.Characters.Update(chr);
             Context.SaveChanges();
         }
 
@@ -140,7 +129,7 @@ namespace Avelraangame.Services
         public List<Character> GetCharactersDraftByPlayerId(Guid playerId)
         {
             return Context.Characters
-                .Where(s => s.PlayerId.Equals(playerId) & s.IsDraft.Equals(true))
+                .Where(s => s.PlayerId.Equals(playerId) & s.HasLevelup.Equals(true))
                 .ToList();
         }
 

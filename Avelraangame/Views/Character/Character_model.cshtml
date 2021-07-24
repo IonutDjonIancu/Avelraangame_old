@@ -1,0 +1,40 @@
+﻿@{
+    ViewData["Title"] = "Character";
+}
+
+<br />
+<p style="color:navajowhite">Character model</p>
+<div class="btn-group">
+    <a class="btn btn-outline-dark btn-sm" asp-controller="Character" asp-action="Character_index">Index</a>
+    <a class="btn btn-outline-dark btn-sm" asp-controller="Character" asp-action="Character_roll">Roll</a>
+    <a class="btn btn-outline-dark btn-sm" asp-controller="Character" asp-action="Character_select">Select</a>
+    <a class="btn btn-outline-dark btn-sm" asp-controller="Character" asp-action="Character_levelup">Levelup</a>
+    <a class="btn btn-outline-dark btn-sm" asp-controller="Character" asp-action="Character_model">Model</a>
+</div>
+
+<div id="modelJumbo" class="text-left jumbotron" style="opacity:0.7; background-color:black; color:navajowhite">
+    <div id="nameDiv">
+        @* name and portrait *@
+    </div> <br />
+    <h5>Stats</h5>
+    <div id="statsDiv">
+        @* stats *@
+    </div> <br />
+    <div id="expertiseDiv">
+        @* expertise *@
+    </div> <br />
+    <div id="assetsDiv">
+        @* assets *@
+    </div> <hr />
+    <h5>Inventory</h5>
+    <div id="equippmentDiv"></div> <hr />
+    <h5>Supplies</h5>
+    <div id="suppliesNr"></div>
+    <div id="suppliesDiv"></div>
+
+</div>
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="~/js/Character/model.js"></script>
