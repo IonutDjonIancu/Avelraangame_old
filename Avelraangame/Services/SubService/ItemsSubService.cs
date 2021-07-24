@@ -8,18 +8,8 @@ using System.Collections.Generic;
 
 namespace Avelraangame.Services.SubService
 {
-    public class ItemsSubService : ItemBase
+    public class ItemsSubService : ServiceBase
     {
-        protected SkillsSubService Skills { get; set; }
-        protected AssetsSubService Assets { get; set; }
-        protected StatsSubService Stats { get; set; }
-        protected ItemsSubService()
-        {
-            Skills = new SkillsSubService();
-            Assets = new AssetsSubService();
-            Stats = new StatsSubService();
-        }
-
         protected Item GenerateNormalArmour(int itemLevel)
         {
             var item = new Item
@@ -234,6 +224,9 @@ namespace Avelraangame.Services.SubService
 
         private Bonuses ReturnPropsForWeapons(Bonuses bonuses, int level, ItemsUtils.Types weaponType)
         {
+            var statsSubs = new StatsSubService();
+            var assetsSubs = new AssetsSubService();
+
             if (level == 1)
             {
                 bonuses.ToHarm = Dice.Roll_d_20() + 10;
@@ -283,7 +276,7 @@ namespace Avelraangame.Services.SubService
                     bonuses.ToHarm *= 4;
                 }
 
-                bonuses = Stats.ReturnRandomStatIncreaseForItem(bonuses, Dice.Roll_d_20() + 20);
+                bonuses = statsSubs.ReturnRandomStatIncreaseForItem(bonuses, Dice.Roll_d_20() + 20);
                 return bonuses;
             }
             else if (level == 4)
@@ -305,8 +298,8 @@ namespace Avelraangame.Services.SubService
                     bonuses.ToHarm *= 8;
                 }
 
-                bonuses = Stats.ReturnRandomStatIncreaseForItem(bonuses, Dice.Roll_d_20() + 40);
-                bonuses = Assets.ReturnRandomAssetIncreaseForItem(bonuses, Dice.Roll_d_20() + 20);
+                bonuses = statsSubs.ReturnRandomStatIncreaseForItem(bonuses, Dice.Roll_d_20() + 40);
+                bonuses = assetsSubs.ReturnRandomAssetIncreaseForItem(bonuses, Dice.Roll_d_20() + 20);
                 return bonuses;
             }
             else
@@ -317,6 +310,10 @@ namespace Avelraangame.Services.SubService
 
         private Bonuses ReturnPropsForApparatus(Bonuses bonuses, int level)
         {
+            var statsSubs = new StatsSubService();
+            var assetsSubs = new AssetsSubService();
+            var skillsSubs = new SkillsSubService();
+
             if (level == 1)
             {
                 bonuses.ToHarm = Dice.Roll_d_20();
@@ -325,22 +322,22 @@ namespace Avelraangame.Services.SubService
             else if (level == 2)
             {
                 bonuses.ToHarm = Dice.Roll_d_20();
-                bonuses = Skills.ReturnRandomSkillIncreaseForItem(bonuses, Dice.Roll_d_20() + 20);
+                bonuses = skillsSubs.ReturnRandomSkillIncreaseForItem(bonuses, Dice.Roll_d_20() + 20);
                 return bonuses;
             }
             else if (level == 3)
             {
                 bonuses.ToHarm = Dice.Roll_d_20();
-                bonuses = Skills.ReturnRandomSkillIncreaseForItem(bonuses, Dice.Roll_d_20() + 40);
-                bonuses = Stats.ReturnRandomStatIncreaseForItem(bonuses, Dice.Roll_d_20() + 20);
+                bonuses = skillsSubs.ReturnRandomSkillIncreaseForItem(bonuses, Dice.Roll_d_20() + 40);
+                bonuses = statsSubs.ReturnRandomStatIncreaseForItem(bonuses, Dice.Roll_d_20() + 20);
                 return bonuses;
             }
             else if (level == 4)
             {
                 bonuses.ToHarm = Dice.Roll_d_20();
-                bonuses = Skills.ReturnRandomSkillIncreaseForItem(bonuses, Dice.Roll_d_20() + 80);
-                bonuses = Stats.ReturnRandomStatIncreaseForItem(bonuses, Dice.Roll_d_20() + 40);
-                bonuses = Assets.ReturnRandomAssetIncreaseForItem(bonuses, Dice.Roll_d_20() + 20);
+                bonuses = skillsSubs.ReturnRandomSkillIncreaseForItem(bonuses, Dice.Roll_d_20() + 80);
+                bonuses = statsSubs.ReturnRandomStatIncreaseForItem(bonuses, Dice.Roll_d_20() + 40);
+                bonuses = assetsSubs.ReturnRandomAssetIncreaseForItem(bonuses, Dice.Roll_d_20() + 20);
                 return bonuses;
             }
             else
@@ -389,6 +386,10 @@ namespace Avelraangame.Services.SubService
 
         private Bonuses ReturnBonusesForArmour(Bonuses bonuses, int level)
         {
+            var statsSubs = new StatsSubService();
+            var assetsSubs = new AssetsSubService();
+            var skillsSubs = new SkillsSubService();
+
             if (level == 1)
             {
                 bonuses.ToDRM = Dice.Roll_x_to_20(1) + 5;
@@ -397,22 +398,22 @@ namespace Avelraangame.Services.SubService
             else if (level == 2)
             {
                 bonuses.ToDRM = Dice.Roll_x_to_20(1) + 10;
-                bonuses = Skills.ReturnRandomSkillIncreaseForItem(bonuses, Dice.Roll_d_20() + 20);
+                bonuses = skillsSubs.ReturnRandomSkillIncreaseForItem(bonuses, Dice.Roll_d_20() + 20);
                 return bonuses;
             }
             else if (level == 3)
             {
                 bonuses.ToDRM = Dice.Roll_x_to_20(1) + 15;
-                bonuses = Skills.ReturnRandomSkillIncreaseForItem(bonuses, Dice.Roll_d_20() + 40);
-                bonuses = Stats.ReturnRandomStatIncreaseForItem(bonuses, Dice.Roll_d_20() + 20);
+                bonuses = skillsSubs.ReturnRandomSkillIncreaseForItem(bonuses, Dice.Roll_d_20() + 40);
+                bonuses = statsSubs.ReturnRandomStatIncreaseForItem(bonuses, Dice.Roll_d_20() + 20);
                 return bonuses;
             }
             else if (level == 4)
             {
                 bonuses.ToDRM = Dice.Roll_x_to_20(1) + 20;
-                bonuses = Skills.ReturnRandomSkillIncreaseForItem(bonuses, Dice.Roll_d_20() + 80);
-                bonuses = Stats.ReturnRandomStatIncreaseForItem(bonuses, Dice.Roll_d_20() + 40);
-                bonuses = Assets.ReturnRandomAssetIncreaseForItem(bonuses, Dice.Roll_d_20() + 20);
+                bonuses = skillsSubs.ReturnRandomSkillIncreaseForItem(bonuses, Dice.Roll_d_20() + 80);
+                bonuses = statsSubs.ReturnRandomStatIncreaseForItem(bonuses, Dice.Roll_d_20() + 40);
+                bonuses = assetsSubs.ReturnRandomAssetIncreaseForItem(bonuses, Dice.Roll_d_20() + 20);
                 return bonuses;
             }
             else
@@ -424,6 +425,10 @@ namespace Avelraangame.Services.SubService
 
         private Bonuses ReturnPropsForShield(Bonuses bonuses, int level)
         {
+            var statsSubs = new StatsSubService();
+            var assetsSubs = new AssetsSubService();
+            var skillsSubs = new SkillsSubService();
+
             if (level == 1)
             {
                 bonuses.ToDRM = Dice.Roll_min_to_max(1, 6) + 5;
@@ -432,22 +437,22 @@ namespace Avelraangame.Services.SubService
             else if (level == 2)
             {
                 bonuses.ToDRM = Dice.Roll_min_to_max(1, 6) + 10;
-                bonuses = Skills.ReturnRandomSkillIncreaseForItem(bonuses, Dice.Roll_d_20() + 20);
+                bonuses = skillsSubs.ReturnRandomSkillIncreaseForItem(bonuses, Dice.Roll_d_20() + 20);
                 return bonuses;
             }
             else if (level == 3)
             {
                 bonuses.ToDRM = Dice.Roll_min_to_max(1, 6) + 15;
-                bonuses = Skills.ReturnRandomSkillIncreaseForItem(bonuses, Dice.Roll_d_20() + 40);
-                bonuses = Stats.ReturnRandomStatIncreaseForItem(bonuses, Dice.Roll_d_20() + 20);
+                bonuses = skillsSubs.ReturnRandomSkillIncreaseForItem(bonuses, Dice.Roll_d_20() + 40);
+                bonuses = statsSubs.ReturnRandomStatIncreaseForItem(bonuses, Dice.Roll_d_20() + 20);
                 return bonuses;
             }
             else if (level == 4)
             {
                 bonuses.ToDRM = Dice.Roll_min_to_max(1, 6) + 20;
-                bonuses = Skills.ReturnRandomSkillIncreaseForItem(bonuses, Dice.Roll_d_20() + 80);
-                bonuses = Stats.ReturnRandomStatIncreaseForItem(bonuses, Dice.Roll_d_20() + 40);
-                bonuses = Assets.ReturnRandomAssetIncreaseForItem(bonuses, Dice.Roll_d_20() + 20);
+                bonuses = skillsSubs.ReturnRandomSkillIncreaseForItem(bonuses, Dice.Roll_d_20() + 80);
+                bonuses = statsSubs.ReturnRandomStatIncreaseForItem(bonuses, Dice.Roll_d_20() + 40);
+                bonuses = assetsSubs.ReturnRandomAssetIncreaseForItem(bonuses, Dice.Roll_d_20() + 20);
                 return bonuses;
             }
             else

@@ -12,18 +12,18 @@ namespace Avelraangame.Services
         #region Business logic
         public string CreatePlayer(RequestVm request)
         {
-            PlayerVm playerVm;
+            PlayerVm playervm;
 
-            playerVm = ValidateRequestDeserialization(request.Message);
-            ValidatePlayerDetails(playerVm);
-            ValidatePlayerUnicity(playerVm.PlayerName);
+            playervm = ValidateRequestDeserializationIntoPlayerVm(request.Message);
             ValidateNumberOfPlayers();
+            ValidatePlayerDetailsOnCreate(playervm);
+            ValidatePlayerUnicity(playervm.PlayerName);
 
             var player = new Player()
             {
                 Id = Guid.NewGuid(),
-                Name = playerVm.PlayerName,
-                Ward = playerVm.Ward,
+                Name = playervm.PlayerName,
+                Ward = playervm.Ward,
                 LastLogin = DateTime.Now
             };
 
@@ -33,51 +33,23 @@ namespace Avelraangame.Services
         }
         #endregion
 
-        #region Validators
-        public bool IsPlayerValid(Guid playerid)
-        {
-            try
-            {
-                ValidatePlayerById(playerid);
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        public void ValidatePlayerByIdNamePair(Guid playerId, string playerName)
-        {
-            ValidatePlayerIdNamePair(playerId, playerName);
-        }
-
-        public new void ValidatePlayerId(Guid playerId)
-        {
-            base.ValidatePlayerId(playerId);
-        }
-
-        public new void ValidatePlayerName(string playerName)
-        {
-            base.ValidatePlayerName(playerName);
-        }
-        #endregion
-
         #region Getters
         public string GetPlayerIdByName(RequestVm request)
         {
-            var playerVm = ValidateRequestDeserialization(request.Message);
-            ValidatePlayerName(playerVm.PlayerName);
+            var playervm = ValidateRequestDeserializationIntoPlayerVm(request.Message);
+            ValidatePlayerName(playervm.PlayerName);
+            var player = ValidatePlayerByName(playervm.PlayerName);
+            ValidateWard(playervm.Ward, player.Ward);
 
-            var playerId = DataService.GetPlayerByName(playerVm.PlayerName).Id;
-
-            return playerId.ToString();
+            return player.Id.ToString();
         }
 
-        public Player GetPlayerById(Guid id)
+        public PlayerVm GetPlayerById(Guid playerId)
         {
-            return DataService.GetPlayerById(id);
+            ValidatePlayerId(playerId);
+            var playervm = new PlayerVm(DataService.GetPlayerById(playerId));
+
+            return playervm;
         }
 
         public string GetAllPlayers()

@@ -11,7 +11,7 @@ using System.Linq;
 namespace Avelraangame.Services.SubService
 {
 
-    public class CharacterSubService : CharacterBase
+    public class CharacterSubService : ServiceBase
     {
         protected void CompareTempsWithRequest(CharacterVm charVm, Character chr, List<TempInfo> temps)
         {
@@ -105,6 +105,8 @@ namespace Avelraangame.Services.SubService
 
         protected Character CreateHumanCharacter(CharacterVm charVm)
         {
+            var items = new ItemsService();
+
             var chrId = Guid.NewGuid();
             var roll = charVm.Logbook.StatsRoll;
 
@@ -164,7 +166,7 @@ namespace Avelraangame.Services.SubService
 
             for (int i = 0; i < logbook.ItemsRoll; i++)
             {
-                var item = Items.GenerateRandomItem(chrId.ToString());
+                var item = items.GenerateRandomItem(chrId.ToString());
                 supplies.Add(item);
             }
 
@@ -207,7 +209,7 @@ namespace Avelraangame.Services.SubService
             charVm.Assets.Health = FormulaHealth(charVm);
             charVm.Assets.Mana = FormulaMana(charVm);
 
-            // will have to calculate skills as well
+            // TODO: calculate skills as well
 
             return charVm;
 

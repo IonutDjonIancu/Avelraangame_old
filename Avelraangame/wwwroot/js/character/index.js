@@ -4,6 +4,7 @@ const GetPlayerIdByName = "/api/palantir/GetPlayerIdByName";
 // divs
 const players = "#players";
 const welcome = "#welcome";
+const ward = "#ward";
 
 
 // on page load
@@ -17,14 +18,18 @@ establishPlayer();
 // events
 $(players).on("change", function () {
 
+    console.log("fmmm");
+
     var playerName = $(players)[0].value;
+    var playerWard = $(ward).val();
 
     if (!playerName) {
         return;
     }
 
     var object = {
-        PlayerName: playerName
+        PlayerName: playerName,
+        Ward: playerWard
     }
     var request = {
         message: JSON.stringify(object)

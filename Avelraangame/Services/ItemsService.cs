@@ -10,6 +10,8 @@ namespace Avelraangame.Services
 {
     public class ItemsService : ItemsSubService
     {
+        #region Business logic
+
         public ItemVm GenerateRandomItem(string charId = null)
         {
             var itemLevel = GenerateItemLevel();
@@ -63,7 +65,9 @@ namespace Avelraangame.Services
 
             return itemVm;
         }
+        #endregion
 
+        #region Public getters
         public int GetItemsCount()
         {
             return DataService.GetItemsCount();
@@ -84,6 +88,7 @@ namespace Avelraangame.Services
 
             return returnList;
         }
+        #endregion
 
     }
 }

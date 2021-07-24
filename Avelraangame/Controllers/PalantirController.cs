@@ -21,46 +21,6 @@ namespace Avelraangame.Controllers
             return Scribe.ShortMessages.Ok.ToString();
         }
 
-        #region Items
-        // GET: api/palantir/GenerateItem
-        [HttpGet("GenerateItem")]
-        public string GenerateItem()
-        {
-            var responseVm = new ResponseVm();
-            var itemService = new ItemsService();
-
-            try
-            {
-                responseVm.Data = JsonConvert.SerializeObject(itemService.GenerateRandomItem());
-            }
-            catch (Exception ex)
-            {
-                responseVm.Error = ex.Message;
-            }
-
-            return JsonConvert.SerializeObject(responseVm);
-        }
-
-        // GET: api/palantir/GetItemsCount
-        [HttpGet("GetItemsCount")]
-        public string GetItemsCount()
-        {
-            var responseVm = new ResponseVm();
-            var itemService = new ItemsService();
-
-            try
-            {
-                responseVm.Data = itemService.GetItemsCount().ToString();
-            }
-            catch (Exception ex)
-            {
-                responseVm.Error = ex.Message;
-            }
-
-            return JsonConvert.SerializeObject(responseVm);
-        }
-        #endregion
-
         #region Players
         #region GET
         // GET: api/palantir/GetPlayersNames
@@ -130,9 +90,9 @@ namespace Avelraangame.Controllers
 
         #region Characters
         #region GET
-        // GET: /api/palantir/GetPlayerCharacters
-        [HttpGet("GetPlayerCharacters")]
-        public string GetPlayerCharacters([FromQuery] RequestVm request)
+        // GET: /api/palantir/GetCharactersByPlayer
+        [HttpGet("GetCharactersByPlayer")]
+        public string GetCharactersByPlayer([FromQuery] RequestVm request)
         {
             var responseVm = new ResponseVm();
             var characterService = new CharactersService();
@@ -161,15 +121,15 @@ namespace Avelraangame.Controllers
             try
             {
                 PalantirBase.ValidateRequest(request);
-                var charVm = charactersService.StoreRollValidation(request);
-                var keyPlayerId = charVm.PlayerId.ToString();
+                var charvm = charactersService.ValidateRollDetailsBeforeStoring(request);
+                var keyPlayerId = charvm.PlayerId.ToString();
                 
                 if (!TempData.TryGetValue(keyPlayerId, out var roll))
                 {
                     throw new Exception(Scribe.ShortMessages.ResourceNotFound.ToString());
                 }
             
-                var keyPlayerIdName = string.Concat(charVm.PlayerId, charVm.PlayerName);
+                var keyPlayerIdName = string.Concat(charvm.PlayerId, charvm.PlayerName);
 
                 if (!TempData.TryGetValue(keyPlayerIdName, out var value))
                 {
@@ -280,16 +240,16 @@ namespace Avelraangame.Controllers
             try
             {
                 PalantirBase.ValidateRequest(request);
-                var charVm = JsonConvert.DeserializeObject<CharacterVm>(request.Message);
-                var keyPlayerIdName = string.Concat(charVm.PlayerId.ToString(), charVm.PlayerName);
+                var charvm = JsonConvert.DeserializeObject<CharacterVm>(request.Message);
+                var keyPlayerIdName = string.Concat(charvm.PlayerId.ToString(), charvm.PlayerName);
 
                 if (TempData.TryGetValue(keyPlayerIdName, out var value))
                 {
                     int.TryParse(value.ToString(), out var rollValue);
 
-                    charVm.Logbook.StatsRoll = rollValue;
+                    charvm.Logbook.StatsRoll = rollValue;
 
-                    responseVm.Data = characterService.CreateCharacter(charVm);
+                    responseVm.Data = characterService.CreateCharacter(charvm);
                 }
                 else
                 {
@@ -326,6 +286,46 @@ namespace Avelraangame.Controllers
             return JsonConvert.SerializeObject(responseVm);
         }
         #endregion
+        #endregion
+
+        #region Items
+        // GET: api/palantir/GenerateItem
+        [HttpGet("GenerateItem")]
+        public string GenerateItem()
+        {
+            var responseVm = new ResponseVm();
+            var itemService = new ItemsService();
+
+            try
+            {
+                responseVm.Data = JsonConvert.SerializeObject(itemService.GenerateRandomItem());
+            }
+            catch (Exception ex)
+            {
+                responseVm.Error = ex.Message;
+            }
+
+            return JsonConvert.SerializeObject(responseVm);
+        }
+
+        // GET: api/palantir/GetItemsCount
+        [HttpGet("GetItemsCount")]
+        public string GetItemsCount()
+        {
+            var responseVm = new ResponseVm();
+            var itemService = new ItemsService();
+
+            try
+            {
+                responseVm.Data = itemService.GetItemsCount().ToString();
+            }
+            catch (Exception ex)
+            {
+                responseVm.Error = ex.Message;
+            }
+
+            return JsonConvert.SerializeObject(responseVm);
+        }
         #endregion
 
 

@@ -1,5 +1,5 @@
 ﻿// URLs
-const GetPlayerCharacters = "/api/palantir/GetPlayerCharacters";
+const GetCharactersByPlayer = "/api/palantir/GetCharactersByPlayer";
 
 // divs
 const players = "#players";
@@ -39,7 +39,7 @@ function getCharactersPerPlayer() {
 
     $.ajax({
         type: "GET",
-        url: GetPlayerCharacters,
+        url: GetCharactersByPlayer,
         contentType: "application/text",
         data: request,
         success: function (resp) {
