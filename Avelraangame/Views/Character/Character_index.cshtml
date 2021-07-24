@@ -20,13 +20,20 @@
     <p style="color:orangered">TODO: create logon validation on this page</p>
     <h5 id="welcome"></h5>
     <div>
-        <select class="btn btn-outline-light" aria-label="playersSelect" name="players" id="players">
-            <option selected>Change player</option>
-            @foreach (var item in list)
-            {
-                <option value="@item">@item</option>
-            }
-        </select>
+        <div class="input-group" style="width:200px">
+            <span class="input-group-text">Ward</span>
+            <input id="ward" type="password" aria-label="First name" class="form-control">
+        </div>
+        <br />
+        <div>
+            <select class="btn btn-outline-light" aria-label="playersSelect" name="players" id="players">
+                <option selected>Change player</option>
+                @foreach (var item in list)
+                {
+                    <option value="@item">@item</option>
+                }
+            </select>
+        </div>
         <p id="playerPlaceholder" style="float:right"></p>
     </div>
 </div>

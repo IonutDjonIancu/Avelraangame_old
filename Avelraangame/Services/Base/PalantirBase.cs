@@ -8,7 +8,7 @@ namespace Avelraangame.Services.Base
     {
         public static void ValidateRequest(RequestVm request)
         {
-            if (request.Equals(null))
+            if (request == null)
             {
                 throw new Exception(message: string.Concat(Scribe.ShortMessages.BadRequest, ": request is in bad format."));
             }
