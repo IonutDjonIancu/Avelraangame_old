@@ -12,6 +12,7 @@ namespace Avelraangame.Models.ViewModels
         public Guid Id { get; set; }
 
         public Guid? CharacterId { get; set; }
+        public Guid? PlayerId { get; set; }
 
         public string Name { get; set; }
 

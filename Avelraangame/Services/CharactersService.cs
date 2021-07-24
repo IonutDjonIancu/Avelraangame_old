@@ -78,11 +78,37 @@ namespace Avelraangame.Services
             return (JsonConvert.SerializeObject(charvm), charvm.PlayerId.ToString(), charvm.Logbook.StatsRoll);
         }
 
+        public string EquipItem(RequestVm request)
+        {
+            var itmvm = ValidateRequestDeserializationIntoItemVm(request.Message);
+
+            var items = new ItemsService();
+            var item = ValidateItemByCharacterId(itmvm.Id, itmvm.CharacterId.GetValueOrDefault());
+            var chr = DataService.GetCharacterById(itmvm.CharacterId.GetValueOrDefault());
+
+            if (chr == null)
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.Failure, ": character not found."));
+            }
+
+            item.InSlot = items.MoveItemInSlot(item.Type);
+            // create an UnEquipItem for those that are already in occupied slot
+
+            chr = items.EquipItemToSlot(chr, item);
+
+            DataService.UpdateItem(item);
+            DataService.UpdateCharacter(chr);
+
+            var characterVm = GetCalculatedCharacter(chr.Id);
+
+            return JsonConvert.SerializeObject(characterVm);
+        }
         
         #endregion
 
         #region Public getters
-        public string GetCharacter(RequestVm request)
+
+        public string GetCalculatedCharacter(RequestVm request)
         {
             var reqCharVm = ValidateRequestDeserializationIntoCharacterVm(request.Message);
             ValidateCharacterByPlayerId(reqCharVm.CharacterId, reqCharVm.PlayerId);

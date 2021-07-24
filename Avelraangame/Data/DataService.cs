@@ -51,15 +51,26 @@ namespace Avelraangame.Services
         #endregion
 
         #region Item
-        public void SaveItem(Item item)
+        public void CreateItem(Item item)
         {
             Context.Items.Add(item);
+            Context.SaveChanges();
+        }
+
+        public void UpdateItem(Item item)
+        {
+            Context.Items.Update(item);
             Context.SaveChanges();
         }
 
         public int GetItemsCount()
         {
             return Context.Items.Count();
+        }
+
+        public Item GetItemById(Guid itemId)
+        {
+            return Context.Items.Find(itemId);
         }
 
         public List<Item> GetSuppliesItemsByCharacterId(Guid charId)

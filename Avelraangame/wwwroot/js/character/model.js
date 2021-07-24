@@ -1,5 +1,6 @@
 ﻿// URLs
 const GetCharacter = "/api/palantir/GetCharacter";
+const EquipItem = "/api/palantir/EquipItem";
 // divIDs
 const modelJumbo = "#modelJumbo";
 const nameDiv = "#nameDiv";
@@ -145,7 +146,7 @@ function showSupplies(supplies) {
         var html = `
             <img id="item_${supplies[i].Id}" title="${supplies[i].Name}" style="border-radius:10px" src="../media/images/items/item${nr}.png" />
             <div class="btn-group-vertical">
-                <button id="equipp" class="btn btn-sm btn-outline-dark">Equipp</button>
+                <button id="equip_${supplies[i].Id}" class="btn btn-sm btn-outline-dark equip">Equip</button>
                 <button id="details_${supplies[i].Id}" class="btn btn-sm btn-outline-dark details">Details</button>
             </div>
         `;
@@ -154,6 +155,7 @@ function showSupplies(supplies) {
     }
 
     addDetailsEvent(supplies);
+    addEquipEvent(supplies);
 }
 
 function getRandomNr(max) {
@@ -177,6 +179,47 @@ Worth: ${supplies[i].Worth}`;
                 break;
             }
         }
+
+    });
+}
+
+function addEquipEvent(supplies) {
+    $(".equip").on("click", function () {
+        var itemId = this.id.split("_")[1];
+
+        var object = {
+            Id: itemId,
+            CharacterId: characterId,
+            PlayerId: playerId
+        }
+        var request = {
+            Message: JSON.stringify(object)
+        }
+
+
+        $.ajax({
+            type: "POST",
+            url: EquipItem,
+            contentType: 'application/json',
+            data: JSON.stringify(request),
+            success: function (resp) {
+                var response = JSON.parse(resp);
+
+                if (response.Error) {
+                    console.log(response.Error);
+                    return;
+                }
+
+                var data = JSON.parse(response.Data);
+                console.log(data);
+                drawCharacter(data);
+            },
+            error: function (err) {
+                window.alert(err);
+                console.log(err);
+            },
+        });
+
 
     });
 }

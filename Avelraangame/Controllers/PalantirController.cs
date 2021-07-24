@@ -196,7 +196,7 @@ namespace Avelraangame.Controllers
             try
             {
                 PalantirBase.ValidateRequest(request);
-                responseVm.Data = charactersService.GetCharacter(request);
+                responseVm.Data = charactersService.GetCalculatedCharacter(request);
             }
             catch (Exception ex)
             {
@@ -285,10 +285,33 @@ namespace Avelraangame.Controllers
 
             return JsonConvert.SerializeObject(responseVm);
         }
+
+        // POST: /api/palantir/EquipItem
+        [HttpPost("EquipItem")]
+        public string EquipItem([FromBody] RequestVm request)
+        {
+            var responseVm = new ResponseVm();
+            var characterService = new CharactersService();
+
+            try
+            {
+                PalantirBase.ValidateRequest(request);
+                responseVm.Data = characterService.EquipItem(request);
+            }
+            catch (Exception ex)
+            {
+                responseVm.Error = ex.Message;
+                return JsonConvert.SerializeObject(responseVm);
+            }
+
+            return JsonConvert.SerializeObject(responseVm);
+        }
+
         #endregion
         #endregion
 
         #region Items
+        #region GET
         // GET: api/palantir/GenerateItem
         [HttpGet("GenerateItem")]
         public string GenerateItem()
@@ -326,6 +349,9 @@ namespace Avelraangame.Controllers
 
             return JsonConvert.SerializeObject(responseVm);
         }
+        #endregion
+        #region POST
+        #endregion
         #endregion
 
 
