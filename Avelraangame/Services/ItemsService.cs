@@ -6,6 +6,7 @@ using Avelraangame.Services.SubService;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Avelraangame.Services
 {
@@ -28,34 +29,57 @@ namespace Avelraangame.Services
                 equipp = JsonConvert.DeserializeObject<Equippment>(chr.Equippment);
             }
 
-
             if (item.Type.Equals(ItemsUtils.Types.Apparatus))
             {
-                var itm = new ItemVm(item);
+                var itm = supps.Where(s => s.Id.Equals(item.Id)).FirstOrDefault();
                 equipp.Trinkets.Add(itm);
                 supps.Remove(itm);
             }
             else if (item.Type.Equals(ItemsUtils.Types.Armour))
             {
-                var itm = new ItemVm(item);
+                var itm = supps.Where(s => s.Id.Equals(item.Id)).FirstOrDefault();
+
+                if (equipp.Armour != null)
+                {
+                    supps.Add(equipp.Armour);
+                }
+
                 equipp.Armour = itm;
                 supps.Remove(itm);
             }
             else if (item.Type.Equals(ItemsUtils.Types.Bow) || item.Type.Equals(ItemsUtils.Types.Crossbow))
             {
-                var itm = new ItemVm(item);
+                var itm = supps.Where(s => s.Id.Equals(item.Id)).FirstOrDefault();
+
+                if (equipp.Ranged != null)
+                {
+                    supps.Add(equipp.Ranged);
+                }
+
                 equipp.Ranged = itm;
                 supps.Remove(itm);
             }
             else if (item.Type.Equals(ItemsUtils.Types.Shield))
             {
-                var itm = new ItemVm(item);
+                var itm = supps.Where(s => s.Id.Equals(item.Id)).FirstOrDefault();
+
+                if (equipp.Offhand != null)
+                {
+                    supps.Add(equipp.Offhand);
+                }
+
                 equipp.Offhand = itm;
                 supps.Remove(itm);
             }
             else
             {
-                var itm = new ItemVm(item);
+                var itm = supps.Where(s => s.Id.Equals(item.Id)).FirstOrDefault();
+
+                if (equipp.Mainhand != null)
+                {
+                    supps.Add(equipp.Mainhand);
+                }
+
                 equipp.Mainhand = itm;
                 supps.Remove(itm);
             }

@@ -8,6 +8,7 @@ const statsDiv = "#statsDiv";
 const expertiseDiv = "#expertiseDiv";
 const assetsDiv = "#assetsDiv";
 const suppliesDiv = "#suppliesDiv";
+const equipmentDiv = "#equippmentDiv";
 const suppliesNr = "#suppliesNr";
 let playerId;
 let playerName;
@@ -27,18 +28,6 @@ getCharacter(playerId, characterId);
 
 
 // events
-
-
-
-
-
-
-
-
-
-
-
-
 
 // functions
 
@@ -82,6 +71,7 @@ function drawCharacter(data) {
     showExpertise(data.Expertise, data.Logbook.Wealth);
     showAssets(data.Assets);
     showSupplies(data.Supplies);
+    showInventory(data.Equippment);
 }
 
 function showName(name, portraitNr) {
@@ -135,6 +125,20 @@ function showAssets(assets) {
     $(assetsDiv).append(html);
 }
 
+
+function showInventory(equipment) {
+    $(equipmentDiv).empty();
+
+    var mainhandHtml = `
+            <img class="details" id="details_${equipment.Mainhand.Id}" title="${equipment.Mainhand.Name}" style="border-radius:10px; opacity:0.5" src="../media/images/items/item${25}.png" />
+            <div class="btn-group-vertical">
+                <button id="unequip_${equipment.Mainhand.Id}" class="btn btn-sm btn-outline-dark unequip">Mainhand</button>
+            </div>
+        `;
+
+    $(equipmentDiv).append(mainhandHtml);
+}
+
 function showSupplies(supplies) {
     $(suppliesDiv).empty();
     $(suppliesNr).append(`${supplies.length} items`);
@@ -144,10 +148,9 @@ function showSupplies(supplies) {
         var nr = getRandomNr(50);
 
         var html = `
-            <img id="item_${supplies[i].Id}" title="${supplies[i].Name}" style="border-radius:10px" src="../media/images/items/item${nr}.png" />
+            <img class="details" id="details_${supplies[i].Id}" title="${supplies[i].Name}" style="border-radius:30px; opacity:0.5" src="../media/images/items/item${nr}.png" />
             <div class="btn-group-vertical">
-                <button id="equip_${supplies[i].Id}" class="btn btn-sm btn-outline-dark equip">Equip</button>
-                <button id="details_${supplies[i].Id}" class="btn btn-sm btn-outline-dark details">Details</button>
+                <button id="equip_${supplies[i].Id}" class="btn btn-sm btn-outline-dark equip">&#x2191;</button>
             </div>
         `;
 
@@ -156,6 +159,7 @@ function showSupplies(supplies) {
 
     addDetailsEvent(supplies);
     addEquipEvent(supplies);
+    addMouseoverEvent();
 }
 
 function getRandomNr(max) {
@@ -221,6 +225,18 @@ function addEquipEvent(supplies) {
         });
 
 
+    });
+}
+
+function addMouseoverEvent() {
+    $("img").on("mouseover", function () {
+
+        this.style = "border-radius: 10px; opacity: 1";
+    });
+
+    $("img").on("mouseout", function () {
+
+        this.style = "border-radius: 30px; opacity: 0.5";
     });
 }
 
