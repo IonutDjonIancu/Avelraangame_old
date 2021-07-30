@@ -129,14 +129,35 @@ function showAssets(assets) {
 function showInventory(equipment) {
     $(equipmentDiv).empty();
 
-    var mainhandHtml = `
-            <img class="details" id="details_${equipment.Mainhand.Id}" title="${equipment.Mainhand.Name}" style="border-radius:10px; opacity:0.5" src="../media/images/items/item${25}.png" />
-            <div class="btn-group-vertical">
-                <button id="unequip_${equipment.Mainhand.Id}" class="btn btn-sm btn-outline-dark unequip">Mainhand</button>
-            </div>
-        `;
+    if (equipment.Mainhand) {
+        var mainhandHtml = `
+                <img class="equipped" id="mainhand" title="Mainhand" style="border-radius:10px; opacity:0.5" src="../media/images/items/${equipment.Mainhand.Type}.png" />`;
 
-    $(equipmentDiv).append(mainhandHtml);
+        $(equipmentDiv).append(mainhandHtml);
+    }
+
+    if (equipment.Offhand) {
+        var offhandHtml = `
+                <img class="equipped" id="offhand" title="Offhand" style="border-radius:10px; opacity:0.5" src="../media/images/items/${equipment.Offhand.Type}.png" />`;
+
+        $(equipmentDiv).append(offhandHtml);
+    }
+
+    if (equipment.Armour) {
+        var armourHtml = `
+                <img class="equipped" id="armour" title="Armour" style="border-radius:10px; opacity:0.5" src="../media/images/items/${equipment.Armour.Id}.png" />`;
+
+        $(equipmentDiv).append(armourHtml);
+    }
+
+    if (equipment.Ranged) {
+        var rangedHtml = `
+                <img class="equipped" id="ranged" title="Ranged" style="border-radius:10px; opacity:0.5" src="../media/images/items/${equipment.Ranged.Id}.png" />`;
+
+        $(equipmentDiv).append(rangedHtml);
+    }
+
+    addEquippmentClickEvent(equipment);
 }
 
 function showSupplies(supplies) {
@@ -145,10 +166,8 @@ function showSupplies(supplies) {
 
     for (var i = 0; i < supplies.length; i++) {
 
-        var nr = getRandomNr(50);
-
         var html = `
-            <img class="details" id="details_${supplies[i].Id}" title="${supplies[i].Name}" style="border-radius:30px; opacity:0.5" src="../media/images/items/item${nr}.png" />
+            <img class="details" id="details_${supplies[i].Id}" title="${supplies[i].Name}" style="border-radius:30px; opacity:0.5" src="../media/images/items/${supplies[i].Type}.png" />
             <div class="btn-group-vertical">
                 <button id="equip_${supplies[i].Id}" class="btn btn-sm btn-outline-dark equip">&#x2191;</button>
             </div>
@@ -162,10 +181,6 @@ function showSupplies(supplies) {
     addMouseoverEvent();
 }
 
-function getRandomNr(max) {
-    return Math.floor(Math.random() * max + 1);
-}
-
 function addDetailsEvent(supplies) {
     $(".details").on("click", function () {
         var itemId = this.id.split("_")[1];
@@ -174,11 +189,9 @@ function addDetailsEvent(supplies) {
         for (var i = 0; i < supplies.length; i++) {
             if (supplies[i].Id == itemId) {
 
-                var text = `${supplies[i].Name}\n
-Type: ${supplies[i].Type}\n
-Worth: ${supplies[i].Worth}`;
-
-                window.alert(text);
+                window.alert(`${supplies[i].Name}
+Harm: ${supplies[i].Bonuses.ToHarm}
+DRM: ${supplies[i].Bonuses.ToDRM }`);
 
                 break;
             }
@@ -225,6 +238,26 @@ function addEquipEvent(supplies) {
         });
 
 
+    });
+}
+
+function addEquippmentClickEvent(equipment) {
+    $(".equipped").on("click", function () {
+        var itemId = this.id;
+
+        if (itemId === "mainhand") {
+            window.alert(`${equipment.Mainhand.Name}
+Harm: ${equipment.Mainhand.Bonuses.ToHarm}`);
+        } else if (itemId === "offhand") {
+            window.alert(`${equipment.Offhand.Name}
+DRM: ${equipment.Offhand.Bonuses.ToDRM}`);
+        } else if (itemId === "ranged") {
+            window.alert(`${equipment.Ranged.Name}
+Harm: ${equipment.Mainhand.Bonuses.ToHarm}`);
+        } else if (itemId === "armour") {
+            window.alert(`${equipment.Armour.Name}
+DRM: ${equipment.Offhand.Bonuses.ToDRM}`);
+        }
     });
 }
 
