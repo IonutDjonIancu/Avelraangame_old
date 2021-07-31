@@ -476,7 +476,7 @@ function addSaveBtnEvent() {
             Spot: spo,
             Survival: sur,
             Tactics: tac,
-            Tracking: tra,
+            Traps: tra,
             Unarmed: una
         };
 
