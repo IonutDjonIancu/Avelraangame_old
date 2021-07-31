@@ -72,6 +72,7 @@ function drawCharacter(data) {
     showAssets(data.Assets);
     showSupplies(data.Supplies);
     showInventory(data.Equippment);
+    addMouseoverEvents();
 }
 
 function showName(name, portraitNr) {
@@ -129,6 +130,10 @@ function showAssets(assets) {
 function showInventory(equipment) {
     $(equipmentDiv).empty();
 
+    if (!equipment) {
+        return;
+    }
+
     if (equipment.Mainhand) {
         var mainhandHtml = `
                 <img class="equipped" id="mainhand" title="Mainhand" style="border-radius:10px; opacity:0.5" src="../media/images/items/${equipment.Mainhand.Type}.png" />`;
@@ -145,16 +150,23 @@ function showInventory(equipment) {
 
     if (equipment.Armour) {
         var armourHtml = `
-                <img class="equipped" id="armour" title="Armour" style="border-radius:10px; opacity:0.5" src="../media/images/items/${equipment.Armour.Id}.png" />`;
+                <img class="equipped" id="armour" title="Armour" style="border-radius:10px; opacity:0.5" src="../media/images/items/${equipment.Armour.Type}.png" />`;
 
         $(equipmentDiv).append(armourHtml);
     }
 
     if (equipment.Ranged) {
         var rangedHtml = `
-                <img class="equipped" id="ranged" title="Ranged" style="border-radius:10px; opacity:0.5" src="../media/images/items/${equipment.Ranged.Id}.png" />`;
+                <img class="equipped" id="ranged" title="Ranged" style="border-radius:10px; opacity:0.5" src="../media/images/items/${equipment.Ranged.Type}.png" />`;
 
         $(equipmentDiv).append(rangedHtml);
+    }
+
+    if (equipment.Trinkets.length > 0) {
+        var trinketHtml = `
+                <img class="equipped trinkets" id="trinkets" title="${equipment.Trinkets.length} Trinkets" style="border-radius:10px; opacity:0.5" src="../media/images/items/Apparatus.png" />`;
+
+        $(equipmentDiv).append(trinketHtml);
     }
 
     addEquippmentClickEvent(equipment);
@@ -162,6 +174,7 @@ function showInventory(equipment) {
 
 function showSupplies(supplies) {
     $(suppliesDiv).empty();
+    $(suppliesNr).empty();
     $(suppliesNr).append(`${supplies.length} items`);
 
     for (var i = 0; i < supplies.length; i++) {
@@ -178,7 +191,6 @@ function showSupplies(supplies) {
 
     addDetailsEvent(supplies);
     addEquipEvent(supplies);
-    addMouseoverEvent();
 }
 
 function addDetailsEvent(supplies) {
@@ -188,11 +200,7 @@ function addDetailsEvent(supplies) {
 
         for (var i = 0; i < supplies.length; i++) {
             if (supplies[i].Id == itemId) {
-
-                window.alert(`${supplies[i].Name}
-Harm: ${supplies[i].Bonuses.ToHarm}
-DRM: ${supplies[i].Bonuses.ToDRM }`);
-
+                console.log(supplies[i]);
                 break;
             }
         }
@@ -246,22 +254,22 @@ function addEquippmentClickEvent(equipment) {
         var itemId = this.id;
 
         if (itemId === "mainhand") {
-            window.alert(`${equipment.Mainhand.Name}
-Harm: ${equipment.Mainhand.Bonuses.ToHarm}`);
+            console.log(equipment.Mainhand);
         } else if (itemId === "offhand") {
-            window.alert(`${equipment.Offhand.Name}
-DRM: ${equipment.Offhand.Bonuses.ToDRM}`);
+            console.log(equipment.Offhand);
         } else if (itemId === "ranged") {
-            window.alert(`${equipment.Ranged.Name}
-Harm: ${equipment.Mainhand.Bonuses.ToHarm}`);
+            console.log(equipment.Ranged);
         } else if (itemId === "armour") {
-            window.alert(`${equipment.Armour.Name}
-DRM: ${equipment.Offhand.Bonuses.ToDRM}`);
+            console.log(equipment.Armour);
         }
+    });
+
+    $(".trinkets").on("click", function () {
+        console.log(equipment.Trinkets);
     });
 }
 
-function addMouseoverEvent() {
+function addMouseoverEvents() {
     $("img").on("mouseover", function () {
 
         this.style = "border-radius: 10px; opacity: 1";
@@ -270,6 +278,15 @@ function addMouseoverEvent() {
     $("img").on("mouseout", function () {
 
         this.style = "border-radius: 30px; opacity: 0.5";
+    });
+
+    $(".equipped").on("mouseover", function () {
+        this.style = "border-radius: 10px; opacity: 1";
+    });
+
+    $(".equipped").on("mouseout", function () {
+
+        this.style = "border-radius: 10px; opacity: 0.5";
     });
 }
 

@@ -82,9 +82,15 @@ namespace Avelraangame.Services
         {
             var itmvm = ValidateRequestDeserializationIntoItemVm(request.Message);
 
+
             var items = new ItemsService();
             var item = ValidateItemByCharacterId(itmvm.Id, itmvm.CharacterId.GetValueOrDefault());
             var chr = DataService.GetCharacterById(itmvm.CharacterId.GetValueOrDefault());
+
+            if (item.Type.Equals(ItemsUtils.Types.Valuables))
+            {
+                throw new Exception(string.Concat(Scribe.ShortMessages.Failure, ": cannot equip valuables, they can only be sold to a merchant."));
+            }
 
             if (chr == null)
             {
