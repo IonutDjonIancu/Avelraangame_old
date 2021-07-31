@@ -10,5 +10,10 @@ namespace Avelraangame.Models.ModelScraps
         public ItemVm Offhand { get; set; }
         public ItemVm Ranged { get; set; }
         public List<ItemVm> Trinkets { get; set; }
+
+        public Equippment()
+        {
+            Trinkets = new List<ItemVm>();
+        }
     }
 }

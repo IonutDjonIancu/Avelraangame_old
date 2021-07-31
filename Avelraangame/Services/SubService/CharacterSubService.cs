@@ -172,7 +172,7 @@ namespace Avelraangame.Services.SubService
 
             var chr = new Character
             {
-                Id = Guid.NewGuid(),
+                Id = chrId,
                 PlayerId = charVm.PlayerId,
 
                 Name = ValidateCharacterName(charVm.Name),

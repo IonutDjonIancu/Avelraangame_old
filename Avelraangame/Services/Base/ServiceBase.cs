@@ -266,8 +266,55 @@ namespace Avelraangame.Services.Base
         #endregion
 
         #region ItemValidation
+        protected ItemVm ValidateRequestDeserializationIntoItemVm(string request)
+        {
+            ItemVm itemvm;
 
+            try
+            {
+                itemvm = JsonConvert.DeserializeObject<ItemVm>(request);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.BadRequest, ": ", ex.Message));
+            }
 
+            return itemvm;
+        }
+
+        protected void ValidateItemId(Guid itemId)
+        {
+            if (itemId.Equals(Guid.Empty) || itemId == null)
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.BadRequest, ": item id is missing or invalid."));
+            }
+        }
+
+        protected Item ValidateItemById(Guid itemId)
+        {
+            ValidateItemId(itemId);
+
+            var item = DataService.GetItemById(itemId);
+
+            if (item == null)
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.ResourceNotFound, $": no item exists with id {itemId}."));
+            }
+
+            return item;
+        }
+
+        protected Item ValidateItemByCharacterId(Guid itemId, Guid characterId)
+        {
+            var item = ValidateItemById(itemId);
+
+            if (item.CharacterId.Equals(characterId))
+            {
+                return item;
+            }
+
+            throw new Exception(message: string.Concat(Scribe.ShortMessages.Failure, ": item does not match character."));
+        }
 
         #endregion
 

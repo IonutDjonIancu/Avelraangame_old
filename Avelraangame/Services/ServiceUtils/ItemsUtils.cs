@@ -78,19 +78,19 @@ namespace Avelraangame.Services.ServiceUtils
         // Valuables are always set at the end of any list
         public static List<string> List_of_ItemTypes = new List<string>()
         {
-            itemTypes.Apparatus, // 0    
-            itemTypes.Armour, // 1
-            itemTypes.Axe, // 2
-            itemTypes.Bow, // 3
-            itemTypes.Club, // 4
-            itemTypes.Crossbow, // 5
-            itemTypes.Mace, // 6
-            itemTypes.Polearm, // 7
-            itemTypes.Shield, // 8
-            itemTypes.Spear, // 9
-            itemTypes.Sword, // 10
-            itemTypes.Warhammer, // 11
-            itemTypes.Valuables // 12
+            itemTypes.Apparatus, // 1    
+            itemTypes.Armour, // 2
+            itemTypes.Axe, // 3
+            itemTypes.Bow, // 4
+            itemTypes.Club, // 5
+            itemTypes.Crossbow, // 6
+            itemTypes.Mace, // 7
+            itemTypes.Polearm, // 8
+            itemTypes.Shield, // 9
+            itemTypes.Spear, // 10
+            itemTypes.Sword, // 11
+            itemTypes.Valuables, // 12
+            itemTypes.Warhammer // 13
         };
 
         public static List<string> List_of_CommonNamePrefixes = new List<string>()

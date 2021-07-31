@@ -1,5 +1,6 @@
 ﻿// URLs
 const GetCharacter = "/api/palantir/GetCharacter";
+const EquipItem = "/api/palantir/EquipItem";
 // divIDs
 const modelJumbo = "#modelJumbo";
 const nameDiv = "#nameDiv";
@@ -7,6 +8,7 @@ const statsDiv = "#statsDiv";
 const expertiseDiv = "#expertiseDiv";
 const assetsDiv = "#assetsDiv";
 const suppliesDiv = "#suppliesDiv";
+const equipmentDiv = "#equippmentDiv";
 const suppliesNr = "#suppliesNr";
 let playerId;
 let playerName;
@@ -26,18 +28,6 @@ getCharacter(playerId, characterId);
 
 
 // events
-
-
-
-
-
-
-
-
-
-
-
-
 
 // functions
 
@@ -81,6 +71,8 @@ function drawCharacter(data) {
     showExpertise(data.Expertise, data.Logbook.Wealth);
     showAssets(data.Assets);
     showSupplies(data.Supplies);
+    showInventory(data.Equippment);
+    addMouseoverEvents();
 }
 
 function showName(name, portraitNr) {
@@ -134,19 +126,63 @@ function showAssets(assets) {
     $(assetsDiv).append(html);
 }
 
+
+function showInventory(equipment) {
+    $(equipmentDiv).empty();
+
+    if (!equipment) {
+        return;
+    }
+
+    if (equipment.Mainhand) {
+        var mainhandHtml = `
+                <img class="equipped" id="mainhand" title="Mainhand" style="border-radius:10px; opacity:0.5" src="../media/images/items/${equipment.Mainhand.Type}.png" />`;
+
+        $(equipmentDiv).append(mainhandHtml);
+    }
+
+    if (equipment.Offhand) {
+        var offhandHtml = `
+                <img class="equipped" id="offhand" title="Offhand" style="border-radius:10px; opacity:0.5" src="../media/images/items/${equipment.Offhand.Type}.png" />`;
+
+        $(equipmentDiv).append(offhandHtml);
+    }
+
+    if (equipment.Armour) {
+        var armourHtml = `
+                <img class="equipped" id="armour" title="Armour" style="border-radius:10px; opacity:0.5" src="../media/images/items/${equipment.Armour.Type}.png" />`;
+
+        $(equipmentDiv).append(armourHtml);
+    }
+
+    if (equipment.Ranged) {
+        var rangedHtml = `
+                <img class="equipped" id="ranged" title="Ranged" style="border-radius:10px; opacity:0.5" src="../media/images/items/${equipment.Ranged.Type}.png" />`;
+
+        $(equipmentDiv).append(rangedHtml);
+    }
+
+    if (equipment.Trinkets.length > 0) {
+        var trinketHtml = `
+                <img class="equipped trinkets" id="trinkets" title="${equipment.Trinkets.length} Trinkets" style="border-radius:10px; opacity:0.5" src="../media/images/items/Apparatus.png" />`;
+
+        $(equipmentDiv).append(trinketHtml);
+    }
+
+    addEquippmentClickEvent(equipment);
+}
+
 function showSupplies(supplies) {
     $(suppliesDiv).empty();
+    $(suppliesNr).empty();
     $(suppliesNr).append(`${supplies.length} items`);
 
     for (var i = 0; i < supplies.length; i++) {
 
-        var nr = getRandomNr(50);
-
         var html = `
-            <img id="item_${supplies[i].Id}" title="${supplies[i].Name}" style="border-radius:10px" src="../media/images/items/item${nr}.png" />
+            <img class="details" id="details_${supplies[i].Id}" title="${supplies[i].Name}" style="border-radius:30px; opacity:0.5" src="../media/images/items/${supplies[i].Type}.png" />
             <div class="btn-group-vertical">
-                <button id="equipp" class="btn btn-sm btn-outline-dark">Equipp</button>
-                <button id="details_${supplies[i].Id}" class="btn btn-sm btn-outline-dark details">Details</button>
+                <button id="equip_${supplies[i].Id}" class="btn btn-sm btn-outline-dark equip">&#x2191;</button>
             </div>
         `;
 
@@ -154,10 +190,7 @@ function showSupplies(supplies) {
     }
 
     addDetailsEvent(supplies);
-}
-
-function getRandomNr(max) {
-    return Math.floor(Math.random() * max + 1);
+    addEquipEvent(supplies);
 }
 
 function addDetailsEvent(supplies) {
@@ -167,17 +200,93 @@ function addDetailsEvent(supplies) {
 
         for (var i = 0; i < supplies.length; i++) {
             if (supplies[i].Id == itemId) {
-
-                var text = `${supplies[i].Name}\n
-Type: ${supplies[i].Type}\n
-Worth: ${supplies[i].Worth}`;
-
-                window.alert(text);
-
+                console.log(supplies[i]);
                 break;
             }
         }
 
+    });
+}
+
+function addEquipEvent(supplies) {
+    $(".equip").on("click", function () {
+        var itemId = this.id.split("_")[1];
+
+        var object = {
+            Id: itemId,
+            CharacterId: characterId,
+            PlayerId: playerId
+        }
+        var request = {
+            Message: JSON.stringify(object)
+        }
+
+
+        $.ajax({
+            type: "POST",
+            url: EquipItem,
+            contentType: 'application/json',
+            data: JSON.stringify(request),
+            success: function (resp) {
+                var response = JSON.parse(resp);
+
+                if (response.Error) {
+                    console.log(response.Error);
+                    return;
+                }
+
+                var data = JSON.parse(response.Data);
+                console.log(data);
+                drawCharacter(data);
+            },
+            error: function (err) {
+                window.alert(err);
+                console.log(err);
+            },
+        });
+
+
+    });
+}
+
+function addEquippmentClickEvent(equipment) {
+    $(".equipped").on("click", function () {
+        var itemId = this.id;
+
+        if (itemId === "mainhand") {
+            console.log(equipment.Mainhand);
+        } else if (itemId === "offhand") {
+            console.log(equipment.Offhand);
+        } else if (itemId === "ranged") {
+            console.log(equipment.Ranged);
+        } else if (itemId === "armour") {
+            console.log(equipment.Armour);
+        }
+    });
+
+    $(".trinkets").on("click", function () {
+        console.log(equipment.Trinkets);
+    });
+}
+
+function addMouseoverEvents() {
+    $("img").on("mouseover", function () {
+
+        this.style = "border-radius: 10px; opacity: 1";
+    });
+
+    $("img").on("mouseout", function () {
+
+        this.style = "border-radius: 30px; opacity: 0.5";
+    });
+
+    $(".equipped").on("mouseover", function () {
+        this.style = "border-radius: 10px; opacity: 1";
+    });
+
+    $(".equipped").on("mouseout", function () {
+
+        this.style = "border-radius: 10px; opacity: 0.5";
     });
 }
 

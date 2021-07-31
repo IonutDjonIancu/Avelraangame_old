@@ -18,7 +18,7 @@ establishPlayer();
 // events
 $(players).on("change", function () {
 
-    console.log("fmmm");
+    localStorage.clear();
 
     var playerName = $(players)[0].value;
     var playerWard = $(ward).val();
