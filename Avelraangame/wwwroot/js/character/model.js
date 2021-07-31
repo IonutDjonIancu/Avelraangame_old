@@ -9,6 +9,7 @@ const expertiseDiv = "#expertiseDiv";
 const assetsDiv = "#assetsDiv";
 const suppliesDiv = "#suppliesDiv";
 const equipmentDiv = "#equippmentDiv";
+const skillsDiv = "#skillsDiv";
 const suppliesNr = "#suppliesNr";
 let playerId;
 let playerName;
@@ -72,6 +73,7 @@ function drawCharacter(data) {
     showAssets(data.Assets);
     showSupplies(data.Supplies);
     showInventory(data.Equippment);
+    showSkills(data.Skills);
     addMouseoverEvents();
 }
 
@@ -192,6 +194,31 @@ function showSupplies(supplies) {
     addDetailsEvent(supplies);
     addEquipEvent(supplies);
 }
+
+function showSkills(skills) {
+
+    var html = `
+        <button class="btn btn-sm btn-outline-secondary">Apothecary ${skills.Apothecary}</button>
+        <button class="btn btn-sm btn-outline-secondary">Arcane ${skills.Arcane}</button>
+        <button class="btn btn-sm btn-outline-secondary">Dodge ${skills.Dodge}</button>
+        <button class="btn btn-sm btn-outline-secondary">Hide ${skills.Hide}</button>
+        <button class="btn btn-sm btn-outline-secondary">Melee ${skills.Melee}</button>
+        <button class="btn btn-sm btn-outline-secondary">Navigation ${skills.Navigation}</button>
+        <button class="btn btn-sm btn-outline-secondary">Psionics ${skills.Psionics}</button>
+        <button class="btn btn-sm btn-outline-secondary">Ranged ${skills.Ranged}</button>
+        <button class="btn btn-sm btn-outline-secondary">Resistance ${skills.Resistance}</button>
+        <button class="btn btn-sm btn-outline-secondary">Scouting ${skills.Scouting}</button>
+        <button class="btn btn-sm btn-outline-secondary">Social ${skills.Social}</button>
+        <button class="btn btn-sm btn-outline-secondary">Spot ${skills.Spot}</button>
+        <button class="btn btn-sm btn-outline-secondary">Survival ${skills.Survival}</button>
+        <button class="btn btn-sm btn-outline-secondary">Tactics ${skills.Tactics}</button>
+        <button class="btn btn-sm btn-outline-secondary">Traps ${skills.Traps}</button>
+        <button class="btn btn-sm btn-outline-secondary">Unarmed ${skills.Unarmed}</button>`;
+
+    $(skillsDiv).empty();
+    $(skillsDiv).append(html);
+}
+
 
 function addDetailsEvent(supplies) {
     $(".details").on("click", function () {
