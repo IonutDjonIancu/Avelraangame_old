@@ -20,6 +20,9 @@ namespace Avelraangame.Models
         public bool InParty { get; set; }
         public Guid? PartyId { get; set; }
 
+        public bool? InFight { get; set; }
+        public Guid? FightId { get; set; }
+
         public string Equippment { get; set; }
         public string HeroicTraits { get; set; }
         public string NegativePerks { get; set; }

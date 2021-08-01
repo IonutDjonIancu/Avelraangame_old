@@ -318,7 +318,24 @@ namespace Avelraangame.Services.Base
 
         #endregion
 
+        #region CombatValidation
+        protected CombatVm ValidateRequestDeserializationIntoCombatVm(string request)
+        {
+            CombatVm combatVm;
 
+            try
+            {
+                combatVm = JsonConvert.DeserializeObject<CombatVm>(request);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.BadRequest, ": ", ex.Message));
+            }
+
+            return combatVm;
+        }
+
+        #endregion
 
 
 

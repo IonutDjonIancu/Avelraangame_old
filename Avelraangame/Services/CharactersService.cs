@@ -6,6 +6,7 @@ using Avelraangame.Services.SubService;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Avelraangame.Services
 {
@@ -109,7 +110,7 @@ namespace Avelraangame.Services
 
             return JsonConvert.SerializeObject(characterVm);
         }
-        
+
         #endregion
 
         #region Public getters
@@ -170,7 +171,9 @@ namespace Avelraangame.Services
                 returnList.Add(new CharacterVm(chr));
             }
 
-            return JsonConvert.SerializeObject(returnList);
+            var result = returnList.OrderBy(s => s.Name);
+
+            return JsonConvert.SerializeObject(result);
         }
 
         #endregion

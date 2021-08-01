@@ -23,6 +23,8 @@ namespace Avelraangame.Models.ViewModels
         public bool InParty { get; set; }
         public Guid? PartyId { get; set; }
 
+        public bool? InFight { get; set; }
+        public Guid? FightId { get; set; }
 
         public Equippment Equippment { get; set; }
         public List<HeroicTraits> HeroicTraits { get; set; }
@@ -52,6 +54,8 @@ namespace Avelraangame.Models.ViewModels
             HasLevelup = chr.HasLevelup;
             InParty = chr.InParty;
             PartyId = chr.PartyId;
+            InFight = chr.InFight;
+            FightId = chr.FightId;
 
             if (!string.IsNullOrWhiteSpace(chr.Stats))
             {

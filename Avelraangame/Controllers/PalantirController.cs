@@ -354,6 +354,31 @@ namespace Avelraangame.Controllers
         #endregion
         #endregion
 
+        #region Combat
+        #region GET
+        // GET: /api/palantir/GetFightByCharacter
+        [HttpGet("GetFightByCharacter")]
+        public string GetFightByCharacter([FromQuery] RequestVm request)
+        {
+            var responseVm = new ResponseVm();
+            var combatService = new CombatService();
+
+            try
+            {
+                PalantirBase.ValidateRequest(request);
+                responseVm.Data = combatService.GetFightIdByCharacterId(request);
+            }
+            catch (Exception ex)
+            {
+                responseVm.Error = ex.Message;
+                return JsonConvert.SerializeObject(responseVm);
+            }
+
+            return JsonConvert.SerializeObject(responseVm);
+        }
+
+        #endregion
+        #endregion
 
 
     }
