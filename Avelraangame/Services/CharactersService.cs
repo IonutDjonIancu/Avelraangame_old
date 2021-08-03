@@ -151,6 +151,12 @@ namespace Avelraangame.Services
             return JsonConvert.SerializeObject(charvm);
         }
 
+        public CharacterVm ValidateCharacter(Guid characterId, Guid playerId)
+        {
+            var character = ValidateCharacterByPlayerId(characterId, playerId);
+
+            return new CharacterVm(character);
+        }
 
         /// <summary>
         /// Gets the list of characters by a combination of player id and player name.

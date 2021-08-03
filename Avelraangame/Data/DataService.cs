@@ -145,5 +145,13 @@ namespace Avelraangame.Services
         }
 
         #endregion
+
+        #region Party
+        public void CreateParty(Party party)
+        {
+            Context.Party.Add(party);
+            Context.SaveChanges();
+        }
+        #endregion
     }
 }

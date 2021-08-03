@@ -376,6 +376,29 @@ namespace Avelraangame.Controllers
 
             return JsonConvert.SerializeObject(responseVm);
         }
+        #endregion
+        #region POST
+        // GET: /api/palantir/GoToParty
+        [HttpPost("GoToParty")]
+        public string GoToParty([FromBody] RequestVm request)
+        {
+            var responseVm = new ResponseVm();
+            var combatService = new CombatService();
+
+            try
+            {
+                PalantirBase.ValidateRequest(request);
+                responseVm.Data = combatService.GoToParty(request);
+            }
+            catch (Exception ex)
+            {
+                responseVm.Error = ex.Message;
+                return JsonConvert.SerializeObject(responseVm);
+            }
+
+            return JsonConvert.SerializeObject(responseVm);
+        }
+
 
         #endregion
         #endregion

@@ -1,8 +1,10 @@
 ﻿// URLs
 const GetCharactersByPlayer = "/api/palantir/GetCharactersByPlayer";
+const GoToParty = "/api/palantir/GoToParty";
 
 // divs
-const readyToFight = "#readyToFight";
+const readyToFightDiv = "#readyToFight";
+const inPartyDiv = "#inParty";
 let playerName;
 let playerId;
 
@@ -35,7 +37,7 @@ function getAllCharactersToFight() {
                 return;
             }
 
-            $(readyToFight).empty();
+            $(readyToFightDiv).empty();
 
             var data = JSON.parse(response.Data);
 
@@ -45,12 +47,14 @@ function getAllCharactersToFight() {
 
                 for (var i = 0; i < data.length; i++) {
                     drawCharacter(data[i].CharacterId,
-                        data[i].Race,
-                        data[i].Culture,
+                        data[i].Logbook.Race,
+                        data[i].Logbook.Culture,
                         data[i].Name,
                         data[i].Logbook.PortraitNr,
-                        data[i].HasLevelup);
+                        data[i].InParty);
                 }
+
+                addGoToPartyEvent();
             }
 
 
@@ -63,7 +67,7 @@ function getAllCharactersToFight() {
 
 
 
-function drawCharacter(id, race, culture, name, portraitNr, hasLevelup) {
+function drawCharacter(id, race, culture, name, portraitNr, inParty) {
     var btnStyle = `
             <button id="${id}" title="${culture} ${race}" class="btn btn-outline-info characterBtn">
                 ${name}
@@ -72,8 +76,47 @@ function drawCharacter(id, race, culture, name, portraitNr, hasLevelup) {
                 </span>
             </button>
             `;
-    $(readyToFight).append(btnStyle);
+
+    if (inParty == false) {
+        $(readyToFightDiv).append(btnStyle);
+    } else {
+        $(inPartyDiv).append(btnStyle);
+    }
+
+
 }
+
+function addGoToPartyEvent() {
+    $(".characterBtn").on("click", function () {
+        var id = this.id;
+
+        var charVm = {
+            PlayerId: playerId,
+            CharacterId: id,
+        };
+
+        var request = {
+            message: JSON.stringify(charVm)
+        };
+
+        $.ajax({
+            url: GoToParty,
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(request),
+            success: function (resp) {
+
+                location.reload();
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        });
+
+
+    });
+}
+
 
 function establishPlayer() {
     playerName = localStorage.getItem("playerName");
