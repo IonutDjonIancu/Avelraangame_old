@@ -13,6 +13,51 @@ namespace Avelraangame.Services.SubService
 
     public class CharacterSubService : ServiceBase
     {
+        protected CharacterVm GenerateWeakNpc()
+        {
+            var stats = new Stats
+            {
+                Strength = 10,
+                Toughness = 10,
+                Awareness = 10,
+                Abstract = 10
+            };
+            var assets = new Assets
+            {
+                Harm = 10,
+                Health = 100,
+                Mana = 0
+            };
+            var expertise = new Expertise
+            {
+                DRM = 10,
+                Experience = 10
+            };
+            var skills = new Skills
+            {
+                Melee = 50
+            };
+            var logbook = new Logbook
+            {
+                PortraitNr = 1
+            };
+
+            var chr = new Character()
+            {
+                Id = Guid.NewGuid(),
+                Name = "Weak Npc",
+                Stats = JsonConvert.SerializeObject(stats),
+                Assets = JsonConvert.SerializeObject(assets),
+                Expertise = JsonConvert.SerializeObject(expertise),
+                Skills = JsonConvert.SerializeObject(skills),
+                Logbook = JsonConvert.SerializeObject(logbook),
+                IsAlive = true
+            };
+
+            return new CharacterVm(chr);
+        }
+
+
         protected void CompareTempsWithRequest(CharacterVm charVm, Character chr, List<TempInfo> temps)
         {
             var charVmStatsSum = charVm.Stats.Strength + charVm.Stats.Toughness + charVm.Stats.Awareness + charVm.Stats.Abstract;

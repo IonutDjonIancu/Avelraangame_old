@@ -114,6 +114,10 @@ namespace Avelraangame.Services
         #endregion
 
         #region Public getters
+        public new CharacterVm GenerateWeakNpc()
+        {
+            return base.GenerateWeakNpc();
+        }
 
         public string GetCalculatedCharacter(RequestVm request)
         {
@@ -123,6 +127,13 @@ namespace Avelraangame.Services
             var charvm = GetCalculatedCharacter(reqCharVm.CharacterId);
 
             return JsonConvert.SerializeObject(charvm);
+        }
+
+        public CharacterVm GetCalculatedCharacterById(Guid characterId)
+        {
+            ValidateCharacterById(characterId);
+
+            return GetCalculatedCharacter(characterId);
         }
 
         public string GetCharacterWithLevelUp(RequestVm request)

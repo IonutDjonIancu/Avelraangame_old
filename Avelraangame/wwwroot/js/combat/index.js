@@ -55,6 +55,7 @@ function getAllCharactersToFight() {
                 }
 
                 addGoToPartyEvent();
+                addFighterEvent();
             }
 
 
@@ -68,8 +69,17 @@ function getAllCharactersToFight() {
 
 
 function drawCharacter(id, race, culture, name, portraitNr, inParty) {
-    var btnStyle = `
-            <button id="${id}" title="${culture} ${race}" class="btn btn-outline-info characterBtn">
+    var nonFighter = `
+            <button id="${id}" class="btn btn-outline-info characterBtn">
+                ${name}
+                <span>
+                    <img style="border-radius:10px" src="../media/images/humans/human${portraitNr}.png"/>
+                </span>
+            </button>
+            `;
+
+    var fighter = `
+            <button id="${id}" title="Go to fight!" class="btn btn-outline-info fighterBtn">
                 ${name}
                 <span>
                     <img style="border-radius:10px" src="../media/images/humans/human${portraitNr}.png"/>
@@ -78,12 +88,18 @@ function drawCharacter(id, race, culture, name, portraitNr, inParty) {
             `;
 
     if (inParty == false) {
-        $(readyToFightDiv).append(btnStyle);
+        $(readyToFightDiv).append(nonFighter);
     } else {
-        $(inPartyDiv).append(btnStyle);
+        $(inPartyDiv).append(fighter);
     }
+}
 
+function addFighterEvent() {
+    $(".fighterBtn").on("click", function () {
+        localStorage.setItem("characterId", this.id);
 
+        window.location = `/Combat/Combat_fight`;
+    });
 }
 
 function addGoToPartyEvent() {

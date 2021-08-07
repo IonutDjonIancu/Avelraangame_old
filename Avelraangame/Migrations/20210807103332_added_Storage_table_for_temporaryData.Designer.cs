@@ -4,14 +4,16 @@ using Avelraangame.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Avelraangame.Migrations
 {
     [DbContext(typeof(AvelraanContext))]
-    partial class AvelraanContextModelSnapshot : ModelSnapshot
+    [Migration("20210807103332_added_Storage_table_for_temporaryData")]
+    partial class added_Storage_table_for_temporaryData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -125,7 +125,7 @@ namespace Avelraangame.Services
         public Character GetCharacterById(Guid charId)
         {
             return Context.Characters
-                .Where(s => s.Id == charId)
+                .Where(s => s.Id.Equals(charId))
                 .FirstOrDefault();
         }
 
@@ -151,6 +151,23 @@ namespace Avelraangame.Services
         {
             Context.Party.Add(party);
             Context.SaveChanges();
+        }
+        #endregion
+
+        #region Storage
+        public void CreateStorage(Storage store)
+        {
+            Context.Storage.Add(store);
+            Context.SaveChanges();
+        }
+
+        public string GetStorageValueById(Guid storageId)
+        {
+            return Context
+                .Storage
+                .Where(s => s.Id.Equals(storageId))
+                .FirstOrDefault()
+                ?.Value;
         }
         #endregion
     }

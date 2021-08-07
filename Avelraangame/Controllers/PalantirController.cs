@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using System;
 using Avelraangame.Services.SubService;
+using Avelraangame.Models.ModelScraps;
 
 namespace Avelraangame.Controllers
 {
@@ -366,7 +367,7 @@ namespace Avelraangame.Controllers
             try
             {
                 PalantirBase.ValidateRequest(request);
-                responseVm.Data = combatService.GetFightIdByCharacterId(request);
+                responseVm.Data = combatService.GetFightByCharacter(request);
             }
             catch (Exception ex)
             {
@@ -376,6 +377,28 @@ namespace Avelraangame.Controllers
 
             return JsonConvert.SerializeObject(responseVm);
         }
+
+        // GET: /api/palantir/GenerateWeakNpcFight
+        [HttpGet("GenerateWeakNpcFight")]
+        public string GenerateWeakNpcFight([FromQuery] RequestVm request)
+        {
+            var responseVm = new ResponseVm();
+            var combatService = new CombatService();
+
+            try
+            {
+                responseVm.Data = combatService.GetWeakNpcFight(request);
+            }
+            catch (Exception ex)
+            {
+                responseVm.Error = ex.Message;
+                return JsonConvert.SerializeObject(responseVm);
+            }
+
+            return JsonConvert.SerializeObject(responseVm);
+        }
+
+
         #endregion
         #region POST
         // GET: /api/palantir/GoToParty
