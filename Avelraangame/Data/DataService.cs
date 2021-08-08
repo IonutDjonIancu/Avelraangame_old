@@ -161,6 +161,12 @@ namespace Avelraangame.Services
             Context.SaveChanges();
         }
 
+        public void UpdateStorage(Storage store)
+        {
+            Context.Storage.Update(store);
+            Context.SaveChanges();
+        }
+
         public string GetStorageValueById(Guid storageId)
         {
             return Context

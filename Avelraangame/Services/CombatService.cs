@@ -14,6 +14,44 @@ namespace Avelraangame.Services
     public class CombatService : CombatSubService
     {
         #region Business logic
+        public string Attack(RequestVm request)
+        {
+            var attack = ValidateRequestDeserializationIntoAttack(request.Message);
+            ValidateAttackDetails(attack);
+            
+            var store = new StorageService();
+            var storeValue = store.GetStorageValueById(attack.FightId);
+            var combat = JsonConvert.DeserializeObject<Combat>(storeValue);
+
+            var attacker = combat.GoodGuys.Where(s => s.CharacterId.Equals(attack.Attacker)).FirstOrDefault();
+            if (attacker == null)
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.Failure, ": attacker incompatible with fight."));
+            }
+            var defender = combat.BadGuys.Where(s => s.CharacterId.Equals(attack.Defender)).FirstOrDefault();
+            if (defender == null)
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.Failure, ": defender incompatible with fight."));
+            }
+
+            var (att, def) = RollAttack(attacker, defender);
+
+            attacker = att;
+            defender = def;
+
+            var combatString = JsonConvert.SerializeObject(combat);
+
+            var snapshot = new Storage
+            {
+                Id = attack.FightId,
+                Value = combatString
+            };
+            DataService.UpdateStorage(snapshot);
+
+            return JsonConvert.SerializeObject(combat);
+        }
+
+
         public string GoToParty(RequestVm request)
         {
             var charVm = ValidateRequestDeserializationIntoCharacterVm(request.Message);

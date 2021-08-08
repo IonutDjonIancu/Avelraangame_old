@@ -1,11 +1,13 @@
 ﻿// URLs
 const GenerateWeakNpcFight = "/api/palantir/GenerateWeakNpcFight";
 const GetFightByCharacter = "/api/palantir/GetFightByCharacter";
+const Attack = "/api/palantir/Attack";
 
 // variables
 let playerName;
 let playerId;
 let characterId;
+let npcId;
 let fightId;
 const weak = "#weak";
 const normal = "#normal";
@@ -83,8 +85,48 @@ $(getFight).on("click", function () {
             }
 
             var data = JSON.parse(response.Data);
+            localStorage.setItem("fightId", data.FightId);
+
+            fightId = data.FightId;
+            npcId = data.BadGuys[0].CharacterId;
 
             console.log(data);
+            drawFight(data);
+        },
+        error: function (err) {
+            console.log(err);
+        }
+    })
+});
+
+$("#attackBtn").on("click", function () {
+
+    var object = {
+        FightId: fightId,
+        Attacker: characterId,
+        Defender: npcId
+    }
+    var request = {
+        message: JSON.stringify(object)
+    }
+
+    $.ajax({
+        type: "GET",
+        url: Attack,
+        contentType: "application/text",
+        data: request,
+        success: function (resp) {
+            var response = JSON.parse(resp);
+
+            if (response.Error) {
+                console.log(response.Error);
+                return;
+            }
+
+            var data = JSON.parse(response.Data);
+
+            console.log(data);
+            updateFight(data);
         },
         error: function (err) {
             console.log(err);
@@ -93,36 +135,98 @@ $(getFight).on("click", function () {
 });
 
 
-
 // functions 
-function drawFight(npcData) {
-    $(combatants).empty();
-
-    var combatHtml = `
-<div class="container">
-    <div class="row">
-        <div id="fighterDiv" class="col text-center" style="border-color:burlywood; border-style:solid; border-radius:7px">
-            <button class="btn btn-primary">aaa</button>
-        </div>
-        <div class="col col-2 text-center">
-            <button id="attackBtn" class="btn btn-outline-light">Attack</button> <br /> <br />
-            <button id="endTurnBtn" class="btn btn-outline-light">End turn</button>
-        </div>
-        <div id="npcDiv" class="col text-center" style="border-color:coral; border-style:solid; border-radius:7px">
-            <h5>
-                <img style="border-radius:10px" src="../media/images/npcs/npc${npcData.Logbook.PortraitNr}.png"/>
-                ${npcData.Name}
-            </h5>
-        </div>
+function drawFight(data) {
+    $(fighterDiv).empty();
+    var fighterHtml = `
+<br />
+<img class="float-left" style="border-radius:10px" src="../media/images/humans/human${data.GoodGuys[0].Logbook.PortraitNr}.png" />
+<br />
+<br />
+<div class="btn-group-vertical">
+    <div class="btn-group">
+        <button class="btn btn-outline-primary" style="width:70px">HP</button>
+        <button class="btn btn-primary" style="width:50px">${data.GoodGuys[0].Assets.Health}</button>
+    </div>
+    <div class="btn-group">
+        <button class="btn btn-outline-primary" style="width:70px">DRM</button>
+        <button class="btn btn-primary" style="width:50px">${data.GoodGuys[0].Expertise.DRM}</button>
     </div>
 </div>
+<hr />
 `;
 
-    $(combatants).append(combatHtml);
+    $(npcDiv).empty();
+    var npcHtml = `
+<br />
+<img class="float-right" style="border-radius:10px" src="../media/images/npcs/npc${data.BadGuys[0].Logbook.PortraitNr}.png" />
+<br />
+<br />
+    <div class="btn-group-vertical">
+    <div class="btn-group">
+        <button class="btn btn-primary" style="width:50px">${data.BadGuys[0].Assets.Health}</button>
+        <button class="btn btn-outline-primary" style="width:70px">HP</button>
+    </div>
+    <div class="btn-group">
+        <button class="btn btn-primary" style="width:50px">${data.BadGuys[0].Expertise.DRM}</button>
+        <button class="btn btn-outline-primary" style="width:70px">DRM</button>
+    </div>
+</div>
+<hr />
+`;
 
-
+    $(fighterDiv).append(fighterHtml);
+    $(npcDiv).append(npcHtml);
     $(combatants).toggle(500);
 }
+
+function updateFight(data) {
+    $(fighterDiv).empty();
+    var fighterHtml = `
+<br />
+<img class="float-left" style="border-radius:10px" src="../media/images/humans/human${data.GoodGuys[0].Logbook.PortraitNr}.png" />
+<br />
+<br />
+<div class="btn-group-vertical">
+    <div class="btn-group">
+        <button class="btn btn-outline-primary" style="width:70px">HP</button>
+        <button class="btn btn-primary" style="width:50px">${data.GoodGuys[0].Assets.Health}</button>
+    </div>
+    <div class="btn-group">
+        <button class="btn btn-outline-primary" style="width:70px">DRM</button>
+        <button class="btn btn-primary" style="width:50px">${data.GoodGuys[0].Expertise.DRM}</button>
+    </div>
+</div>
+<hr />
+`;
+
+    $(npcDiv).empty();
+    var npcHtml = `
+<br />
+<img class="float-right" style="border-radius:10px" src="../media/images/npcs/npc${data.BadGuys[0].Logbook.PortraitNr}.png" />
+<br />
+<br />
+    <div class="btn-group-vertical">
+    <div class="btn-group">
+        <button class="btn btn-primary" style="width:50px">${data.BadGuys[0].Assets.Health}</button>
+        <button class="btn btn-outline-primary" style="width:70px">HP</button>
+    </div>
+    <div class="btn-group">
+        <button class="btn btn-primary" style="width:50px">${data.BadGuys[0].Expertise.DRM}</button>
+        <button class="btn btn-outline-primary" style="width:70px">DRM</button>
+    </div>
+</div>
+<hr />
+`;
+
+    $(fighterDiv).append(fighterHtml);
+    $(npcDiv).append(npcHtml);
+}
+
+
+
+
+
 
 function getCharacter() {
     console.log("get character");
