@@ -35,7 +35,8 @@ namespace Avelraangame.Services.SubService
             };
             var skills = new Skills
             {
-                Melee = 50
+                Melee = 50,
+                Tactics = 10
             };
             var logbook = new Logbook
             {

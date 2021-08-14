@@ -378,9 +378,9 @@ namespace Avelraangame.Controllers
             return JsonConvert.SerializeObject(responseVm);
         }
 
-        // GET: /api/palantir/GetFightByCharacter
-        [HttpGet("GetFightByCharacter")]
-        public string GetFightByCharacter([FromQuery] RequestVm request)
+        // GET: /api/palantir/Defend
+        [HttpGet("Defend")]
+        public string Defend([FromQuery] RequestVm request)
         {
             var responseVm = new ResponseVm();
             var combatService = new CombatService();
@@ -388,7 +388,49 @@ namespace Avelraangame.Controllers
             try
             {
                 PalantirBase.ValidateRequest(request);
-                responseVm.Data = combatService.GetFightByCharacter(request);
+                responseVm.Data = combatService.Defend(request);
+            }
+            catch (Exception ex)
+            {
+                responseVm.Error = ex.Message;
+                return JsonConvert.SerializeObject(responseVm);
+            }
+
+            return JsonConvert.SerializeObject(responseVm);
+        }
+
+        // GET: /api/palantir/EndCombat
+        [HttpGet("EndCombat")]
+        public string EndCombat([FromQuery] RequestVm request)
+        {
+            var responseVm = new ResponseVm();
+            var combatService = new CombatService();
+
+            try
+            {
+                PalantirBase.ValidateRequest(request);
+                responseVm.Data = combatService.EndCombat(request);
+            }
+            catch (Exception ex)
+            {
+                responseVm.Error = ex.Message;
+                return JsonConvert.SerializeObject(responseVm);
+            }
+
+            return JsonConvert.SerializeObject(responseVm);
+        }
+
+        // GET: /api/palantir/GetFight
+        [HttpGet("GetFight")]
+        public string GetFight([FromQuery] RequestVm request)
+        {
+            var responseVm = new ResponseVm();
+            var combatService = new CombatService();
+
+            try
+            {
+                PalantirBase.ValidateRequest(request);
+                responseVm.Data = combatService.GetFight(request);
             }
             catch (Exception ex)
             {
@@ -408,7 +450,7 @@ namespace Avelraangame.Controllers
 
             try
             {
-                responseVm.Data = combatService.GetWeakNpcFight(request);
+                responseVm.Data = combatService.GenerateWeakNpcFight(request);
             }
             catch (Exception ex)
             {

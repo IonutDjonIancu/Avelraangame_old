@@ -7,7 +7,7 @@ namespace Avelraangame.Models.ViewModels
     {
         public Guid Id { get; set; }
 
-        public Combat Combatants { get; set; }
+        public Fight Combatants { get; set; }
 
         public Guid AttackerId { get; set; }
         public Guid DefenderId { get; set; }

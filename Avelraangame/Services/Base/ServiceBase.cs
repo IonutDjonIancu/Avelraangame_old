@@ -343,6 +343,38 @@ namespace Avelraangame.Services.Base
             }
         }
 
+        public Defend ValidateRequestDeserializationIntoDefend(string request)
+        {
+            Defend defend;
+
+            try
+            {
+                defend = JsonConvert.DeserializeObject<Defend>(request);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.BadRequest, ": ", ex.Message));
+            }
+
+            return defend;
+        }
+
+        public EndOfCombat ValidateRequestDeserializationIntoEndOfCombat(string request)
+        {
+            EndOfCombat combatEnd;
+
+            try
+            {
+                combatEnd = JsonConvert.DeserializeObject<EndOfCombat>(request);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.BadRequest, ": ", ex.Message));
+            }
+
+            return combatEnd;
+        }
+
         protected Attack ValidateRequestDeserializationIntoAttack(string request)
         {
             Attack attack;

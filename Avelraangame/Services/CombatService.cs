@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static Avelraangame.Services.ServiceUtils.CombatUtils;
 
 namespace Avelraangame.Services
 {
@@ -21,36 +22,108 @@ namespace Avelraangame.Services
             
             var store = new StorageService();
             var storeValue = store.GetStorageValueById(attack.FightId);
-            var combat = JsonConvert.DeserializeObject<Combat>(storeValue);
+            var fight = JsonConvert.DeserializeObject<Fight>(storeValue);
 
-            var attacker = combat.GoodGuys.Where(s => s.CharacterId.Equals(attack.Attacker)).FirstOrDefault();
-            if (attacker == null)
+            var attacker = fight.GoodGuys.Where(s => s.CharacterId.Equals(attack.Attacker)).FirstOrDefault();
+            if (attacker.AttackToken.Equals(false))
             {
-                throw new Exception(message: string.Concat(Scribe.ShortMessages.Failure, ": attacker incompatible with fight."));
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.Failure, ": attacker has no token."));
             }
-            var defender = combat.BadGuys.Where(s => s.CharacterId.Equals(attack.Defender)).FirstOrDefault();
-            if (defender == null)
+            if (attacker.IsAlive.Equals(false))
             {
-                throw new Exception(message: string.Concat(Scribe.ShortMessages.Failure, ": defender incompatible with fight."));
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.Failure, ": attacker is dead."));
             }
 
-            var (att, def) = RollAttack(attacker, defender);
+            var defender = fight.BadGuys.Where(s => s.CharacterId.Equals(attack.Defender)).FirstOrDefault();
+            if (defender.IsAlive.Equals(false))
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.Failure, ": defender is dead already."));
+            }
+
+            var (att, def, dmg) = RollAttack(attacker, defender);
 
             attacker = att;
             defender = def;
 
-            var combatString = JsonConvert.SerializeObject(combat);
+            if (dmg > 0)
+            {
+                fight.LastActionResult = string.Concat(Scribe.ShortMessages.Success, $": {dmg} dmg done");
+            }
+            else
+            {
+                fight.LastActionResult = string.Concat(Scribe.ShortMessages.Failure, $": miss");
+            }
 
+            fight.LastActionResult = EndFight(fight);
+
+            var storeVal = JsonConvert.SerializeObject(fight);
             var snapshot = new Storage
             {
                 Id = attack.FightId,
-                Value = combatString
+                Value = storeVal
+            };
+
+            DataService.UpdateStorage(snapshot);
+
+            return JsonConvert.SerializeObject(fight);
+        }
+
+        public string Defend(RequestVm request)
+        {
+            var defend = ValidateRequestDeserializationIntoDefend(request.Message);
+
+            var characterService = new CharactersService();
+            characterService.ValidateCharacter(defend.MainCharacterId, defend.PlayerId);
+
+            var store = new StorageService();
+            var storeValue = store.GetStorageValueById(defend.FightId);
+            var fight = JsonConvert.DeserializeObject<Fight>(storeValue);
+
+            var isMainCharInFight = fight.GoodGuys.Where(s => s.CharacterId.Equals(defend.MainCharacterId)).Any();
+
+            if (!isMainCharInFight)
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.Failure, ": character incompatible with fight."));
+            }
+
+            fight = RollNpcAttack(fight);
+            fight = ReimburseTokens(fight);
+
+            if (fight.TacticalSituation.Equals(TacticalSituation.Major_tactical_disadvantage) ||
+                fight.TacticalSituation.Equals(TacticalSituation.Slight_tactical_disadvantage))
+            {
+                fight = RollNpcAttack(fight);
+            }
+
+            fight.LastActionResult = EndFight(fight);
+
+            var storeVal = JsonConvert.SerializeObject(fight);
+            var snapshot = new Storage
+            {
+                Id = fight.FightId,
+                Value = storeVal
             };
             DataService.UpdateStorage(snapshot);
 
-            return JsonConvert.SerializeObject(combat);
+            return JsonConvert.SerializeObject(fight);
         }
 
+        public string EndCombat(RequestVm request)
+        {
+            var combatEnd = ValidateRequestDeserializationIntoEndOfCombat(request.Message);
+            var stored = DataService.GetStorage(combatEnd.FightId);
+            var fight = JsonConvert.DeserializeObject<Fight>(stored.Value);
+
+
+            if (fight.BadGuys.Where(s => s.IsAlive).Any() && fight.GoodGuys.Where(s => s.IsAlive).Any())
+            {
+                throw new Exception(string.Concat(Scribe.ShortMessages.Failure, ": there are still enemies about."));
+            }
+
+            DataService.DeleteStorage(stored);
+
+            return string.Concat(Scribe.ShortMessages.Success, ": combat ended.");
+        }
 
         public string GoToParty(RequestVm request)
         {
@@ -82,10 +155,7 @@ namespace Avelraangame.Services
             return JsonConvert.SerializeObject(string.Concat(Scribe.ShortMessages.Success));
         }
 
-        #endregion
-
-        #region Getters
-        public string GetWeakNpcFight(RequestVm request)
+        public string GenerateWeakNpcFight(RequestVm request)
         {
             var characterService = new CharactersService();
             var fightId = Guid.NewGuid();
@@ -104,7 +174,7 @@ namespace Avelraangame.Services
 
             charVm = characterService.GetCalculatedCharacterById(character.Id);
 
-            var combat = new Combat
+            var fight = new Fight
             {
                 FightId = fightId,
                 GoodGuys = new List<CharacterVm>
@@ -115,32 +185,43 @@ namespace Avelraangame.Services
                 {
                     characterService.GenerateWeakNpc()
                 },
-                FightDate = DateTime.Now.Date.ToShortDateString()
+                FightDate = DateTime.Now.Date.ToShortDateString(),
             };
 
+            fight.TacticalSituation = DecideTacticalSituation(fight.GoodGuys, fight.BadGuys);
+            
+            if (fight.TacticalSituation.Equals(TacticalSituation.Major_tactical_disadvantage) ||
+                fight.TacticalSituation.Equals(TacticalSituation.Slight_tactical_disadvantage))
+            {
+                fight = RollNpcAttack(fight);
+                fight.LastActionResult = string.Concat(fight.TacticalSituation);
+            }
+            
             var snapshot = new Storage
             {
                 Id = fightId,
-                Value = JsonConvert.SerializeObject(combat)
+                Value = JsonConvert.SerializeObject(fight)
             };
             DataService.CreateStorage(snapshot);
 
-            return string.Concat(Scribe.ShortMessages.Success, ": weak npc fight generated!");
+            return string.Concat(Scribe.ShortMessages.Success, $": {fight.TacticalSituation}.");
         }
+        #endregion
 
-        public string GetFightByCharacter(RequestVm request)
+        #region Getters
+
+        public string GetFight(RequestVm request)
         {
             var charVm = ValidateRequestDeserializationIntoCharacterVm(request.Message);
             var character = ValidateCharacterByPlayerId(charVm.CharacterId, charVm.PlayerId);
-
             var storage = new StorageService();
 
-            if (character.InFight.GetValueOrDefault())
+            if (!character.InFight.GetValueOrDefault())
             {
-                return storage.GetStorageValueById(character.FightId.GetValueOrDefault());
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.ResourceNotFound, ": character is not fighting."));
             }
 
-            return string.Concat(Scribe.ShortMessages.ResourceNotFound, ": character is not fighting.");
+            return storage.GetStorageValueById(character.FightId.GetValueOrDefault());
         }
         #endregion
 

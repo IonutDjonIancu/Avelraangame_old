@@ -6,27 +6,33 @@
 <p style="color:navajowhite">Combat</p>
 
 <div id="modelJumbo" class="text-left jumbotron" style="opacity:0.7; background-color:black; color:navajowhite">
-    <div class="btn-group-sm"> Generate NPC
+    <div class="container">
+        <div class="row">
+            <div id="attackerDiv" class="col"></div>
+            <div id="defenderDiv" class="col"></div>
+        </div>
+    </div>
+    <div id="generateFightBtns" class="btn-group-sm"> Generate NPC fight
         <button id="weak" class="btn btn-outline-dark">Weak</button>
         <button id="normal" class="btn btn-outline-dark">Normal</button>
         <button id="strong" class="btn btn-outline-dark">Strong</button>
-        <button id="getFight" class="btn btn-outline-dark float-right">Fight!</button>
     </div>
 
     <hr />
 
-    <div id="combatants" style="display:none">
+    <div id="combatants">
         <div class="container">
             <div class="row">
-                <div id="fighterDiv" class="col text-center" style="border-color:burlywood; border-style:solid; border-radius:7px">
+                <div id="goodGuys" class="col" style="border-color:steelblue; border-style:solid; border-radius:7px; padding:15px">
                 </div>
                 <div class="col col-2 text-center">
                     <div class="btn-group-vertical">
                         <button id="attackBtn" class="btn btn-outline-warning">Attack</button>
                         <button id="endTurnBtn" class="btn btn-outline-light">End turn</button>
+                        <button id="endFightBtn" class="btn btn-outline-dark">End fight</button>
                     </div>
                 </div>
-                <div id="npcDiv" class="col text-center" style="border-color:coral; border-style:solid; border-radius:7px">
+                <div id="badGuys" class="col" style="border-color:dimgray; border-style:solid; border-radius:7px; padding:15px">
                 </div>
             </div>
         </div>
@@ -36,3 +42,4 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="~/js/combat/fight.js"></script>
+
