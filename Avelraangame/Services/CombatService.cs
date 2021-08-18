@@ -47,7 +47,7 @@ namespace Avelraangame.Services
 
             if (dmg > 0)
             {
-                fight.LastActionResult = string.Concat(Scribe.ShortMessages.Success, $": {dmg} dmg done");
+                fight.LastActionResult = string.Concat(Scribe.ShortMessages.Success, $": {dmg} dmg done.");
             }
             else
             {
@@ -194,8 +194,8 @@ namespace Avelraangame.Services
                 fight.TacticalSituation.Equals(TacticalSituation.Slight_tactical_disadvantage))
             {
                 fight = RollNpcAttack(fight);
-                fight.LastActionResult = string.Concat(fight.TacticalSituation);
             }
+            fight.LastActionResult = string.Concat(fight.TacticalSituation);
             
             var snapshot = new Storage
             {
@@ -204,7 +204,7 @@ namespace Avelraangame.Services
             };
             DataService.CreateStorage(snapshot);
 
-            return string.Concat(Scribe.ShortMessages.Success, $": {fight.TacticalSituation}.");
+            return string.Concat(Scribe.ShortMessages.Success, $": {fight.LastActionResult}.");
         }
         #endregion
 

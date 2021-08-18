@@ -3,6 +3,7 @@ using Avelraangame.Models.ModelScraps;
 using Avelraangame.Models.ViewModels;
 using Avelraangame.Services.Base;
 using Avelraangame.Services.ServiceUtils;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -86,7 +87,15 @@ namespace Avelraangame.Services.SubService
             var indexGoood = fight.GoodGuys.FindIndex(s => s.CharacterId == goodguy.CharacterId);
             fight.GoodGuys.RemoveAt(indexGoood);
             fight.GoodGuys.Add(goodguy);
-            fight.LastActionResult = string.Concat(Scribe.ShortMessages.NpcDmg, $": {dmg}");
+
+            if (dmg > 0)
+            {
+                fight.LastActionResult = string.Concat(Scribe.ShortMessages.NpcDmg, $": {dmg} dmg taken.");
+            }
+            else
+            {
+                fight.LastActionResult = string.Concat(Scribe.ShortMessages.NpcDmg, $": npc missed!");
+            }
 
             var result = RollNpcAttack(fight);
 
@@ -145,15 +154,43 @@ namespace Avelraangame.Services.SubService
         {
             if (fight.GoodGuys.Where(s => s.IsAlive).Count() <= 0)
             {
+                foreach (var chr in fight.GoodGuys)
+                {
+                    var dbchr = DataService.GetCharacterById(chr.CharacterId);
+                    dbchr.FightId = null;
+                    dbchr.InFight = false;
+
+                    DataService.UpdateCharacter(dbchr);
+                }
+
                 return string.Concat(Scribe.ShortMessages.Failure, ": defeat!");
             }
 
             if (fight.BadGuys.Where(s => s.IsAlive).Count() <= 0)
             {
+                foreach (var chr in fight.GoodGuys)
+                {
+                    var dbchr = DataService.GetCharacterById(chr.CharacterId);
+                    dbchr.FightId = null;
+                    dbchr.InFight = false;
+                    dbchr.Logbook = IncrementFightsWon(dbchr.Logbook);
+
+                    DataService.UpdateCharacter(dbchr);
+                }
+
                 return string.Concat(Scribe.ShortMessages.Success, ": victory!");
             }
             
             return fight.LastActionResult;
+        }
+
+        private string IncrementFightsWon(string logbook)
+        {
+            var log = JsonConvert.DeserializeObject<Logbook>(logbook);
+
+            log.Fights++;
+
+            return JsonConvert.SerializeObject(log);
         }
     }
 }

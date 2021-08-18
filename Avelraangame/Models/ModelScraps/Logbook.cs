@@ -15,6 +15,7 @@ namespace Avelraangame.Models.ModelScraps
         public int PortraitNr { get; set; }
         public string Race { get; set; }
         public string Culture { get; set; }
+        public int Fights { get; set; }
 
         //public LocationUtils.Location Location { get; set; }
 

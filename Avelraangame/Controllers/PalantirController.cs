@@ -489,6 +489,30 @@ namespace Avelraangame.Controllers
         #endregion
         #endregion
 
+        #region Home
+        #region GET
+        // GET: api/palantir/GetFame
+        [HttpGet("GetFame")]
+        public string GetFame()
+        {
+            var responseVm = new ResponseVm();
+            var characterService = new CharactersService();
 
+            try
+            {
+                responseVm.Data = characterService.GetFame();
+            }
+            catch (Exception ex)
+            {
+                responseVm.Error = ex.Message;
+                return JsonConvert.SerializeObject(responseVm);
+            }
+
+            return JsonConvert.SerializeObject(responseVm);
+        }
+
+
+        #endregion
+        #endregion
     }
 }

@@ -114,6 +114,42 @@ namespace Avelraangame.Services
         #endregion
 
         #region Public getters
+
+        public string GetFame()
+        {
+            var allCharacters = DataService.GetCharacters();
+            var allCharactersVm = new List<CharacterVm>();
+
+            foreach (var chr in allCharacters)
+            {
+                var charVm = new CharacterVm
+                {
+                    Name = chr.Name,
+                    PlayerName = DataService.GetPlayerById(chr.PlayerId.GetValueOrDefault()).Name,
+                    Expertise = JsonConvert.DeserializeObject<Expertise>(chr.Expertise),
+                    Logbook = JsonConvert.DeserializeObject<Logbook>(chr.Logbook)
+                };
+
+                allCharactersVm.Add(charVm);
+            }
+
+            var result = new Fame
+            {
+                Fights = allCharactersVm.OrderByDescending(s => s.Logbook.Fights)
+                    .ThenByDescending(s => s.Expertise.Experience)
+                    .ThenBy(s => s.Logbook.EntityLevel)
+                    .ThenBy(s => s.Logbook.StatsRoll)
+                    .ToList(),
+                Wealth = allCharactersVm.OrderByDescending(s => s.Logbook.Wealth)
+                    .ThenByDescending(s => s.Expertise.Experience)
+                    .ThenBy(s => s.Logbook.EntityLevel)
+                    .ThenBy(s => s.Logbook.StatsRoll)
+                    .ToList()
+            };
+
+            return JsonConvert.SerializeObject(result);
+        }
+
         public new CharacterVm GenerateWeakNpc()
         {
             return base.GenerateWeakNpc();

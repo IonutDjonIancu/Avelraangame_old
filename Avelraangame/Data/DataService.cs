@@ -110,6 +110,13 @@ namespace Avelraangame.Services
         #endregion
 
         #region Character
+
+        public List<Character> GetCharacters()
+        {
+            return Context.Characters
+                .ToList();
+        }
+
         public void SaveCharacter(Character chr)
         {
             Context.Characters.Add(chr);
