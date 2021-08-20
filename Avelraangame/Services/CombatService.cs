@@ -80,10 +80,15 @@ namespace Avelraangame.Services
             var fight = JsonConvert.DeserializeObject<Fight>(storeValue);
 
             var isMainCharInFight = fight.GoodGuys.Where(s => s.CharacterId.Equals(defend.MainCharacterId)).Any();
-
             if (!isMainCharInFight)
             {
                 throw new Exception(message: string.Concat(Scribe.ShortMessages.Failure, ": character incompatible with fight."));
+            }
+
+            var allEnemiesAreDead = !fight.BadGuys.Where(s => s.IsAlive).Any();
+            if (allEnemiesAreDead)
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.Failure, ": all enemies are defeated."));
             }
 
             fight = RollNpcAttack(fight);

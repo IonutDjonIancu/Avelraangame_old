@@ -49,7 +49,7 @@ function drawCharacters(data) {
 
     for (var i = 0; i < data.Fights.length; i++) {
         var html = `
-            <button class="btn btn-outline-secondary" title="${data.Fights[i].PlayerName}">
+            <button class="btn btn-outline-secondary" title="${data.Fights[i].PlayerName}" style="width:200px">
                 ${data.Fights[i].Name}
                 <img style="border-radius:10px" src="../media/images/humans/human${data.Fights[i].Logbook.PortraitNr}.png" />
                 ${data.Fights[i].Logbook.Fights}
@@ -61,7 +61,7 @@ function drawCharacters(data) {
 
     for (var j = 0; j < data.Wealth.length; j++) {
         var html2 = `
-            <button class="btn btn-outline-secondary" title="${data.Wealth[j].PlayerName}">
+            <button class="btn btn-outline-secondary" title="${data.Wealth[j].PlayerName}" style="width:200px">
                 ${data.Wealth[j].Name}
                 <img style="border-radius:10px" src="../media/images/humans/human${data.Wealth[j].Logbook.PortraitNr}.png" />
                 ${data.Wealth[j].Logbook.Wealth}

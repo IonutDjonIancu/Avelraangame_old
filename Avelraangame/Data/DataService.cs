@@ -63,6 +63,11 @@ namespace Avelraangame.Services
             Context.SaveChanges();
         }
 
+        public void DeleteItem(Item item)
+        {
+            Context.Items.Remove(item);
+            Context.SaveChanges();
+        }
         public int GetItemsCount()
         {
             return Context.Items.Count();

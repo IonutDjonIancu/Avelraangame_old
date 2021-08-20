@@ -174,14 +174,31 @@ namespace Avelraangame.Services.SubService
                     dbchr.FightId = null;
                     dbchr.InFight = false;
                     dbchr.Logbook = IncrementFightsWon(dbchr.Logbook);
+                    dbchr.Supplies = LootSupplies(dbchr.Supplies, dbchr.Id);
 
                     DataService.UpdateCharacter(dbchr);
                 }
 
-                return string.Concat(Scribe.ShortMessages.Success, ": victory!");
+                return string.Concat(Scribe.ShortMessages.Success, ": victory! You loot supplies and leave.");
             }
             
             return fight.LastActionResult;
+        }
+
+
+        private string LootSupplies(string oldSupplies, Guid characterId)
+        {
+            var itemService = new ItemsService();
+            var newSupplies = JsonConvert.DeserializeObject<List<ItemVm>>(oldSupplies);
+            var loots = Dice.Roll_d_20() / 4;
+
+            for (int i = 0; i < loots; i++)
+            {
+                var item = itemService.GenerateRandomItem(characterId.ToString());
+                newSupplies.Add(item);
+            }
+
+            return JsonConvert.SerializeObject(newSupplies);
         }
 
         private string IncrementFightsWon(string logbook)

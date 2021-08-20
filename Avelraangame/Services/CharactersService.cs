@@ -139,11 +139,13 @@ namespace Avelraangame.Services
                     .ThenByDescending(s => s.Expertise.Experience)
                     .ThenBy(s => s.Logbook.EntityLevel)
                     .ThenBy(s => s.Logbook.StatsRoll)
+                    .Take(5)
                     .ToList(),
                 Wealth = allCharactersVm.OrderByDescending(s => s.Logbook.Wealth)
                     .ThenByDescending(s => s.Expertise.Experience)
                     .ThenBy(s => s.Logbook.EntityLevel)
                     .ThenBy(s => s.Logbook.StatsRoll)
+                    .Take(5)
                     .ToList()
             };
 

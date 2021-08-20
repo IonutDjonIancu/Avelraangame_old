@@ -313,6 +313,48 @@ namespace Avelraangame.Controllers
 
         #region Items
         #region GET
+        // GET: /api/palantir/SellItem
+        [HttpGet("SellItem")]
+        public string SellItem([FromQuery] RequestVm request)
+        {
+            var responseVm = new ResponseVm();
+            var itemService = new ItemsService();
+
+            try
+            {
+                PalantirBase.ValidateRequest(request);
+                responseVm.Data = itemService.SellItem(request);
+            }
+            catch (Exception ex)
+            {
+                responseVm.Error = ex.Message;
+                return JsonConvert.SerializeObject(responseVm);
+            }
+
+            return JsonConvert.SerializeObject(responseVm);
+        }
+
+        // GET: /api/palantir/GetItemsByCharacter
+        [HttpGet("GetItemsByCharacter")]
+        public string GetItemsByCharacter([FromQuery] RequestVm request)
+        {
+            var responseVm = new ResponseVm();
+            var itemService = new ItemsService();
+
+            try
+            {
+                PalantirBase.ValidateRequest(request);
+                responseVm.Data = itemService.GetItemsByCharacter(request);
+            }
+            catch (Exception ex)
+            {
+                responseVm.Error = ex.Message;
+                return JsonConvert.SerializeObject(responseVm);
+            }
+
+            return JsonConvert.SerializeObject(responseVm);
+        }
+
         // GET: api/palantir/GenerateItem
         [HttpGet("GenerateItem")]
         public string GenerateItem()
