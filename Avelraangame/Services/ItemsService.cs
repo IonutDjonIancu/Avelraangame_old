@@ -14,6 +14,28 @@ namespace Avelraangame.Services
     {
         #region Business logic
 
+        public string SellItem(RequestVm request)
+        {
+            var itemVm = ValidateRequestDeserializationIntoItemVm(request.Message);
+            ValidateItemByCharacterId(itemVm.Id, itemVm.CharacterId.GetValueOrDefault());
+
+            var character = DataService.GetCharacterById(itemVm.CharacterId.GetValueOrDefault());
+            var item = DataService.GetItemById(itemVm.Id);
+
+            var supplies = JsonConvert.DeserializeObject<List<ItemVm>>(character.Supplies);
+            var itemVmToRemove = supplies.Where(s => s.Id.Equals(item.Id)).FirstOrDefault();
+            supplies.Remove(itemVmToRemove);
+            character.Supplies = JsonConvert.SerializeObject(supplies);
+
+            var logbook = JsonConvert.DeserializeObject<Logbook>(character.Logbook);
+            logbook.Wealth += item.Worth;
+            character.Logbook = JsonConvert.SerializeObject(logbook);
+            DataService.UpdateCharacter(character);
+            DataService.DeleteItem(item);
+
+            return string.Concat(Scribe.ShortMessages.Success, $": item sold for {item.Worth}");
+        }
+
         public Character EquipItemToSlot(Character chr, Item item)
         {
             var supps = new List<ItemVm>();
@@ -160,6 +182,14 @@ namespace Avelraangame.Services
         #endregion
 
         #region Public getters
+        public string GetItemsByCharacter(RequestVm request)
+        {
+            var reqCharVm = ValidateRequestDeserializationIntoCharacterVm(request.Message);
+            var chr = ValidateCharacterByPlayerId(reqCharVm.CharacterId, reqCharVm.PlayerId);
+
+            return chr.Supplies;
+        }
+
         public int GetItemsCount()
         {
             return DataService.GetItemsCount();

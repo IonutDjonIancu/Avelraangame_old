@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using System;
 using Avelraangame.Services.SubService;
+using Avelraangame.Models.ModelScraps;
 
 namespace Avelraangame.Controllers
 {
@@ -312,6 +313,48 @@ namespace Avelraangame.Controllers
 
         #region Items
         #region GET
+        // GET: /api/palantir/SellItem
+        [HttpGet("SellItem")]
+        public string SellItem([FromQuery] RequestVm request)
+        {
+            var responseVm = new ResponseVm();
+            var itemService = new ItemsService();
+
+            try
+            {
+                PalantirBase.ValidateRequest(request);
+                responseVm.Data = itemService.SellItem(request);
+            }
+            catch (Exception ex)
+            {
+                responseVm.Error = ex.Message;
+                return JsonConvert.SerializeObject(responseVm);
+            }
+
+            return JsonConvert.SerializeObject(responseVm);
+        }
+
+        // GET: /api/palantir/GetItemsByCharacter
+        [HttpGet("GetItemsByCharacter")]
+        public string GetItemsByCharacter([FromQuery] RequestVm request)
+        {
+            var responseVm = new ResponseVm();
+            var itemService = new ItemsService();
+
+            try
+            {
+                PalantirBase.ValidateRequest(request);
+                responseVm.Data = itemService.GetItemsByCharacter(request);
+            }
+            catch (Exception ex)
+            {
+                responseVm.Error = ex.Message;
+                return JsonConvert.SerializeObject(responseVm);
+            }
+
+            return JsonConvert.SerializeObject(responseVm);
+        }
+
         // GET: api/palantir/GenerateItem
         [HttpGet("GenerateItem")]
         public string GenerateItem()
@@ -354,7 +397,164 @@ namespace Avelraangame.Controllers
         #endregion
         #endregion
 
+        #region Combat
+        #region GET
+        // GET: /api/palantir/Attack
+        [HttpGet("Attack")]
+        public string Attack([FromQuery] RequestVm request)
+        {
+            var responseVm = new ResponseVm();
+            var combatService = new CombatService();
+
+            try
+            {
+                PalantirBase.ValidateRequest(request);
+                responseVm.Data = combatService.Attack(request);
+            }
+            catch (Exception ex)
+            {
+                responseVm.Error = ex.Message;
+                return JsonConvert.SerializeObject(responseVm);
+            }
+
+            return JsonConvert.SerializeObject(responseVm);
+        }
+
+        // GET: /api/palantir/Defend
+        [HttpGet("Defend")]
+        public string Defend([FromQuery] RequestVm request)
+        {
+            var responseVm = new ResponseVm();
+            var combatService = new CombatService();
+
+            try
+            {
+                PalantirBase.ValidateRequest(request);
+                responseVm.Data = combatService.Defend(request);
+            }
+            catch (Exception ex)
+            {
+                responseVm.Error = ex.Message;
+                return JsonConvert.SerializeObject(responseVm);
+            }
+
+            return JsonConvert.SerializeObject(responseVm);
+        }
+
+        // GET: /api/palantir/EndCombat
+        [HttpGet("EndCombat")]
+        public string EndCombat([FromQuery] RequestVm request)
+        {
+            var responseVm = new ResponseVm();
+            var combatService = new CombatService();
+
+            try
+            {
+                PalantirBase.ValidateRequest(request);
+                responseVm.Data = combatService.EndCombat(request);
+            }
+            catch (Exception ex)
+            {
+                responseVm.Error = ex.Message;
+                return JsonConvert.SerializeObject(responseVm);
+            }
+
+            return JsonConvert.SerializeObject(responseVm);
+        }
+
+        // GET: /api/palantir/GetFight
+        [HttpGet("GetFight")]
+        public string GetFight([FromQuery] RequestVm request)
+        {
+            var responseVm = new ResponseVm();
+            var combatService = new CombatService();
+
+            try
+            {
+                PalantirBase.ValidateRequest(request);
+                responseVm.Data = combatService.GetFight(request);
+            }
+            catch (Exception ex)
+            {
+                responseVm.Error = ex.Message;
+                return JsonConvert.SerializeObject(responseVm);
+            }
+
+            return JsonConvert.SerializeObject(responseVm);
+        }
+
+        // GET: /api/palantir/GenerateWeakNpcFight
+        [HttpGet("GenerateWeakNpcFight")]
+        public string GenerateWeakNpcFight([FromQuery] RequestVm request)
+        {
+            var responseVm = new ResponseVm();
+            var combatService = new CombatService();
+
+            try
+            {
+                responseVm.Data = combatService.GenerateWeakNpcFight(request);
+            }
+            catch (Exception ex)
+            {
+                responseVm.Error = ex.Message;
+                return JsonConvert.SerializeObject(responseVm);
+            }
+
+            return JsonConvert.SerializeObject(responseVm);
+        }
 
 
+        #endregion
+        #region POST
+        // GET: /api/palantir/GoToParty
+        [HttpPost("GoToParty")]
+        public string GoToParty([FromBody] RequestVm request)
+        {
+            var responseVm = new ResponseVm();
+            var combatService = new CombatService();
+
+            try
+            {
+                PalantirBase.ValidateRequest(request);
+                responseVm.Data = combatService.GoToParty(request);
+            }
+            catch (Exception ex)
+            {
+                responseVm.Error = ex.Message;
+                return JsonConvert.SerializeObject(responseVm);
+            }
+
+            return JsonConvert.SerializeObject(responseVm);
+        }
+
+
+        #endregion
+        #endregion
+
+        #region Home
+        #region GET
+        // GET: api/palantir/GetFame
+        [HttpGet("GetFame")]
+        public string GetFame()
+        {
+            var responseVm = new ResponseVm();
+            var characterService = new CharactersService();
+
+            try
+            {
+                responseVm.Data = characterService.GetFame();
+            }
+            catch (Exception ex)
+            {
+                responseVm.Error = ex.Message;
+                return JsonConvert.SerializeObject(responseVm);
+            }
+
+            return JsonConvert.SerializeObject(responseVm);
+        }
+
+
+        #endregion
+        #endregion
     }
 }

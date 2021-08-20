@@ -160,7 +160,8 @@
             BadRequest,
             Success,
             Failure,
-            ResourceNotFound
+            ResourceNotFound,
+            NpcDmg
         }
         #endregion
 

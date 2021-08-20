@@ -6,6 +6,7 @@ using Avelraangame.Services.SubService;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Avelraangame.Services
 {
@@ -109,10 +110,52 @@ namespace Avelraangame.Services
 
             return JsonConvert.SerializeObject(characterVm);
         }
-        
+
         #endregion
 
         #region Public getters
+
+        public string GetFame()
+        {
+            var allCharacters = DataService.GetCharacters();
+            var allCharactersVm = new List<CharacterVm>();
+
+            foreach (var chr in allCharacters)
+            {
+                var charVm = new CharacterVm
+                {
+                    Name = chr.Name,
+                    PlayerName = DataService.GetPlayerById(chr.PlayerId.GetValueOrDefault()).Name,
+                    Expertise = JsonConvert.DeserializeObject<Expertise>(chr.Expertise),
+                    Logbook = JsonConvert.DeserializeObject<Logbook>(chr.Logbook)
+                };
+
+                allCharactersVm.Add(charVm);
+            }
+
+            var result = new Fame
+            {
+                Fights = allCharactersVm.OrderByDescending(s => s.Logbook.Fights)
+                    .ThenByDescending(s => s.Expertise.Experience)
+                    .ThenBy(s => s.Logbook.EntityLevel)
+                    .ThenBy(s => s.Logbook.StatsRoll)
+                    .Take(5)
+                    .ToList(),
+                Wealth = allCharactersVm.OrderByDescending(s => s.Logbook.Wealth)
+                    .ThenByDescending(s => s.Expertise.Experience)
+                    .ThenBy(s => s.Logbook.EntityLevel)
+                    .ThenBy(s => s.Logbook.StatsRoll)
+                    .Take(5)
+                    .ToList()
+            };
+
+            return JsonConvert.SerializeObject(result);
+        }
+
+        public new CharacterVm GenerateWeakNpc()
+        {
+            return base.GenerateWeakNpc();
+        }
 
         public string GetCalculatedCharacter(RequestVm request)
         {
@@ -122,6 +165,13 @@ namespace Avelraangame.Services
             var charvm = GetCalculatedCharacter(reqCharVm.CharacterId);
 
             return JsonConvert.SerializeObject(charvm);
+        }
+
+        public CharacterVm GetCalculatedCharacterById(Guid characterId)
+        {
+            ValidateCharacterById(characterId);
+
+            return GetCalculatedCharacter(characterId);
         }
 
         public string GetCharacterWithLevelUp(RequestVm request)
@@ -150,6 +200,12 @@ namespace Avelraangame.Services
             return JsonConvert.SerializeObject(charvm);
         }
 
+        public CharacterVm ValidateCharacter(Guid characterId, Guid playerId)
+        {
+            var character = ValidateCharacterByPlayerId(characterId, playerId);
+
+            return new CharacterVm(character);
+        }
 
         /// <summary>
         /// Gets the list of characters by a combination of player id and player name.
@@ -170,7 +226,9 @@ namespace Avelraangame.Services
                 returnList.Add(new CharacterVm(chr));
             }
 
-            return JsonConvert.SerializeObject(returnList);
+            var result = returnList.OrderBy(s => s.Name);
+
+            return JsonConvert.SerializeObject(result);
         }
 
         #endregion

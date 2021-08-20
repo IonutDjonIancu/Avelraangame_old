@@ -1,4 +1,5 @@
 ﻿using Avelraangame.Models;
+using Avelraangame.Models.ModelScraps;
 using Avelraangame.Models.ViewModels;
 using Avelraangame.Services.ServiceUtils;
 using Newtonsoft.Json;
@@ -318,6 +319,94 @@ namespace Avelraangame.Services.Base
 
         #endregion
 
+        #region CombatValidation
+        public void ValidateAttackDetails(Attack attack)
+        {
+            if (attack == null)
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.Failure, ": attack is missing or invalid."));
+            }
+
+            if (attack.FightId == Guid.Empty || attack.FightId == null)
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.Failure, ": fightId is missing or invalid."));
+            }
+
+            if (attack.Attacker == Guid.Empty || attack.Attacker == null)
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.Failure, ": attacker is missing or invalid."));
+            }
+
+            if (attack.Defender == Guid.Empty || attack.Defender == null)
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.Failure, ": defender is missing or invalid."));
+            }
+        }
+
+        public Defend ValidateRequestDeserializationIntoDefend(string request)
+        {
+            Defend defend;
+
+            try
+            {
+                defend = JsonConvert.DeserializeObject<Defend>(request);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.BadRequest, ": ", ex.Message));
+            }
+
+            return defend;
+        }
+
+        public EndOfCombat ValidateRequestDeserializationIntoEndOfCombat(string request)
+        {
+            EndOfCombat combatEnd;
+
+            try
+            {
+                combatEnd = JsonConvert.DeserializeObject<EndOfCombat>(request);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.BadRequest, ": ", ex.Message));
+            }
+
+            return combatEnd;
+        }
+
+        protected Attack ValidateRequestDeserializationIntoAttack(string request)
+        {
+            Attack attack;
+
+            try
+            {
+                attack = JsonConvert.DeserializeObject<Attack>(request);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.BadRequest, ": ", ex.Message));
+            }
+
+            return attack;
+        }
+        protected CombatVm ValidateRequestDeserializationIntoCombatVm(string request)
+        {
+            CombatVm combatVm;
+
+            try
+            {
+                combatVm = JsonConvert.DeserializeObject<CombatVm>(request);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.BadRequest, ": ", ex.Message));
+            }
+
+            return combatVm;
+        }
+
+        #endregion
 
 
 

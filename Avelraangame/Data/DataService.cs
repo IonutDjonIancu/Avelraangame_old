@@ -63,6 +63,11 @@ namespace Avelraangame.Services
             Context.SaveChanges();
         }
 
+        public void DeleteItem(Item item)
+        {
+            Context.Items.Remove(item);
+            Context.SaveChanges();
+        }
         public int GetItemsCount()
         {
             return Context.Items.Count();
@@ -110,6 +115,13 @@ namespace Avelraangame.Services
         #endregion
 
         #region Character
+
+        public List<Character> GetCharacters()
+        {
+            return Context.Characters
+                .ToList();
+        }
+
         public void SaveCharacter(Character chr)
         {
             Context.Characters.Add(chr);
@@ -125,14 +137,14 @@ namespace Avelraangame.Services
         public Character GetCharacterById(Guid charId)
         {
             return Context.Characters
-                .Where(s => s.Id == charId)
+                .Where(s => s.Id.Equals(charId))
                 .FirstOrDefault();
         }
 
         public List<Character> GetCharactersByPlayerId(Guid playerId)
         {
             return Context.Characters
-                .Where(s => s.PlayerId.Equals(playerId))
+                .Where(s => s.PlayerId.Equals(playerId) && s.IsAlive)
                 .ToList();
         }
 
@@ -144,6 +156,51 @@ namespace Avelraangame.Services
                 .ToList();
         }
 
+        #endregion
+
+        #region Party
+        public void CreateParty(Party party)
+        {
+            Context.Party.Add(party);
+            Context.SaveChanges();
+        }
+        #endregion
+
+        #region Storage
+        public void CreateStorage(Storage store)
+        {
+            Context.Storage.Add(store);
+            Context.SaveChanges();
+        }
+
+        public void UpdateStorage(Storage store)
+        {
+            Context.Storage.Update(store);
+            Context.SaveChanges();
+        }
+
+        public void DeleteStorage(Storage store)
+        {
+            Context.Storage.Remove(store);
+            Context.SaveChanges();
+        }
+
+        public string GetStorageValueById(Guid storageId)
+        {
+            return Context
+                .Storage
+                .Where(s => s.Id.Equals(storageId))
+                .FirstOrDefault()
+                ?.Value;
+        }
+
+        public Storage GetStorage(Guid storageId)
+        {
+            return Context
+                .Storage
+                .Where(s => s.Id.Equals(storageId))
+                .FirstOrDefault();
+        }
         #endregion
     }
 }

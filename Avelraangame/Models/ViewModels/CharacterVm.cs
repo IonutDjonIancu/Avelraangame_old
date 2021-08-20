@@ -20,9 +20,12 @@ namespace Avelraangame.Models.ViewModels
 
         public bool IsAlive { get; set; }
         public bool HasLevelup { get; set; }
+        public bool AttackToken { get; set; }
         public bool InParty { get; set; }
         public Guid? PartyId { get; set; }
 
+        public bool? InFight { get; set; }
+        public Guid? FightId { get; set; }
 
         public Equippment Equippment { get; set; }
         public List<HeroicTraits> HeroicTraits { get; set; }
@@ -39,6 +42,7 @@ namespace Avelraangame.Models.ViewModels
             HeroicTraits = new List<HeroicTraits>();
             NegativePerks = new List<NegativePerks>();
             Logbook = new Logbook();
+            AttackToken = true;
         }
 
         public CharacterVm(Character chr)
@@ -52,6 +56,9 @@ namespace Avelraangame.Models.ViewModels
             HasLevelup = chr.HasLevelup;
             InParty = chr.InParty;
             PartyId = chr.PartyId;
+            InFight = chr.InFight;
+            FightId = chr.FightId;
+            AttackToken = true;
 
             if (!string.IsNullOrWhiteSpace(chr.Stats))
             {
