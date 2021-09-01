@@ -5,15 +5,18 @@ using System.Threading.Tasks;
 
 namespace Avelraangame.Models
 {
-    public class Quest
+    public class Episode
     {
-
-        // questlines are culture related
-
         public Guid Id { get; set; }
+
         public string Name { get; set; }
 
-        public string EpisodeDetails { get; set; }
+        public int Date { get; set; }
 
+        public string Prologue { get; set; }
+
+        public string Epilogue { get; set; }
+
+        public ICollection<Act> Acts { get; set; }
     }
 }

@@ -15,7 +15,8 @@ namespace Avelraangame.Data
         public virtual DbSet<NegativePerks> NegativePerks { get; set; }
         public virtual DbSet<Party> Party { get; set; }
         public virtual DbSet<Storage> Storage { get; set; }
-        public virtual DbSet<Quest> Quests { get; set; }
+        public virtual DbSet<Act> Acts { get; set; }
+        public virtual DbSet<Episode> Episodes { get; set; }
 
         public AvelraanContext()
         {
@@ -40,6 +41,12 @@ namespace Avelraangame.Data
 
             OnModelCreatingPartial(modelBuilder);
 
+        // Acts
+            modelBuilder.Entity<Act>(entity =>
+                entity.HasOne(s => s.Episode)
+                    .WithMany(s => s.Acts)
+                    .HasForeignKey(s => s.EpisodeId)
+                    .HasPrincipalKey(s => s.Id));
 
         // Items
             modelBuilder.Entity<Item>(entity =>
