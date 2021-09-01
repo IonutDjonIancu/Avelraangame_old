@@ -15,6 +15,7 @@ namespace Avelraangame.Data
         public virtual DbSet<NegativePerks> NegativePerks { get; set; }
         public virtual DbSet<Party> Party { get; set; }
         public virtual DbSet<Storage> Storage { get; set; }
+        public virtual DbSet<Quest> Quests { get; set; }
 
         public AvelraanContext()
         {

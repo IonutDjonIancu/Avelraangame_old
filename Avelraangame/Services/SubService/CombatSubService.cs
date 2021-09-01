@@ -71,7 +71,7 @@ namespace Avelraangame.Services.SubService
                 MarkForDeath(defender.CharacterId);
             }
 
-            return (attacker, defender, rollResult);
+            return (attacker, defender, damage);
         }
 
         protected Fight RollNpcAttack(Fight fight)
