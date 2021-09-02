@@ -1,4 +1,4 @@
-﻿using Avelraangame.Models.ModelScraps;
+﻿using Avelraangame.Models.POCOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;

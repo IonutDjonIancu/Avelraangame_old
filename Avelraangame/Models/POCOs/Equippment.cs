@@ -1,7 +1,7 @@
 ﻿using Avelraangame.Models.ViewModels;
 using System.Collections.Generic;
 
-namespace Avelraangame.Models.ModelScraps
+namespace Avelraangame.Models.POCOs
 {
     public class Equippment
     {

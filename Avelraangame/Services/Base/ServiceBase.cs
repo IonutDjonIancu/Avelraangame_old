@@ -1,5 +1,5 @@
 ﻿using Avelraangame.Models;
-using Avelraangame.Models.ModelScraps;
+using Avelraangame.Models.POCOs;
 using Avelraangame.Models.ViewModels;
 using Avelraangame.Services.ServiceUtils;
 using Newtonsoft.Json;
@@ -408,7 +408,29 @@ namespace Avelraangame.Services.Base
 
         #endregion
 
+        #region EpisodeValidation
+        protected void ValidateEpisodeName(string episodeName)
+        {
+            if (string.IsNullOrWhiteSpace(episodeName))
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.BadRequest, ": episode name is missing or is invalid."));
+            }
+        }
 
+        protected void ValidateEpisodeExists(string episodeName)
+        {
+            ValidateEpisodeName(episodeName);
+
+            var episode = DataService.GetEpisodeByName(episodeName);
+
+            if (episode == null)
+            {
+                return;
+            }
+
+            throw new Exception(message: string.Concat(Scribe.ShortMessages.Failure, ": episode with that name already exists."));
+        }
+        #endregion
 
 
 

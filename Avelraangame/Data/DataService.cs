@@ -7,7 +7,6 @@ using System.Linq;
 
 namespace Avelraangame.Services
 {
-
     public class DataService
     {
         private AvelraanContext Context { get; set; }
@@ -201,6 +200,25 @@ namespace Avelraangame.Services
                 .Where(s => s.Id.Equals(storageId))
                 .FirstOrDefault();
         }
+        #endregion
+
+        #region Episode
+        public Episode GetEpisodeByName(string episodeName)
+        {
+            return Context.Episodes
+                .Where(s => s.Name.Equals(episodeName))
+                .FirstOrDefault();
+        }
+
+        public void CreateEpisode(Episode episode)
+        {
+            Context.Episodes.Add(episode);
+            Context.SaveChanges();
+        }
+
+        #endregion
+
+        #region Act
         #endregion
     }
 }

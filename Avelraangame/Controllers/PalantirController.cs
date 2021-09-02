@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using System;
 using Avelraangame.Services.SubService;
-using Avelraangame.Models.ModelScraps;
+using Avelraangame.Models.POCOs;
 
 namespace Avelraangame.Controllers
 {
@@ -555,6 +555,10 @@ namespace Avelraangame.Controllers
 
 
         #endregion
+        #endregion
+
+        #region Episode
+
         #endregion
     }
 }
