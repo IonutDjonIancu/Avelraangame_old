@@ -409,6 +409,31 @@ namespace Avelraangame.Services.Base
         #endregion
 
         #region EpisodeValidation
+        protected EpisodeVm ValidateRequestDeserializationIntoEpisodeVm(string request)
+        {
+            EpisodeVm epiVm;
+
+            try
+            {
+                epiVm = JsonConvert.DeserializeObject<EpisodeVm>(request);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.BadRequest, ": ", ex.Message));
+            }
+
+            return epiVm;
+        }
+
+        protected void ValidateSigma(string sigmaWard)
+        {
+            if (string.IsNullOrEmpty(sigmaWard) ||
+                !sigmaWard.Equals("206.453.sigma"))
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.Failure));
+            }
+        }
+
         protected void ValidateEpisodeName(string episodeName)
         {
             if (string.IsNullOrWhiteSpace(episodeName))

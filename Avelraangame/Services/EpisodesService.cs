@@ -11,13 +11,17 @@ namespace Avelraangame.Services
         #region BusinessLogic
         public string CreateEpisode(RequestVm request)
         {
-            var episode = new Episode // currently hardcoded, must be changed to use the API request
+            var epiVm = ValidateRequestDeserializationIntoEpisodeVm(request.Message);
+
+            ValidateSigma(epiVm.SigmaWard);
+
+            var episode = new Episode 
             {
                 Id = Guid.NewGuid(),
-                Name = "Blade for hire",
-                Date = 0,
-                Prologue = "The sword made crowns, the crowns made swords.",
-                Epilogue = "The world turns, the days pass"
+                Name = epiVm.Name,
+                Date = epiVm.Date,
+                Prologue = epiVm.Prologue,
+                Epilogue = epiVm.Epilogue
             };
 
             ValidateEpisodeExists(episode.Name);

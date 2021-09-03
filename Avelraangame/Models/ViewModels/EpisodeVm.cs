@@ -12,5 +12,7 @@ namespace Avelraangame.Models.ViewModels
 
         public string Prologue { get; set; }
         public string Epilogue { get; set; }
+
+        public string SigmaWard { get; set; }
     }
 }

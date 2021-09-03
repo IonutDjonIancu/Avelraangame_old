@@ -558,7 +558,26 @@ namespace Avelraangame.Controllers
         #endregion
 
         #region Episode
+        // POST: /api/palantir/CreateEpisode
+        [HttpPost("CreateEpisode")]
+        public string CreateEpisode([FromBody] RequestVm request)
+        {
+            var responseVm = new ResponseVm();
+            var episodeService = new EpisodesService();
 
+            try
+            {
+                PalantirBase.ValidateRequest(request);
+                responseVm.Data = episodeService.CreateEpisode(request);
+            }
+            catch (Exception ex)
+            {
+                responseVm.Error = ex.Message;
+                return JsonConvert.SerializeObject(responseVm);
+            }
+
+            return JsonConvert.SerializeObject(responseVm);
+        }
         #endregion
     }
 }
