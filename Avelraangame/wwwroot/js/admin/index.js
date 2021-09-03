@@ -3,7 +3,7 @@ const CreateEpisode = "/api/palantir/CreateEpisode";
 
 // divs
 const sigmaWard = "#sigmaWard";
-const save_epilogueBtn = "#save_epilogueBtn";
+const create_epilogueBtn = "#create_epilogueBtn";
 const episode_name_input = "#episode_name_input";
 const episode_date_input = "#episode_date_input";
 const episode_prologue_input = "#episode_prologue_input";
@@ -16,7 +16,7 @@ const episode_epilogue_input = "#episode_epilogue_input";
 // on page load
 
 // events
-$(save_epilogueBtn).on("click", function () {
+$(create_epilogueBtn).on("click", function () {
 
     if ($(sigmaWard).val().length < 1) {
         alert("sigma ward");

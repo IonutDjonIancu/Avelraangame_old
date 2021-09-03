@@ -31,14 +31,38 @@ namespace Avelraangame.Services
             return string.Concat(Scribe.ShortMessages.Success, ": episode created.");
         }
 
+        public string UpdateEpisode(RequestVm request)
+        {
+            var epiVm = ValidateRequestDeserializationIntoEpisodeVm(request.Message);
+
+            ValidateSigma(epiVm.SigmaWard);
+
+            var episode = GetEpisodeByName(epiVm.Name);
+
+            if (episode == null)
+            {
+                throw new Exception(string.Concat(Scribe.ShortMessages.ResourceNotFound, ": episode with this name not found."));
+            }
+
+            episode.Date = epiVm.Date;
+            episode.Prologue = epiVm.Prologue;
+            episode.Epilogue = epiVm.Epilogue;
+
+            ValidateEpisodeExists(episode.Name);
+
+            DataService.UpdateEpisode(episode);
+
+            return string.Concat(Scribe.ShortMessages.Success, ": episode created.");
+        }
+
         #endregion
 
         #region PublicGetters
-        public EpisodeVm GetEpisodeByName(string episodeName)
+        public Episode GetEpisodeByName(string episodeName)
         {
             ValidateEpisodeName(episodeName);
 
-            return ConvertEpisodeToVm(DataService.GetEpisodeByName(episodeName));
+            return DataService.GetEpisodeByName(episodeName);
         }
         #endregion
 

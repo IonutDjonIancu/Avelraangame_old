@@ -216,6 +216,12 @@ namespace Avelraangame.Services
             Context.SaveChanges();
         }
 
+        public void UpdateEpisode(Episode episode)
+        {
+            Context.Episodes.Update(episode);
+            Context.SaveChanges();
+        }
+
         #endregion
 
         #region Act
