@@ -457,6 +457,45 @@ namespace Avelraangame.Services.Base
         }
         #endregion
 
+        #region ActValidation
+        protected void ValidateActName(string actName)
+        {
+            if (string.IsNullOrWhiteSpace(actName))
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.BadRequest, ": act name is missing or is invalid."));
+            }
+        }
+
+        protected void ValidateActExists(string actName)
+        {
+            ValidateActName(actName);
+
+            var act = DataService.GetActByName(actName);
+
+            if (act == null)
+            {
+                return;
+            }
+
+            throw new Exception(message: string.Concat(Scribe.ShortMessages.Failure, ": act with that name already exists."));
+        }
+
+        protected ActVm ValidateRequestDeserializationIntoActVm(string request)
+        {
+            ActVm actVm;
+
+            try
+            {
+                actVm = JsonConvert.DeserializeObject<ActVm>(request);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.BadRequest, ": ", ex.Message));
+            }
+
+            return actVm;
+        }
+        #endregion
 
 
     }

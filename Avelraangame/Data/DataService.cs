@@ -215,6 +215,13 @@ namespace Avelraangame.Services
                 .Where(s => s.Name.Equals(episodeName))
                 .FirstOrDefault();
         }
+        public Episode GetEpisodeById(Guid episodeId)
+        {
+            return Context.Episodes
+                .Where(s => s.Id.Equals(episodeId))
+                .FirstOrDefault();
+        }
+
 
         public void CreateEpisode(Episode episode)
         {
@@ -236,6 +243,30 @@ namespace Avelraangame.Services
         #endregion
 
         #region Act
+        public Act GetActByName(string actName)
+        {
+            return Context.Acts
+                .Where(s => s.Name.Equals(actName))
+                .FirstOrDefault();
+        }
+
+        public void CreateAct(Act act)
+        {
+            Context.Acts.Add(act);
+            Context.SaveChanges();
+        }
+
+        public void UpdateAct(Act act)
+        {
+            Context.Acts.Update(act);
+            Context.SaveChanges();
+        }
+
+        public void DeleteAct(Act act)
+        {
+            Context.Acts.Remove(act);
+            Context.SaveChanges();
+        }
         #endregion
     }
 }

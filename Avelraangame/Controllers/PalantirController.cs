@@ -604,6 +604,35 @@ namespace Avelraangame.Controllers
         #endregion
         #endregion
 
+        #region Act
+        #region GET
+        #endregion
+
+        #region POST
+        // POST: /api/palantir/CRUDAct
+        [HttpPost("CRUDAct")]
+        public string CRUDAct([FromBody] RequestVm request)
+        {
+            var responseVm = new ResponseVm();
+            var actService = new ActsService();
+
+            try
+            {
+                PalantirBase.ValidateRequest(request);
+                responseVm.Data = actService.ActCRUD(request);
+            }
+            catch (Exception ex)
+            {
+                responseVm.Error = ex.Message;
+                return JsonConvert.SerializeObject(responseVm);
+            }
+
+            return JsonConvert.SerializeObject(responseVm);
+        }
+        #endregion
+        #endregion
+
+
         #region GameSettings
         #region GET
         // GET: /api/palantir/GetDifficulty

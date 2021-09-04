@@ -1,4 +1,5 @@
-﻿using Avelraangame.Services.ServiceUtils;
+﻿using Avelraangame.Models.ViewModels;
+using Avelraangame.Services.ServiceUtils;
 using Avelraangame.Services.SubService;
 using Newtonsoft.Json;
 using System;
@@ -11,6 +12,31 @@ namespace Avelraangame.Services
     public class ActsService : ActsSubService
     {
         #region BusinessLegion
+        public string ActCRUD(RequestVm request)
+        {
+            var actVm = ValidateRequestDeserializationIntoActVm(request.Message);
+
+            ValidateSigma(actVm.SigmaWard);
+
+            if (actVm.ActCrudOperation.Equals(Scribe.CrudActions.Create))
+            {
+                return CreateAct(actVm);
+            }
+            else if (actVm.ActCrudOperation.Equals(Scribe.CrudActions.Read))
+            {
+                return ""; // TODO: decide what to do when a read action is requested
+            }
+            else if (actVm.ActCrudOperation.Equals(Scribe.CrudActions.Update))
+            {
+                return UpdateAct(actVm);
+            }
+            else if (actVm.ActCrudOperation.Equals(Scribe.CrudActions.Delete))
+            {
+                return DeleteAct(actVm);
+            }
+
+            return string.Concat(Scribe.ShortMessages.Failure, ": no CRUD action was selected.");
+        }
         #endregion
 
         #region PublicGetters

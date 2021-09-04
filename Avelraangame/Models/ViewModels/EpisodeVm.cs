@@ -15,7 +15,7 @@ namespace Avelraangame.Models.ViewModels
         public string Epilogue { get; set; }
 
 
-        public string EpisodeCrudAction { get; set; }
+        public string EpisodeCrudOperation { get; set; }
         public string SigmaWard { get; set; }
     }
 }

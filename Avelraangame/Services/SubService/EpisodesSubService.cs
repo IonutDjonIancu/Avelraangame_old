@@ -44,9 +44,14 @@ namespace Avelraangame.Services.SubService
 
         protected string UpdateEpisode(EpisodeVm epiVm)
         {
-            ValidateEpisodeExists(epiVm.Name);
+            ValidateEpisodeName(epiVm.Name);
 
             var episode = DataService.GetEpisodeByName(epiVm.Name);
+
+            if (episode == null)
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.BadRequest, ": episode not found."));
+            }
 
             if (epiVm.Story != null)
             {
@@ -75,6 +80,11 @@ namespace Avelraangame.Services.SubService
             ValidateEpisodeExists(epiVm.Name);
 
             var episode = DataService.GetEpisodeByName(epiVm.Name);
+
+            if (episode == null)
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.BadRequest, ": episode not found."));
+            }
 
             DataService.DeleteEpisode(episode);
 

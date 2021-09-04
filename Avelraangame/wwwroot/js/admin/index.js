@@ -1,11 +1,13 @@
 ﻿// URLs
 const CRUDEpisode = "/api/palantir/CRUDEpisode";
+const CRUDAct = "/api/palantir/CRUDAct";
 const GetEpisodes = "/api/palantir/GetEpisodes";
 const GetDifficulty = "/api/palantir/GetDifficulty";
 
 // divs
 const sigmaWard = "#sigmaWard";
 const create_episodeBtn = "#create_episodeBtn";
+const create_actBtn = "#create_actBtn";
 const episode_name_input = "#episode_name_input";
 const episode_story_input = "#episode_story_input";
 const episode_date_input = "#episode_date_input";
@@ -14,6 +16,8 @@ const episode_epilogue_input = "#episode_epilogue_input";
 const episode_crudAction = "#episode_crudAction";
 const act_episode = "#act_episode";
 const act_difficulty = "#act_difficulty";
+const act_name_input = "#act_name_input";
+const act_crudAction = "#act_crudAction";
 
 
 // objs
@@ -45,7 +49,7 @@ $(create_episodeBtn).on("click", function () {
         Date: toSetIntVariable,
         Prologue: $(episode_prologue_input).val(),
         Epilogue: $(episode_epilogue_input).val(),
-        EpisodeCrudAction: $(episode_crudAction).val(),
+        EpisodeCrudOperation: $(episode_crudAction).val(),
         SigmaWard: $(sigmaWard).val()
     }
     var request = {
@@ -55,6 +59,47 @@ $(create_episodeBtn).on("click", function () {
     $.ajax({
         type: "POST",
         url: CRUDEpisode,
+        contentType: "application/json",
+        data: JSON.stringify(request),
+        success: function (resp) {
+            var response = JSON.parse(resp);
+
+            if (response.Error) {
+                console.log(response.Error);
+                alert(response.Error);
+                return;
+            }
+
+            alert(response.Data);
+        },
+        error: function (err) {
+            console.log(err);
+        }
+    });
+
+});
+
+$(create_actBtn).on("click", function () {
+
+    if ($(sigmaWard).val().length < 1) {
+        alert("sigma ward");
+        return;
+    }
+
+    var object = {
+        Name: $(act_name_input).val(),
+        Difficulty: $(act_difficulty).val(),
+        EpisodeName: $(act_episode).val(),
+        ActCrudOperation: $(act_crudAction).val(),
+        SigmaWard: $(sigmaWard).val()
+    }
+    var request = {
+        message: JSON.stringify(object)
+    }
+
+    $.ajax({
+        type: "POST",
+        url: CRUDAct,
         contentType: "application/json",
         data: JSON.stringify(request),
         success: function (resp) {

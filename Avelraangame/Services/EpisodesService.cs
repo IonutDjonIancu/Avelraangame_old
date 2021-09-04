@@ -16,19 +16,19 @@ namespace Avelraangame.Services
 
             ValidateSigma(epiVm.SigmaWard);
 
-            if (epiVm.EpisodeCrudAction.Equals(Scribe.CrudActions.Create))
+            if (epiVm.EpisodeCrudOperation.Equals(Scribe.CrudActions.Create))
             {
                 return CreateEpisode(epiVm);
             }
-            else if (epiVm.EpisodeCrudAction.Equals(Scribe.CrudActions.Read))
+            else if (epiVm.EpisodeCrudOperation.Equals(Scribe.CrudActions.Read))
             {
                 return ""; // TODO: decide what to do when a read action is requested
             }
-            else if (epiVm.EpisodeCrudAction.Equals(Scribe.CrudActions.Update))
+            else if (epiVm.EpisodeCrudOperation.Equals(Scribe.CrudActions.Update))
             {
                 return UpdateEpisode(epiVm);
             }
-            else if (epiVm.EpisodeCrudAction.Equals(Scribe.CrudActions.Delete))
+            else if (epiVm.EpisodeCrudOperation.Equals(Scribe.CrudActions.Delete))
             {
                 return DeleteEpisode(epiVm);
             }
