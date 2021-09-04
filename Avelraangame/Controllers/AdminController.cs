@@ -2,9 +2,9 @@
 
 namespace Avelraangame.Controllers
 {
-    public class QuestController : Controller
+    public class AdminController : Controller
     {
-        public IActionResult Quest_Index()
+        public IActionResult Admin_index()
         {
             return View();
         }

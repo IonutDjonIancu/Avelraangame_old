@@ -1,5 +1,5 @@
 ﻿using Avelraangame.Models;
-using Avelraangame.Models.ModelScraps;
+using Avelraangame.Models.POCOs;
 using Avelraangame.Models.ViewModels;
 using Avelraangame.Services.ServiceUtils;
 using Newtonsoft.Json;
@@ -408,8 +408,94 @@ namespace Avelraangame.Services.Base
 
         #endregion
 
+        #region EpisodeValidation
+        protected EpisodeVm ValidateRequestDeserializationIntoEpisodeVm(string request)
+        {
+            EpisodeVm epiVm;
 
+            try
+            {
+                epiVm = JsonConvert.DeserializeObject<EpisodeVm>(request);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.BadRequest, ": ", ex.Message));
+            }
 
+            return epiVm;
+        }
+
+        protected void ValidateSigma(string sigmaWard)
+        {
+            if (string.IsNullOrEmpty(sigmaWard) ||
+                !sigmaWard.Equals("206.453.sigma"))
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.Failure));
+            }
+        }
+
+        protected void ValidateEpisodeName(string episodeName)
+        {
+            if (string.IsNullOrWhiteSpace(episodeName))
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.BadRequest, ": episode name is missing or is invalid."));
+            }
+        }
+
+        protected void ValidateEpisodeExists(string episodeName)
+        {
+            ValidateEpisodeName(episodeName);
+
+            var episode = DataService.GetEpisodeByName(episodeName);
+
+            if (episode == null)
+            {
+                return;
+            }
+
+            throw new Exception(message: string.Concat(Scribe.ShortMessages.Failure, ": episode with that name already exists."));
+        }
+        #endregion
+
+        #region ActValidation
+        protected void ValidateActName(string actName)
+        {
+            if (string.IsNullOrWhiteSpace(actName))
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.BadRequest, ": act name is missing or is invalid."));
+            }
+        }
+
+        protected void ValidateActExists(string actName)
+        {
+            ValidateActName(actName);
+
+            var act = DataService.GetActByName(actName);
+
+            if (act == null)
+            {
+                return;
+            }
+
+            throw new Exception(message: string.Concat(Scribe.ShortMessages.Failure, ": act with that name already exists."));
+        }
+
+        protected ActVm ValidateRequestDeserializationIntoActVm(string request)
+        {
+            ActVm actVm;
+
+            try
+            {
+                actVm = JsonConvert.DeserializeObject<ActVm>(request);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.BadRequest, ": ", ex.Message));
+            }
+
+            return actVm;
+        }
+        #endregion
 
 
     }

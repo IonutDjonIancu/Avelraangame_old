@@ -5,3 +5,9 @@
 
 
 
+// URLs
+// divs
+// objects
+// on page load
+// events
+// functions
