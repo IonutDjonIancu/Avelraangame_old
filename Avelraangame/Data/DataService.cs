@@ -203,6 +203,12 @@ namespace Avelraangame.Services
         #endregion
 
         #region Episode
+        public List<Episode> GetEpisodes()
+        {
+            return Context.Episodes
+                .ToList();
+        }
+
         public Episode GetEpisodeByName(string episodeName)
         {
             return Context.Episodes
@@ -222,6 +228,11 @@ namespace Avelraangame.Services
             Context.SaveChanges();
         }
 
+        public void DeleteEpisode(Episode episode)
+        {
+            Context.Episodes.Remove(episode);
+            Context.SaveChanges();
+        }
         #endregion
 
         #region Act

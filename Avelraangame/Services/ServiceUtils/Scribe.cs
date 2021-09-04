@@ -170,8 +170,48 @@
         {
             PlayerData
         }
-        
-        
+
+
+        #endregion
+
+        #region CRUD
+        public static class CrudActions
+        {
+            public static string Create = "Create";
+            public static string Read = "Read";
+            public static string Update = "Update";
+            public static string Delete = "Delete";
+        }
+        #endregion
+
+        #region GameSettings
+        public static class Difficulty
+        {
+            /// <summary>
+            /// 1
+            /// </summary>
+            public static string D1_Easy = "Easy";
+            /// <summary>
+            /// 2
+            /// </summary>
+            public static string D2_Normal = "Normal";
+            /// <summary>
+            /// 3
+            /// </summary>
+            public static string D3_Hard = "Hard";
+            /// <summary>
+            /// 4
+            /// </summary>
+            public static string D4_Heroic = "Heroic";
+            /// <summary>
+            /// 5
+            /// </summary>
+            public static string D5_Legendary = "Legendary";
+            /// <summary>
+            /// 6
+            /// </summary>
+            public static string D6_Astral = "Astral";
+        }
         #endregion
     }
 }

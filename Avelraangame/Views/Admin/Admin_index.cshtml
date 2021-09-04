@@ -8,6 +8,7 @@
 <div id="modelJumbo" class="text-left jumbotron" style="opacity:0.7; background-color:black; color:navajowhite">
     <div>
         <div class="mb-3" style="width:250px">
+            &Sigma;
             <input type="password" class="form-control" id="sigmaWard" placeholder="sigma ward">
         </div>
     </div>
@@ -16,22 +17,27 @@
         Episode
         <br />
         <div class="mb-3">
-            <input type="text" class="form-control" id="episode_name_input" placeholder="episode name">
+            <input title="name" type="text" class="form-control" id="episode_name_input" placeholder="name">
         </div>
         <div class="mb-3">
-            <input type="text" class="form-control" id="episode_date_input" placeholder="episode date">
+            <input title="story" type="text" class="form-control" id="episode_story_input" placeholder="story">
         </div>
         <div class="mb-3">
-            <input type="text" class="form-control" id="episode_prologue_input" placeholder="episode prologue">
+            <input title="date" type="text" class="form-control" id="episode_date_input" placeholder="date">
         </div>
         <div class="mb-3">
-            <input type="text" class="form-control" id="episode_epilogue_input" placeholder="episode epilogue">
+            <input title="prologue" type="text" class="form-control" id="episode_prologue_input" placeholder="prologue">
         </div>
-        <div class="btn-group float-right">
-            <button id="create_epilogueBtn" class="btn btn-sm btn-outline-success">Create Episode</button>
-            <button id="update_epilogueBtn" class="btn btn-sm btn-outline-warning">Update Episode</button>
-            <button id="delete_epilogueBtn" class="btn btn-sm btn-outline-danger">Delete Episode</button>
+        <div class="mb-3">
+            <input title="epilogue" type="text" class="form-control" id="episode_epilogue_input" placeholder="epilogue">
         </div>
+        <select class="form-select" id="episode_crudAction">
+            <option value="Create">Create</option>
+            <option value="Read">Read</option>
+            <option value="Update">Update</option>
+            <option value="Delete">Delete</option>
+        </select>
+        <button id="create_episodeBtn" class="btn btn-sm btn-outline-success float-right" style="width:200px">Create Episode</button>
     </div>
 
     <hr />
@@ -39,19 +45,21 @@
 
     <div>
         Act
+        <br />
         <div class="mb-3">
-            <input type="text" class="form-control" id="act_story_input" placeholder="story">
+            <input title="name" type="text" class="form-control" id="act_name_input" placeholder="name" />
         </div>
-        <div class="mb-3">
-            <input type="text" class="form-control" id="act_name_input" placeholder="name">
-        </div>
-        <div class="mb-3">
-            <input type="text" class="form-control" id="act_difficulty_input" placeholder="difficulty">
-        </div>
-        <div class="mb-3">
-            <input type="text" class="form-control" id="act_episode_input" placeholder="episode">
-        </div>
-        <button id="save_actBtn" class="btn btn-sm btn-block btn-outline-success">Save Act</button>
+        <select class="form-select" id="act_difficulty">
+        </select>
+        <select class="form-select" id="act_episode">
+        </select>
+        <select class="form-select" id="act_crudAction">
+            <option value="Create">Create</option>
+            <option value="Read">Read</option>
+            <option value="Update">Update</option>
+            <option value="Delete">Delete</option>
+        </select>
+        <button id="create_actBtn" class="btn btn-sm btn-outline-success float-right" style="width:200px">Create Act</button>
     </div>
 
     <hr />

@@ -558,17 +558,17 @@ namespace Avelraangame.Controllers
         #endregion
 
         #region Episode
-        // POST: /api/palantir/CreateEpisode
-        [HttpPost("CreateEpisode")]
-        public string CreateEpisode([FromBody] RequestVm request)
+        #region GET
+        // GET: /api/palantir/GetEpisodes
+        [HttpGet("GetEpisodes")]
+        public string GetEpisodes()
         {
             var responseVm = new ResponseVm();
             var episodeService = new EpisodesService();
 
             try
             {
-                PalantirBase.ValidateRequest(request);
-                responseVm.Data = episodeService.CreateEpisode(request);
+                responseVm.Data = episodeService.GetEpisodes();
             }
             catch (Exception ex)
             {
@@ -578,6 +578,54 @@ namespace Avelraangame.Controllers
 
             return JsonConvert.SerializeObject(responseVm);
         }
+        #endregion
+
+        #region POST
+        // POST: /api/palantir/CRUDEpisode
+        [HttpPost("CRUDEpisode")]
+        public string CRUDEpisode([FromBody] RequestVm request)
+        {
+            var responseVm = new ResponseVm();
+            var episodeService = new EpisodesService();
+
+            try
+            {
+                PalantirBase.ValidateRequest(request);
+                responseVm.Data = episodeService.EpisodeCRUD(request);
+            }
+            catch (Exception ex)
+            {
+                responseVm.Error = ex.Message;
+                return JsonConvert.SerializeObject(responseVm);
+            }
+
+            return JsonConvert.SerializeObject(responseVm);
+        }
+        #endregion
+        #endregion
+
+        #region GameSettings
+        #region GET
+        // GET: /api/palantir/GetDifficulty
+        [HttpGet("GetDifficulty")]
+        public string GetDifficulty()
+        {
+            var responseVm = new ResponseVm();
+            var actService = new ActsService();
+
+            try
+            {
+                responseVm.Data = actService.GetDifficultyLevels();
+            }
+            catch (Exception ex)
+            {
+                responseVm.Error = ex.Message;
+                return JsonConvert.SerializeObject(responseVm);
+            }
+
+            return JsonConvert.SerializeObject(responseVm);
+        }
+        #endregion
         #endregion
     }
 }

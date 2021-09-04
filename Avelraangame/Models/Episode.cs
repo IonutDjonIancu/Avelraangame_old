@@ -11,6 +11,8 @@ namespace Avelraangame.Models
 
         public string Name { get; set; }
 
+        public string Story { get; set; } // TODO: moved to a separate table
+
         public int Date { get; set; }
 
         public string Prologue { get; set; }

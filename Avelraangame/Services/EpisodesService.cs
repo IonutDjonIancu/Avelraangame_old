@@ -2,6 +2,7 @@
 using Avelraangame.Models.ViewModels;
 using Avelraangame.Services.ServiceUtils;
 using Avelraangame.Services.SubService;
+using Newtonsoft.Json;
 using System;
 
 namespace Avelraangame.Services
@@ -9,52 +10,31 @@ namespace Avelraangame.Services
     public class EpisodesService : EpisodesSubService
     {
         #region BusinessLogic
-        public string CreateEpisode(RequestVm request)
+        public string EpisodeCRUD(RequestVm request)
         {
             var epiVm = ValidateRequestDeserializationIntoEpisodeVm(request.Message);
 
             ValidateSigma(epiVm.SigmaWard);
 
-            var episode = new Episode 
+            if (epiVm.EpisodeCrudAction.Equals(Scribe.CrudActions.Create))
             {
-                Id = Guid.NewGuid(),
-                Name = epiVm.Name,
-                Date = epiVm.Date,
-                Prologue = epiVm.Prologue,
-                Epilogue = epiVm.Epilogue
-            };
-
-            ValidateEpisodeExists(episode.Name);
-
-            DataService.CreateEpisode(episode);
-
-            return string.Concat(Scribe.ShortMessages.Success, ": episode created.");
-        }
-
-        public string UpdateEpisode(RequestVm request)
-        {
-            var epiVm = ValidateRequestDeserializationIntoEpisodeVm(request.Message);
-
-            ValidateSigma(epiVm.SigmaWard);
-
-            var episode = GetEpisodeByName(epiVm.Name);
-
-            if (episode == null)
-            {
-                throw new Exception(string.Concat(Scribe.ShortMessages.ResourceNotFound, ": episode with this name not found."));
+                return CreateEpisode(epiVm);
             }
-
-            episode.Date = epiVm.Date;
-            episode.Prologue = epiVm.Prologue;
-            episode.Epilogue = epiVm.Epilogue;
-
-            ValidateEpisodeExists(episode.Name);
-
-            DataService.UpdateEpisode(episode);
-
-            return string.Concat(Scribe.ShortMessages.Success, ": episode created.");
+            else if (epiVm.EpisodeCrudAction.Equals(Scribe.CrudActions.Read))
+            {
+                return ""; // TODO: decide what to do when a read action is requested
+            }
+            else if (epiVm.EpisodeCrudAction.Equals(Scribe.CrudActions.Update))
+            {
+                return UpdateEpisode(epiVm);
+            }
+            else if (epiVm.EpisodeCrudAction.Equals(Scribe.CrudActions.Delete))
+            {
+                return DeleteEpisode(epiVm);
+            }
+            
+            return string.Concat(Scribe.ShortMessages.Failure, ": no CRUD action was selected.");
         }
-
         #endregion
 
         #region PublicGetters
@@ -63,6 +43,11 @@ namespace Avelraangame.Services
             ValidateEpisodeName(episodeName);
 
             return DataService.GetEpisodeByName(episodeName);
+        }
+
+        public string GetEpisodes()
+        {
+            return JsonConvert.SerializeObject(DataService.GetEpisodes());
         }
         #endregion
 
