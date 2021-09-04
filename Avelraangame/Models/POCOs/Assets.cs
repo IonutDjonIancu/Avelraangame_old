@@ -1,4 +1,4 @@
-﻿namespace Avelraangame.Models.ModelScraps
+﻿namespace Avelraangame.Models.POCOs
 {
     public class Assets
     {

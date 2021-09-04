@@ -1,5 +1,5 @@
 ﻿using Avelraangame.Models;
-using Avelraangame.Models.ModelScraps;
+using Avelraangame.Models.POCOs;
 using Avelraangame.Models.ViewModels;
 using Avelraangame.Services.ServiceUtils;
 using Avelraangame.Services.SubService;
@@ -117,7 +117,7 @@ namespace Avelraangame.Services
 
         public string GetFame()
         {
-            var allCharacters = DataService.GetCharacters();
+            var allCharacters = DataService.GetCharacters().Where(s => s.IsAlive).ToList();
             var allCharactersVm = new List<CharacterVm>();
 
             foreach (var chr in allCharacters)

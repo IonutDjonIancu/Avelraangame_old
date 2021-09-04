@@ -9,5 +9,6 @@ namespace Avelraangame.Models
 
         public ICollection<Character> Characters{ get; set; }
 
+        public Guid? ActId { get; set; }
     }
 }

@@ -7,7 +7,6 @@ using System.Linq;
 
 namespace Avelraangame.Services
 {
-
     public class DataService
     {
         private AvelraanContext Context { get; set; }
@@ -200,6 +199,73 @@ namespace Avelraangame.Services
                 .Storage
                 .Where(s => s.Id.Equals(storageId))
                 .FirstOrDefault();
+        }
+        #endregion
+
+        #region Episode
+        public List<Episode> GetEpisodes()
+        {
+            return Context.Episodes
+                .ToList();
+        }
+
+        public Episode GetEpisodeByName(string episodeName)
+        {
+            return Context.Episodes
+                .Where(s => s.Name.Equals(episodeName))
+                .FirstOrDefault();
+        }
+        public Episode GetEpisodeById(Guid episodeId)
+        {
+            return Context.Episodes
+                .Where(s => s.Id.Equals(episodeId))
+                .FirstOrDefault();
+        }
+
+
+        public void CreateEpisode(Episode episode)
+        {
+            Context.Episodes.Add(episode);
+            Context.SaveChanges();
+        }
+
+        public void UpdateEpisode(Episode episode)
+        {
+            Context.Episodes.Update(episode);
+            Context.SaveChanges();
+        }
+
+        public void DeleteEpisode(Episode episode)
+        {
+            Context.Episodes.Remove(episode);
+            Context.SaveChanges();
+        }
+        #endregion
+
+        #region Act
+        public Act GetActByName(string actName)
+        {
+            return Context.Acts
+                .Where(s => s.Name.Equals(actName))
+                .FirstOrDefault();
+        }
+
+        public void CreateAct(Act act)
+        {
+            Context.Acts.Add(act);
+            Context.SaveChanges();
+        }
+
+        public void UpdateAct(Act act)
+        {
+            Context.Acts.Update(act);
+            Context.SaveChanges();
+        }
+
+        public void DeleteAct(Act act)
+        {
+            Context.Acts.Remove(act);
+            Context.SaveChanges();
         }
         #endregion
     }

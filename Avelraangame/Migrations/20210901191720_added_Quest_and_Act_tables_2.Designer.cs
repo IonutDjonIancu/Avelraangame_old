@@ -4,14 +4,16 @@ using Avelraangame.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Avelraangame.Migrations
 {
     [DbContext(typeof(AvelraanContext))]
-    partial class AvelraanContextModelSnapshot : ModelSnapshot
+    [Migration("20210901191720_added_Quest_and_Act_tables_2")]
+    partial class added_Quest_and_Act_tables_2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -26,14 +28,17 @@ namespace Avelraangame.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Difficulty")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Difficulty")
+                        .HasColumnType("int");
 
                     b.Property<Guid?>("EpisodeId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Story")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -125,9 +130,6 @@ namespace Avelraangame.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Prologue")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Story")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");

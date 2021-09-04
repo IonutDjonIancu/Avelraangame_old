@@ -1,5 +1,5 @@
 ﻿using Avelraangame.Models;
-using Avelraangame.Models.ModelScraps;
+using Avelraangame.Models.POCOs;
 using Avelraangame.Models.ViewModels;
 using Avelraangame.Services.Base;
 using Avelraangame.Services.ServiceUtils;
@@ -71,7 +71,7 @@ namespace Avelraangame.Services.SubService
                 MarkForDeath(defender.CharacterId);
             }
 
-            return (attacker, defender, rollResult);
+            return (attacker, defender, damage);
         }
 
         protected Fight RollNpcAttack(Fight fight)

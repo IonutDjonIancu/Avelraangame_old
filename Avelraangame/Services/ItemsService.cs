@@ -1,5 +1,5 @@
 ﻿using Avelraangame.Models;
-using Avelraangame.Models.ModelScraps;
+using Avelraangame.Models.POCOs;
 using Avelraangame.Models.ViewModels;
 using Avelraangame.Services.ServiceUtils;
 using Avelraangame.Services.SubService;

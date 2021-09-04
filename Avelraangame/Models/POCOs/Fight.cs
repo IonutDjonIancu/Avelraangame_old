@@ -3,7 +3,7 @@ using Avelraangame.Services.ServiceUtils;
 using System;
 using System.Collections.Generic;
 
-namespace Avelraangame.Models.ModelScraps
+namespace Avelraangame.Models.POCOs
 {
     public class Fight
     {

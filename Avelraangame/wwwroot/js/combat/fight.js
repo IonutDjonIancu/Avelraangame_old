@@ -27,6 +27,7 @@ const generateFightBtns = "#generateFightBtns";
 const attackerDefender = "#attackerDefender";
 const attackerDiv = "#attackerDiv";
 const defenderDiv = "#defenderDiv";
+const lastActionResultBtn = "#lastActionResultBtn";
 
 // on page load
 establishPlayer();
@@ -61,7 +62,8 @@ $(endFightBtn).on("click", function () {
             var response = JSON.parse(resp);
 
             if (response.Error) {
-                alert(response.Error);
+                $(lastActionResultBtn).text(response.Error);
+                console.log(response.Error);
                 return;
             }
 
@@ -92,7 +94,8 @@ $(weak).on("click", function () {
             var response = JSON.parse(resp);
 
             if (response.Error) {
-                alert(response.Error);
+                $(lastActionResultBtn).text(response.Error);
+                console.log(response.Error);
                 return;
             }
 
@@ -128,6 +131,7 @@ $(attackBtn).on("click", function () {
             var response = JSON.parse(resp);
 
             if (response.Error) {
+                $(lastActionResultBtn).text(response.Error);
                 console.log(response.Error);
                 return;
             } else {
@@ -167,6 +171,7 @@ $(endTurnBtn).on("click", function () {
             var response = JSON.parse(resp);
 
             if (response.Error) {
+                $(lastActionResultBtn).text(response.Error);
                 console.log(response.Error);
                 return;
             } else {
@@ -207,6 +212,7 @@ function getFight() {
             var response = JSON.parse(resp);
 
             if (response.Error) {
+                $(lastActionResultBtn).text(response.Error);
                 console.log(response.Error);
                 return;
             } else {
@@ -267,7 +273,7 @@ function showDefender(defenderId) {
 function drawFight(data) {
     $(goodGuys).empty();
     var goodHtml = `
-<button id="${data.GoodGuys[0].CharacterId}" title="${data.GoodGuys[0].Name}" class="btn btn-outline-primary goodChr">
+<button id="${data.GoodGuys[0].CharacterId}" title="${data.GoodGuys[0].Name}" class="btn btn-outline-success goodChr">
     <img class="float-left" style="border-radius:10px" src="../media/images/humans/human${data.GoodGuys[0].Logbook.PortraitNr}.png" />
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
         <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
@@ -281,7 +287,7 @@ function drawFight(data) {
     $(badGuys).empty();
 
     var badHtml = `
-<button id="${data.BadGuys[0].CharacterId}" class="btn btn-outline-secondary badChr float-right">
+<button id="${data.BadGuys[0].CharacterId}" class="btn btn-outline-danger badChr float-right">
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
         <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
     </svg> 
@@ -296,7 +302,7 @@ function drawFight(data) {
 
     $(goodGuys).append(goodHtml);
     $(badGuys).append(badHtml);
-    alert(data.LastActionResult);
+    $(lastActionResultBtn).text(data.LastActionResult)
 }
 
 function establishPlayer() {

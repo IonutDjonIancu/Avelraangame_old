@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <body>
-    <header style="padding-left:2%; padding-right:2%">
+    <header class="text-center" style="padding-left:2%; padding-right:2%">
         <br />
         <div class="btn-group">
             <a class="btn btn-outline-dark btn-sm" asp-controller="Home" asp-action="Index">Home</a>
@@ -19,6 +19,7 @@
             <a class="btn btn-outline-dark btn-sm" asp-controller="Item" asp-action="Merchant">Merchant</a>
             <a class="btn btn-outline-dark btn-sm" asp-controller="Home" asp-action="Fame">Fame</a>
         </div>
+        <a class="btn btn-outline-warning btn-sm float-right" asp-controller="Admin" asp-action="Admin_index">Admin</a>
     </header>
     
     <script src="~/js/site.js" asp-append-version="true"></script>
