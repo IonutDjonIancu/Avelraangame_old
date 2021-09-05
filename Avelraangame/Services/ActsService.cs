@@ -44,6 +44,7 @@ namespace Avelraangame.Services
         {
             var list = new List<string>
             {
+                Scribe.Difficulty.D0_Custom,
                 Scribe.Difficulty.D1_Easy,
                 Scribe.Difficulty.D2_Normal,
                 Scribe.Difficulty.D3_Hard,

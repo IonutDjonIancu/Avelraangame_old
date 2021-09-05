@@ -25,7 +25,7 @@ namespace Avelraangame.Services.SubService
 
         protected string CreateEpisode(EpisodeVm epiVm)
         {
-            ValidateEpisodeExists(epiVm.Name);
+            ValidateEpisodeNameUnicity(epiVm.Name);
             
             var episode = new Episode
             {
@@ -77,7 +77,7 @@ namespace Avelraangame.Services.SubService
 
         protected string DeleteEpisode(EpisodeVm epiVm)
         {
-            ValidateEpisodeExists(epiVm.Name);
+            ValidateEpisodeNameUnicity(epiVm.Name);
 
             var episode = DataService.GetEpisodeByName(epiVm.Name);
 

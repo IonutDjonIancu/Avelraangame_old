@@ -15,7 +15,7 @@ namespace Avelraangame.Services.SubService
         {
             var episodeService = new EpisodesService();
 
-            ValidateActExists(actVm.Name);
+            ValidateActNameUnicity(actVm.Name);
 
             var episode = episodeService.GetEpisodeByName(actVm.EpisodeName);
 
@@ -24,12 +24,16 @@ namespace Avelraangame.Services.SubService
                 throw new Exception(message: string.Concat(Scribe.ShortMessages.BadRequest, ": episode name is missing or invalid."));
             }
 
+            var actNr = DataService.GetActsListByEpisode(episode.Id).Count;
+
             var act = new Act
             {
                 Id = Guid.NewGuid(),
                 Name = actVm.Name,
+                Description = actVm.Description,
                 EpisodeId = episode.Id,
-                Difficulty = actVm.Difficulty
+                Difficulty = actVm.Difficulty,
+                ActNumber = ++actNr
             };
 
             DataService.CreateAct(act);
@@ -51,6 +55,10 @@ namespace Avelraangame.Services.SubService
 
             var act = DataService.GetActByName(actVm.Name);
 
+            if (actVm.Description != null)
+            {
+                act.Description = actVm.Description;
+            }
             if (actVm.Difficulty != null)
             {
                 act.Difficulty = actVm.Difficulty;

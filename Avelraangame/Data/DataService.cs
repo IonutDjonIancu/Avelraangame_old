@@ -243,6 +243,13 @@ namespace Avelraangame.Services
         #endregion
 
         #region Act
+        public List<Act> GetActsListByEpisode(Guid episodeId)
+        {
+            return Context.Acts
+                .Where(s => s.EpisodeId.Equals(episodeId))
+                .ToList();
+        }
+
         public Act GetActByName(string actName)
         {
             return Context.Acts

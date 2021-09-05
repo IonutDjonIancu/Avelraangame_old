@@ -442,7 +442,7 @@ namespace Avelraangame.Services.Base
             }
         }
 
-        protected void ValidateEpisodeExists(string episodeName)
+        protected void ValidateEpisodeNameUnicity(string episodeName)
         {
             ValidateEpisodeName(episodeName);
 
@@ -466,7 +466,7 @@ namespace Avelraangame.Services.Base
             }
         }
 
-        protected void ValidateActExists(string actName)
+        protected void ValidateActNameUnicity(string actName)
         {
             ValidateActName(actName);
 
