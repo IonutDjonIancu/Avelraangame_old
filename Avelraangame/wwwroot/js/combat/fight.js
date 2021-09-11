@@ -212,7 +212,7 @@ function getFight() {
             var response = JSON.parse(resp);
 
             if (response.Error) {
-                $(lastActionResultBtn).text(response.Error);
+                $(lastActionResultBtn).text("Everything seems peaceful...");
                 console.log(response.Error);
                 return;
             } else {

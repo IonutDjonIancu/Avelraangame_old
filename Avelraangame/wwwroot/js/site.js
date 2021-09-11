@@ -11,3 +11,14 @@
 // on page load
 // events
 // functions
+function establishPlayerIdBase() {
+    var playerId = localStorage.getItem("playerId");
+
+    return playerId;
+}
+
+function establishPlayerNameBase() {
+    var playerName = localStorage.getItem("playerName");
+
+    return playerName;
+}

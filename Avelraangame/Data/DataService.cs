@@ -32,6 +32,21 @@ namespace Avelraangame.Services
             return Context.Players.Where(s => s.Id == id).FirstOrDefault();
         }
 
+        public Player GetPlayerBySymbolWard(string symbol, string ward)
+        {
+            var players = Context.Players
+                .Where(s => s.Symbol.Equals(symbol) && s.Ward.Equals(ward));
+
+            if (players.Count() > 1)
+            {
+                throw new Exception(message: "Critical system error, please report to Admin.");
+            }
+            else
+            {
+                return players.FirstOrDefault();
+            }
+        }
+
         public void SavePlayer(Player player)
         {
             Context.Players.Add(player);

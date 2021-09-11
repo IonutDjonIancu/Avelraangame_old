@@ -79,7 +79,7 @@ function drawCharacter(id, race, culture, name, portraitNr, inParty) {
             `;
 
     var fighter = `
-            <button id="${id}" title="Go to fight!" class="btn btn-outline-info fighterBtn">
+            <button id="${id}" title="Depart!" class="btn btn-outline-info fighterBtn">
                 ${name}
                 <span>
                     <img style="border-radius:10px" src="../media/images/humans/human${portraitNr}.png"/>

@@ -86,6 +86,27 @@ namespace Avelraangame.Controllers
 
             return JsonConvert.SerializeObject(responseVm);
         }
+
+        // POST: api/palantir/Logon
+        [HttpPost("Logon")]
+        public string Logon([FromBody] RequestVm request)
+        {
+            var responseVm = new ResponseVm();
+            var playersService = new PlayersService();
+
+            try
+            {
+                PalantirBase.ValidateRequest(request);
+                responseVm.Data = playersService.Logon(request);
+            }
+            catch (Exception ex)
+            {
+                responseVm.Error = ex.Message;
+                return JsonConvert.SerializeObject(responseVm);
+            }
+
+            return JsonConvert.SerializeObject(responseVm);
+        }
         #endregion
         #endregion
 
@@ -631,7 +652,6 @@ namespace Avelraangame.Controllers
         }
         #endregion
         #endregion
-
 
         #region GameSettings
         #region GET
