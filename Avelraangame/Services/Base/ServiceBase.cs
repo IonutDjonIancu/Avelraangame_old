@@ -153,6 +153,10 @@ namespace Avelraangame.Services.Base
         {
             ValidatePlayerName(playerVm.PlayerName);
             ValidateWards(playerVm.Ward, playerVm.Wardcheck);
+            if (!PlayersUtils.PlayerSymbolsList.Contains(playerVm.Symbol))
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.BadRequest, ": invalid symbol."));
+            }
         }
 
         protected void ValidatePlayerDetailsOnLogon(PlayerVm playerVm)

@@ -67,10 +67,7 @@ $(players).on("change", function () {
 });
 
 // functions
-function setSessionCredentials(playerName, playerId) {
-    localStorage.setItem("playerName", playerName);
-    localStorage.setItem("playerId", playerId);
-}
+
 
 function establishPlayer() {
     var name = localStorage.getItem("playerName");

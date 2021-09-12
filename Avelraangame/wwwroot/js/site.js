@@ -22,3 +22,9 @@ function establishPlayerNameBase() {
 
     return playerName;
 }
+
+function setSessionCredentials(playerId, playerName) {
+    localStorage.clear();
+    localStorage.setItem("playerId", playerId);
+    localStorage.setItem("playerName", playerName);
+}

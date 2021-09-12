@@ -24,12 +24,19 @@ namespace Avelraangame.Services
                 Id = Guid.NewGuid(),
                 Name = playervm.PlayerName,
                 Ward = playervm.Ward,
+                Symbol = playervm.Symbol,
                 CreationDate = DateTime.Now
             };
 
             DataService.SavePlayer(player);
 
-            return Scribe.ShortMessages.Success.ToString();
+            var result = new PlayerVm()
+            {
+                PlayerId = player.Id,
+                PlayerName = player.Name
+            };
+
+            return JsonConvert.SerializeObject(result);
         }
 
         public string Logon(RequestVm request)

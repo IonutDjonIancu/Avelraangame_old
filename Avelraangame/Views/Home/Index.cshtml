@@ -5,18 +5,19 @@
 
 <div class="text-left jumbotron" style="opacity: 0.7; background-color:black; color:navajowhite">
     <div id="nonLoggedDiv" class="mb-3" style="display:none">
-        <select id="symbolWard" class="form-select col-lg-3" aria-label="symbol selector">
-            <option selected>Select symbol</option>
-            <option value="Epsilon">Epsilon &epsilon;</option>
-            <option value="Omicron">Omicron &omicron;</option>
-            <option value="Sigma">Sigma &sigma;</option>
-        </select>
-        <input type="password" class="form-control col-lg-3 text-center" id="powerWardInput" placeholder="enter power ward">
-        <br />
-        <button id="logonBtn" class="btn btn-outline-success col-lg-3">Submit</button>
-        <br />
-        <br />
-        <button id="createPlayerBtn" class="btn btn-outline-dark col-lg-3">I don't have one</button>
+        <div class="row">
+            <label class="col-form-label col-lg-2">Power ward</label>
+            <select id="symbolWard" class="form-select col-lg-2" aria-label="symbol selector" style="margin-right:10px; border-radius:5px">
+                <option selected>Select symbol</option>
+                <option value="Epsilon">Epsilon &epsilon;</option>
+                <option value="Omicron">Omicron &omicron;</option>
+                <option value="Sigma">Sigma &sigma;</option>
+            </select>
+            <input type="password" class="form-control col-lg-3 text-center" id="powerWardInput" placeholder="Enter ward">
+        </div>
+        <hr />
+        <button id="logonBtn" class="btn btn-outline-success float-left" style="margin-right:5px">Submit</button>
+        <button id="createPlayerBtn" class="btn btn-outline-dark float-left">I don't have one</button>
     </div>
     <div id="loggedDiv" style="display:none">
     </div>
