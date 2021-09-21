@@ -49,26 +49,58 @@
 
 //}
 
-function drawCharactersBase(data, whereTo) {
+function drawCharacters_base(data, whereTo) {
     $(whereTo).empty();
     var pp = `<p>Select character</p>`;
     $(whereTo).append(pp);
 
     for (var i = 0; i < data.length; i++) {
-        var html = `
-            <button id="${data[i].CharacterId}" class="btn btn-outline-info characterBtn">
-                ${data[i].Name}
-                <span>
-                    <img style="border-radius:10px" src="../media/images/humans/human${data[i].Logbook.PortraitNr}.png"/>
-                </span>
-            </button>
-        `;
+
+        if (data[i].InFight == true) {
+            var html = `
+                <button title="in a fight" id="${data[i].CharacterId}" class="btn btn-outline-warning characterBtn">
+                    ${data[i].Name}
+                    <span>
+                        <img style="border-radius:10px" src="../media/images/humans/human${data[i].Logbook.PortraitNr}.png"/>
+                    </span>
+                </button>
+            `;
+        } else {
+            var html = `
+                <button id="${data[i].CharacterId}" class="btn btn-outline-info characterBtn">
+                    ${data[i].Name}
+                    <span>
+                        <img style="border-radius:10px" src="../media/images/humans/human${data[i].Logbook.PortraitNr}.png"/>
+                    </span>
+                </button>
+            `;
+        }
 
         $(whereTo).append(html);
     }
 }
 
-function getCharactersByPlayerNameAndIdBase(playerName, playerId, callback) {
+function drawCharactersInFights_base(data, whereTo) {
+    $(whereTo).empty();
+
+    for (var i = 0; i < data.length; i++) {
+
+        if (data[i].InFight == true) {
+            var html = `
+                <button id="${data[i].CharacterId}" class="btn btn-outline-warning characterBtn">
+                    ${data[i].Name}
+                    <span>
+                        <img style="border-radius:10px" src="../media/images/humans/human${data[i].Logbook.PortraitNr}.png"/>
+                    </span>
+                </button>
+            `;
+
+            $(whereTo).append(html);
+        } 
+    }
+}
+
+function getCharactersByPlayerNameAndId_base(playerName, playerId, callback) {
 
     var object = {
         PlayerId: playerId,
@@ -100,19 +132,19 @@ function getCharactersByPlayerNameAndIdBase(playerName, playerId, callback) {
     });
 }
 
-function establishPlayerIdBase() {
+function establishPlayerId_base() {
     var playerId = localStorage.getItem("playerId");
 
     return playerId;
 }
 
-function establishPlayerNameBase() {
+function establishPlayerName_base() {
     var playerName = localStorage.getItem("playerName");
 
     return playerName;
 }
 
-function setSessionCredentials(playerId, playerName) {
+function setSessionCredentials_base(playerId, playerName) {
     localStorage.clear();
     localStorage.setItem("playerId", playerId);
     localStorage.setItem("playerName", playerName);

@@ -48,7 +48,7 @@ function createPlayer() {
 
             var data = JSON.parse(response.Data);
 
-            setSessionCredentials(data.PlayerId, data.PlayerName);
+            setSessionCredentials_base(data.PlayerId, data.PlayerName);
             window.location = "/home/index";
         },
         error: function (err) {

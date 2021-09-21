@@ -155,13 +155,19 @@ namespace Avelraangame.Services
                 .FirstOrDefault();
         }
 
-        public List<Character> GetCharactersByPlayerId(Guid playerId)
+        public List<Character> GetAliveCharactersByPlayerId(Guid playerId)
         {
             return Context.Characters
                 .Where(s => s.PlayerId.Equals(playerId) && s.IsAlive)
                 .ToList();
         }
 
+        public List<Character> GetAllCharactersByPlayerId(Guid playerId)
+        {
+            return Context.Characters
+                .Where(s => s.PlayerId.Equals(playerId))
+                .ToList();
+        }
 
         public List<Character> GetCharactersDraftByPlayerId(Guid playerId)
         {

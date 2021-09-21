@@ -14,6 +14,11 @@ namespace Avelraangame.Controllers
             return View();
         }
 
+        public IActionResult Fight_storyMode()
+        {
+            return View();
+        }
+
         public IActionResult Combat_arena()
         {
             return View();

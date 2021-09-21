@@ -16,8 +16,8 @@ let playerName;
 
 
 // on page load
-playerId = establishPlayerIdBase();
-playerName = establishPlayerNameBase();
+playerId = establishPlayerId_base();
+playerName = establishPlayerName_base();
 
 if (playerName) {
     $(loggedDiv).show();
