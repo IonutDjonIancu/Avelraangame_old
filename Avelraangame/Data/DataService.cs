@@ -32,6 +32,21 @@ namespace Avelraangame.Services
             return Context.Players.Where(s => s.Id == id).FirstOrDefault();
         }
 
+        public Player GetPlayerBySymbolWard(string symbol, string ward)
+        {
+            var players = Context.Players
+                .Where(s => s.Symbol.Equals(symbol) && s.Ward.Equals(ward));
+
+            if (players.Count() > 1)
+            {
+                throw new Exception(message: "Critical system error, please report to Admin.");
+            }
+            else
+            {
+                return players.FirstOrDefault();
+            }
+        }
+
         public void SavePlayer(Player player)
         {
             Context.Players.Add(player);
@@ -140,13 +155,19 @@ namespace Avelraangame.Services
                 .FirstOrDefault();
         }
 
-        public List<Character> GetCharactersByPlayerId(Guid playerId)
+        public List<Character> GetAliveCharactersByPlayerId(Guid playerId)
         {
             return Context.Characters
                 .Where(s => s.PlayerId.Equals(playerId) && s.IsAlive)
                 .ToList();
         }
 
+        public List<Character> GetAllCharactersByPlayerId(Guid playerId)
+        {
+            return Context.Characters
+                .Where(s => s.PlayerId.Equals(playerId))
+                .ToList();
+        }
 
         public List<Character> GetCharactersDraftByPlayerId(Guid playerId)
         {
@@ -205,8 +226,14 @@ namespace Avelraangame.Services
         #region Episode
         public List<Episode> GetEpisodes()
         {
-            return Context.Episodes
-                .ToList();
+            var listOfEpisodes = Context.Episodes.ToList();
+
+            foreach (var item in listOfEpisodes)
+            {
+                item.Acts = Context.Acts.Where(s => s.EpisodeId.Equals(item.Id)).ToList();
+            }
+
+            return listOfEpisodes;
         }
 
         public Episode GetEpisodeByName(string episodeName)
@@ -243,6 +270,13 @@ namespace Avelraangame.Services
         #endregion
 
         #region Act
+        public List<Act> GetActsListByEpisode(Guid episodeId)
+        {
+            return Context.Acts
+                .Where(s => s.EpisodeId.Equals(episodeId))
+                .ToList();
+        }
+
         public Act GetActByName(string actName)
         {
             return Context.Acts

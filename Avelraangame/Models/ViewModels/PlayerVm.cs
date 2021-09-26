@@ -8,6 +8,7 @@ namespace Avelraangame.Models.ViewModels
         public string PlayerName { get; set; }
         public string Ward { get; set; }
         public string Wardcheck { get; set; }
+        public string Symbol { get; set; }
 
         public PlayerVm(Player player)
         {

@@ -80,6 +80,18 @@ namespace Avelraangame.Services.Base
             return player;
         }
 
+        protected Player ValidatePlayerBySymbolWard(string symbol, string ward)
+        {
+            var player = DataService.GetPlayerBySymbolWard(symbol, ward);
+
+            if (player == null)
+            {
+                throw new Exception(string.Concat(Scribe.ShortMessages.ResourceNotFound, ": the symbol ward matched no player."));
+            }
+
+            return player;
+        }
+
         protected void ValidateWard(string ward, string wardCheck)
         {
             if (string.IsNullOrWhiteSpace(ward))
@@ -141,6 +153,26 @@ namespace Avelraangame.Services.Base
         {
             ValidatePlayerName(playerVm.PlayerName);
             ValidateWards(playerVm.Ward, playerVm.Wardcheck);
+            if (!PlayersUtils.PlayerSymbolsList.Contains(playerVm.Symbol))
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.BadRequest, ": invalid symbol."));
+            }
+        }
+
+        protected void ValidatePlayerDetailsOnLogon(PlayerVm playerVm)
+        {
+            if (string.IsNullOrWhiteSpace(playerVm.Ward))
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.BadRequest, ": ward is missing or invalid."));
+            }
+            if (string.IsNullOrWhiteSpace(playerVm.Symbol))
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.BadRequest, ": symbol is missing or invalid."));
+            }
+            if (!PlayersUtils.PlayerSymbolsList.Contains(playerVm.Symbol))
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.BadRequest, ": invalid symbol."));
+            }
         }
 
         private void ValidateWards(string ward, string wardCheck)
@@ -442,7 +474,7 @@ namespace Avelraangame.Services.Base
             }
         }
 
-        protected void ValidateEpisodeExists(string episodeName)
+        protected void ValidateEpisodeNameUnicity(string episodeName)
         {
             ValidateEpisodeName(episodeName);
 
@@ -466,7 +498,7 @@ namespace Avelraangame.Services.Base
             }
         }
 
-        protected void ValidateActExists(string actName)
+        protected void ValidateActNameUnicity(string actName)
         {
             ValidateActName(actName);
 

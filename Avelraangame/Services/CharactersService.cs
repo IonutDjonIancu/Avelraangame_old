@@ -217,7 +217,7 @@ namespace Avelraangame.Services
             var charvm = ValidateRequestDeserializationIntoCharacterVm(request.Message);
             ValidatePlayerByIdNamePair(charvm.PlayerId, charvm.PlayerName);
 
-            var list = DataService.GetCharactersByPlayerId(charvm.PlayerId);
+            var list = DataService.GetAllCharactersByPlayerId(charvm.PlayerId);
 
             var returnList = new List<CharacterVm>();
 

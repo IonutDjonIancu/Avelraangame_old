@@ -185,8 +185,19 @@
         #endregion
 
         #region GameSettings
+        public static class Stories
+        {
+            public static string Avelraan = "Avelraan";
+            public static string Dungeon = "Dungeon";
+            public static string Adventure = "Adventure";
+        }
+
         public static class Difficulty
         {
+            /// <summary>
+            /// 0
+            /// </summary>
+            public static string D0_Custom = "Custom";
             /// <summary>
             /// 1
             /// </summary>
@@ -211,6 +222,10 @@
             /// 6
             /// </summary>
             public static string D6_Astral = "Astral";
+            /// <summary>
+            /// 7
+            /// </summary>
+            public static string D7_Random = "Random"; // TODO: random should consider the level of the character
         }
         #endregion
     }

@@ -21,7 +21,7 @@ namespace Avelraangame.Services.SubService
                 InSlot = ItemsUtils.Slots.Armour
             };
 
-            item.Name = GenerateItemNameByLevelAndType(itemLevel, ItemsUtils.Types.Armour);
+            item.Name = GenerateItemNameByLevelAndType(itemLevel, ItemsUtils.Types.Armour, false);
             item.Worth = GenerateItemWorthByLevelAndType(itemLevel, ItemsUtils.Types.Armour);
             item.IsConsumable = false;
 
@@ -58,9 +58,9 @@ namespace Avelraangame.Services.SubService
             };
 
             item.Slots = JsonConvert.SerializeObject(GenerateItemSlotsByType(item.Type));
-            item.Name = GenerateItemNameByLevelAndType(item.Level, item.Type);
-            item.Worth = GenerateItemWorthByLevelAndType(item.Level, item.Type);
             item.IsConsumable = IsConsumable(item.Type);
+            item.Name = GenerateItemNameByLevelAndType(item.Level, item.Type, item.IsConsumable);
+            item.Worth = GenerateItemWorthByLevelAndType(item.Level, item.Type);
 
             var bonuses = GenerateItemBonusesByLevelAndType(item.Level, item.Type); // bonuses
 
@@ -481,8 +481,13 @@ namespace Avelraangame.Services.SubService
             return (ItemsUtils.Types)index;
         }
 
-        private string GenerateItemNameByLevelAndType(int level, ItemsUtils.Types type)
+        private string GenerateItemNameByLevelAndType(int level, ItemsUtils.Types type, bool isConsumable)
         {
+            if (type.Equals(ItemsUtils.Types.Apparatus) && isConsumable)
+            {
+                return GeneratePotion(level);
+            }
+
             if (level == 1) return $"{ItemsUtils.List_of_CommonNamePrefixes[Dice.Roll_0_to_max(4)]} {type}";
             else if (level == 2) return $"{ItemsUtils.List_of_RefinedNamePrefixes[Dice.Roll_0_to_max(4)]} {type}";
             else if (level == 3) return $"{ItemsUtils.List_of_MasterworkNamePrefixes[Dice.Roll_0_to_max(4)]} {type}";
@@ -490,6 +495,30 @@ namespace Avelraangame.Services.SubService
             else return $"{ItemsUtils.itemNames.ObjectFromAfar}";
 
             // levels 5 and 6 (Artifacts and Relics) will have their own names
+        }
+
+        private string GeneratePotion(int level)
+        {
+            if (level == 1)
+            {
+                return "Viscous mixture";
+            }
+            else if (level == 2)
+            {
+                return "Decanted blend";
+            }
+            else if (level == 3)
+            {
+                return "Purified melange";
+            }
+            else if (level == 4)
+            {
+                return "Alchemical potion";
+            }
+            else
+            {
+                return $"{ItemsUtils.itemNames.ObjectFromAfar}";
+            }
         }
     }
 }

@@ -1,81 +1,36 @@
-﻿// URLs
-const GetPlayerIdByName = "/api/palantir/GetPlayerIdByName";
-
+﻿// js template
+// URLs
+const GetCharacter = "/api/palantir/GetCharacter";
 // divs
-const players = "#players";
-const welcome = "#welcome";
-const ward = "#ward";
+const aliveBtn = "#aliveBtn";
+const deadBtn = "#deadBtn";
+let playerId;
+let playerName;
 
+// objects
 
 // on page load
-establishPlayer();
+playerId = establishPlayerId_base();
+playerName = establishPlayerName_base();
 
+getCharactersByPlayerNameAndId_base(playerName, playerId, function (data) {
 
+    var alive = 0;
+    var dead = 0;
 
+    for (var i = 0; i < data.length; i++) {
+        if (data[i].IsAlive == true) {
+            alive++;
+        } else {
+            dead++;
+        }
+    }
 
+    $(aliveBtn).text(alive);
+    $(deadBtn).text(dead);
+});
 
 
 // events
-$(players).on("change", function () {
-
-    localStorage.clear();
-
-    var playerName = $(players)[0].value;
-    var playerWard = $(ward).val();
-
-    if (!playerName) {
-        return;
-    }
-
-    var object = {
-        PlayerName: playerName,
-        Ward: playerWard
-    }
-    var request = {
-        message: JSON.stringify(object)
-    }
-
-    $.ajax({
-        type: "GET",
-        url: GetPlayerIdByName,
-        contentType: "text",
-        data: request,
-        success: function (resp) {
-            var response = JSON.parse(resp);
-
-            if (response.Error) {
-                console.log(response.Error);
-                return;
-            }
-
-            setSessionCredentials(playerName, response.Data);
-            $(welcome).empty();
-            $(welcome).append(`Welcome: ${playerName}`);
-
-        },
-        error: function (err) {
-            console.log(err);
-        }
-    });
-
-
-
-
-
-
-
-});
 
 // functions
-function setSessionCredentials(playerName, playerId) {
-    localStorage.setItem("playerName", playerName);
-    localStorage.setItem("playerId", playerId);
-}
-
-function establishPlayer() {
-    var name = localStorage.getItem("playerName");
-
-    if (name) {
-        $(welcome).append(`Welcome: ${name}`);
-    }
-}

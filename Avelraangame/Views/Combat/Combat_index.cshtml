@@ -4,15 +4,25 @@
 
 <br />
 <p style="color:navajowhite">Combat</p>
-
-<div id="modelJumbo" class="text-left jumbotron" style="opacity:0.7; background-color:black; color:navajowhite">
-    <p>Ready to fight</p>
-    <div id="readyToFight"></div>
-    <hr />
-    <hr />
-    <p>In party</p>
-    <div id="inParty"></div>
+<div class="btn-group">
+    <a class="btn btn-dark btn-sm" asp-controller="Combat" asp-action="Combat_index">Index</a>
+    <a class="btn btn-outline-dark btn-sm" asp-controller="Combat" asp-action="Combat_storyMode">Story</a>
+    <a class="btn btn-outline-dark btn-sm" asp-controller="Combat" asp-action="Combat_dungeon">Dungeon</a>
+    <a class="btn btn-outline-dark btn-sm" asp-controller="Combat" asp-action="Combat_arena">Arena</a>
 </div>
 
+<div id="modelJumbo" class="text-left jumbotron" style="opacity:0.7; background-color:black; color:navajowhite">
+    <p>Select character</p>
+    <div id="charactersDiv"></div>
+    <hr />
+    <p>New</p>
+    <button id="storyModeBtn" class="btn btn-lg btn-outline-warning">Story mode</button>
+    <button id="dungeonBtn" class="btn btn-lg btn-outline-info">Dungeon</button>
+    <button id="arenaBtn" class="btn btn-lg btn-outline-info">Arena</button>
+    <hr />
+    <p>Load</p>
+    <div id="charactersInFightDiv"></div>
+ </div>
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<script src="~/js/combat/index.js"></script>
+<script src="~/js/combat/combat_index.js"></script>
