@@ -222,6 +222,10 @@
             /// 6
             /// </summary>
             public static string D6_Astral = "Astral";
+            /// <summary>
+            /// 7
+            /// </summary>
+            public static string D7_Random = "Random"; // TODO: random should consider the level of the character
         }
         #endregion
     }

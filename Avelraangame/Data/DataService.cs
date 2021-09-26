@@ -226,8 +226,14 @@ namespace Avelraangame.Services
         #region Episode
         public List<Episode> GetEpisodes()
         {
-            return Context.Episodes
-                .ToList();
+            var listOfEpisodes = Context.Episodes.ToList();
+
+            foreach (var item in listOfEpisodes)
+            {
+                item.Acts = Context.Acts.Where(s => s.EpisodeId.Equals(item.Id)).ToList();
+            }
+
+            return listOfEpisodes;
         }
 
         public Episode GetEpisodeByName(string episodeName)

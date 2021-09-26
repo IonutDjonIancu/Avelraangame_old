@@ -50,7 +50,8 @@ namespace Avelraangame.Services
                 Scribe.Difficulty.D3_Hard,
                 Scribe.Difficulty.D4_Heroic,
                 Scribe.Difficulty.D5_Legendary,
-                Scribe.Difficulty.D6_Astral
+                Scribe.Difficulty.D6_Astral,
+                Scribe.Difficulty.D7_Random
             };
 
             return JsonConvert.SerializeObject(list);

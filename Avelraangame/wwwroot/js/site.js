@@ -49,6 +49,30 @@
 
 //}
 
+
+
+// functions
+function drawOneCharacter_base(data, whereTo) {
+    $(whereTo).empty();
+    var pp = `<p>Selected character</p>`;
+    $(whereTo).append(pp);
+
+    if (data.InFight == true) {
+        window.location = `/Combat/Combat_index`;
+    } else {
+        var html = `
+            <button id="${data.CharacterId}" class="btn btn-outline-info characterBtn">
+                ${data.Name}
+                <span>
+                    <img style="border-radius:10px" src="../media/images/humans/human${data.Logbook.PortraitNr}.png"/>
+                </span>
+            </button>
+        `;
+    }
+
+    $(whereTo).append(html);
+}
+
 function drawCharacters_base(data, whereTo) {
     $(whereTo).empty();
     var pp = `<p>Select character</p>`;
@@ -80,6 +104,27 @@ function drawCharacters_base(data, whereTo) {
     }
 }
 
+function drawCharactersNonFight_base(data, whereTo) {
+    $(whereTo).empty();
+
+    for (var i = 0; i < data.length; i++) {
+
+        if (!data[i].InFight) {
+            var html = `
+                <button id="${data[i].CharacterId}" class="btn btn-outline-info characterBtn">
+                    ${data[i].Name}
+                    <span>
+                        <img style="border-radius:10px" src="../media/images/humans/human${data[i].Logbook.PortraitNr}.png"/>
+                    </span>
+                </button>
+            `;
+
+            $(whereTo).append(html);
+        }
+
+    }
+}
+
 function drawCharactersInFights_base(data, whereTo) {
     $(whereTo).empty();
 
@@ -87,7 +132,7 @@ function drawCharactersInFights_base(data, whereTo) {
 
         if (data[i].InFight == true) {
             var html = `
-                <button id="${data[i].CharacterId}" class="btn btn-outline-warning characterBtn">
+                <button id="${data[i].CharacterId}" title="loadFight" class="btn btn-outline-warning characterBtn">
                     ${data[i].Name}
                     <span>
                         <img style="border-radius:10px" src="../media/images/humans/human${data[i].Logbook.PortraitNr}.png"/>
@@ -149,3 +194,22 @@ function setSessionCredentials_base(playerId, playerName) {
     localStorage.setItem("playerId", playerId);
     localStorage.setItem("playerName", playerName);
 }
+
+
+
+
+
+// texts
+let huurlingTexts = {
+    "Huurling_prologue": "Duty, honor or payment, they’re all the same to you.",
+    "Huurling_act1_sellsword": "The world turns, the days pass...",
+    "Huurling_epilogue": "You go about your day."
+};
+
+
+
+
+
+
+
+

@@ -48,7 +48,12 @@ namespace Avelraangame.Services
 
         public string GetEpisodes()
         {
-            return JsonConvert.SerializeObject(DataService.GetEpisodes());
+            return JsonConvert.SerializeObject(DataService.GetEpisodes(), 
+                Formatting.None, 
+                new JsonSerializerSettings()
+                {
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                });
         }
         #endregion
 
