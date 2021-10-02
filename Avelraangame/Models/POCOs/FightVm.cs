@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Avelraangame.Models.POCOs
 {
-    public class Fight
+    public class FightVm
     {
         public Guid FightId { get; set; }
         public List<CharacterVm> GoodGuys { get; set; }

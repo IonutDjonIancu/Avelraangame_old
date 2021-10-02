@@ -16,9 +16,6 @@ let playerName;
 let characterId;
 
 
-// on page load
-
-
 
 
 
@@ -26,6 +23,9 @@ let characterId;
 establishPlayer();
 establishCharacter();
 getCharacter(playerId, characterId);
+if (!characterId) {
+    window.location = `/Character/Character_select`;
+}
 
 
 // events

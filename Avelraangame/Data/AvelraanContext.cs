@@ -17,6 +17,7 @@ namespace Avelraangame.Data
         public virtual DbSet<Storage> Storage { get; set; }
         public virtual DbSet<Act> Acts { get; set; }
         public virtual DbSet<Episode> Episodes { get; set; }
+        public virtual DbSet<Fight> Fights { get; set; }
 
         public AvelraanContext()
         {

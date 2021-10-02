@@ -255,7 +255,7 @@ function addActClickEvent() {
         }
         this.className = "btn btn-warning act";
 
-        localStorage.setItem("actId", actId);
+        localStorage.setItem("actId", $(actId).val());
         showBeginBtn();
 
         $(modalDiv).append(audioHtml);

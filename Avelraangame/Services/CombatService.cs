@@ -22,7 +22,7 @@ namespace Avelraangame.Services
             
             var store = new StorageService();
             var storeValue = store.GetStorageValueById(attack.FightId);
-            var fight = JsonConvert.DeserializeObject<Fight>(storeValue);
+            var fight = JsonConvert.DeserializeObject<FightVm>(storeValue);
 
             var attacker = fight.GoodGuys.Where(s => s.CharacterId.Equals(attack.Attacker)).FirstOrDefault();
             if (attacker.AttackToken.Equals(false))
@@ -77,7 +77,7 @@ namespace Avelraangame.Services
 
             var store = new StorageService();
             var storeValue = store.GetStorageValueById(defend.FightId);
-            var fight = JsonConvert.DeserializeObject<Fight>(storeValue);
+            var fight = JsonConvert.DeserializeObject<FightVm>(storeValue);
 
             var isMainCharInFight = fight.GoodGuys.Where(s => s.CharacterId.Equals(defend.MainCharacterId)).Any();
             if (!isMainCharInFight)
@@ -117,7 +117,7 @@ namespace Avelraangame.Services
         {
             var combatEnd = ValidateRequestDeserializationIntoEndOfCombat(request.Message);
             var stored = DataService.GetStorage(combatEnd.FightId);
-            var fight = JsonConvert.DeserializeObject<Fight>(stored.Value);
+            var fight = JsonConvert.DeserializeObject<FightVm>(stored.Value);
 
 
             if (fight.BadGuys.Where(s => s.IsAlive).Any() && fight.GoodGuys.Where(s => s.IsAlive).Any())
@@ -179,7 +179,7 @@ namespace Avelraangame.Services
 
             charVm = characterService.GetCalculatedCharacterById(character.Id);
 
-            var fight = new Fight
+            var fight = new FightVm
             {
                 FightId = fightId,
                 GoodGuys = new List<CharacterVm>

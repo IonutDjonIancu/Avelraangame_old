@@ -74,7 +74,7 @@ namespace Avelraangame.Services.SubService
             return (attacker, defender, damage);
         }
 
-        protected Fight RollNpcAttack(Fight fight)
+        protected FightVm RollNpcAttack(FightVm fight)
         {
             var attackingNpc = fight.BadGuys.Where(s => s.AttackToken).FirstOrDefault();
             if (attackingNpc == null) { return fight; }
@@ -102,7 +102,7 @@ namespace Avelraangame.Services.SubService
             return result;
         }
 
-        protected Fight ReimburseTokens(Fight fight)
+        protected FightVm ReimburseTokens(FightVm fight)
         {
             for (int i = 0; i < fight.GoodGuys.Count; i++)
             {
@@ -150,7 +150,7 @@ namespace Avelraangame.Services.SubService
             DataService.UpdateCharacter(character);
         }
 
-        protected string EndFight(Fight fight)
+        protected string EndFight(FightVm fight)
         {
             if (fight.GoodGuys.Where(s => s.IsAlive).Count() <= 0)
             {
