@@ -39,7 +39,7 @@ namespace Avelraangame.Services
         public Character EquipItemToSlot(Character chr, Item item)
         {
             var supps = new List<ItemVm>();
-            var equipp = new Equippment();
+            var equipp = new Equipment();
 
             if (chr.Supplies != null)
             {
@@ -48,7 +48,7 @@ namespace Avelraangame.Services
 
             if (chr.Equippment != null)
             {
-                equipp = JsonConvert.DeserializeObject<Equippment>(chr.Equippment);
+                equipp = JsonConvert.DeserializeObject<Equipment>(chr.Equippment);
             }
 
             if (item.Type.Equals(ItemsUtils.Types.Apparatus))
@@ -152,7 +152,7 @@ namespace Avelraangame.Services
             return itemVm;
         }
 
-        public ItemVm GenerateRandomArmour(Guid? charId)
+        public ItemVm GenerateRandomArmour(Guid? charId = null)
         {
             var itemLevel = GenerateItemLevel();
             Item item;
@@ -172,19 +172,152 @@ namespace Avelraangame.Services
                 item = GenerateNormalArmour(itemLevel);
             }
 
-            item.CharacterId = charId;
-            DataService.CreateItem(item);
+            if (charId != null)
+            {
+                item.CharacterId = charId;
+                DataService.CreateItem(item);
+            }
 
             var itemVm = new ItemVm(item);
 
             return itemVm;
         }
+
+        public ItemVm GenerateRandomMainHandWeapon(Guid? charId = null)
+        {
+            var itemLevel = GenerateItemLevel();
+            Item item;
+
+            if (itemLevel == 5)
+            {
+                //return GenerateArtifactItem(); // <------ should return ArtifactVm
+                throw new NotImplementedException(message: $"{Scribe.ShortMessages.Failure}: not implemented exception");
+            }
+            else if (itemLevel == 6)
+            {
+                //return GenerateRelicItem(); // <------ should return RelicVm
+                throw new NotImplementedException(message: $"{Scribe.ShortMessages.Failure}: not implemented exception");
+            }
+            else
+            {
+                item = GenerateNormalMainHand(itemLevel);
+            }
+
+            if (charId != null)
+            {
+                item.CharacterId = charId;
+                DataService.CreateItem(item);
+            }
+
+            var itemVm = new ItemVm(item);
+
+            return itemVm;
+        }
+
+        public ItemVm GenerateRandomOffHandWeapon(Guid? charId = null)
+        {
+            var itemLevel = GenerateItemLevel();
+            Item item;
+
+            if (itemLevel == 5)
+            {
+                //return GenerateArtifactItem(); // <------ should return ArtifactVm
+                throw new NotImplementedException(message: $"{Scribe.ShortMessages.Failure}: not implemented exception");
+            }
+            else if (itemLevel == 6)
+            {
+                //return GenerateRelicItem(); // <------ should return RelicVm
+                throw new NotImplementedException(message: $"{Scribe.ShortMessages.Failure}: not implemented exception");
+            }
+            else
+            {
+                item = GenerateNormalOffHand(itemLevel);
+            }
+
+            if (charId != null)
+            {
+                item.CharacterId = charId;
+                DataService.CreateItem(item);
+            }
+
+            var itemVm = new ItemVm(item);
+
+            return itemVm;
+        }
+
+        public ItemVm GenerateRandomRangedWeapon(Guid? charId = null)
+        {
+            var itemLevel = GenerateItemLevel();
+            Item item;
+
+            if (itemLevel == 5)
+            {
+                //return GenerateArtifactItem(); // <------ should return ArtifactVm
+                throw new NotImplementedException(message: $"{Scribe.ShortMessages.Failure}: not implemented exception");
+            }
+            else if (itemLevel == 6)
+            {
+                //return GenerateRelicItem(); // <------ should return RelicVm
+                throw new NotImplementedException(message: $"{Scribe.ShortMessages.Failure}: not implemented exception");
+            }
+            else
+            {
+                item = GenerateNormalRanged(itemLevel);
+            }
+
+            if (charId != null)
+            {
+                item.CharacterId = charId;
+                DataService.CreateItem(item);
+            }
+
+            var itemVm = new ItemVm(item);
+
+            return itemVm;
+        }
+
+        public List<ItemVm> GenerateRandomTrinketsStash(Guid? charId = null)
+        {
+            var itemLevel = GenerateItemLevel();
+            Item item;
+            var trinkets = new List<ItemVm>();
+
+            if (itemLevel == 5)
+            {
+                //return GenerateArtifactItem(); // <------ should return ArtifactVm
+                throw new NotImplementedException(message: $"{Scribe.ShortMessages.Failure}: not implemented exception");
+            }
+            else if (itemLevel == 6)
+            {
+                //return GenerateRelicItem(); // <------ should return RelicVm
+                throw new NotImplementedException(message: $"{Scribe.ShortMessages.Failure}: not implemented exception");
+            }
+            else
+            {
+                var roll = Dice.Roll_min_to_max(1, 12);
+                for (int i = 0; i < roll; i++)
+                {
+                    item = GenerateNormalTrinket(itemLevel);
+                    if (charId != null)
+                    {
+                        item.CharacterId = charId;
+                        DataService.CreateItem(item);
+                    }
+
+                    var itemVm = new ItemVm(item);
+                    trinkets.Add(itemVm);
+                }
+            }
+
+            return trinkets;
+        }
+
         #endregion
 
         #region Public getters
         public string GetItemsByCharacter(RequestVm request)
         {
-            var reqCharVm = ValidateRequestDeserializationIntoCharacterVm(request.Message);
+            var reqCharVm = ValidateRequestDeserializationInto_CharacterVm(request.Message);
             var chr = ValidateCharacterByPlayerId(reqCharVm.CharacterId, reqCharVm.PlayerId);
 
             return chr.Supplies;

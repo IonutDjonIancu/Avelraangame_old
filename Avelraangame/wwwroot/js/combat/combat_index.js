@@ -1,12 +1,10 @@
-﻿// js template
-// URLs
-const GetCharacter = "/api/palantir/GetCharacter";
+﻿// URLs
+const JoinParty = "/api/palantir/JoinParty";
+
 // divs
-const storyModeBtn = "#storyModeBtn";
-const charactersInFightDiv = "#charactersInFightDiv";
-const charactersDiv = "#charactersDiv";
-const dungeonBtn = "#dungeonBtn";
-const arenaBtn = "#arenaBtn";
+const aloneDiv = "#aloneDiv";
+const inPartyDiv = "#inPartyDiv";
+const inFightDiv = "#inFightDiv";
 let playerId;
 let playerName;
 let characterId;
@@ -18,61 +16,75 @@ localStorage.removeItem("characterId");
 playerId = establishPlayerId_base();
 playerName = establishPlayerName_base();
 
-getCharactersByPlayerNameAndId_base(playerName, playerId, function (res) {
-    drawCharactersNonFight_base(res, charactersDiv);
-    drawCharactersInFights_base(res, charactersInFightDiv);
-    addLoadCharacterClickEvent();
+
+
+base_getAliveCharactersByPlayerId(playerId, playerName, function (res) {
+
+    console.log(res);
+
+    let aloneArr = [];
+    let inParty = [];
+    let inFight = [];
+
+    for (var i = 0; i < res.length; i++) {
+        if (res[i].InFight) {
+            inFight.push(res[i]);
+        } else if (res[i].InParty) {
+            inParty.push(res[i]);
+        } else {
+            aloneArr.push(res[i]);
+        }
+    }
+
+    base_drawCharacters(aloneArr, aloneDiv);
+    base_drawCharactersInParty(inParty, inPartyDiv);
+    base_drawCharactersInFight(inFight, inFightDiv);
+
+    addCharacterClickEvent();
 });
 
 
 // events
-$(storyModeBtn).on("click", function () {
-    if (characterId) {
-        window.location = `/Combat/Combat_storyMode`;
-    } else {
-        console.log("set character first");
-    }
 
 
-});
-
-$(dungeonBtn).on("click", function () {
-    if (characterId) {
-        window.location = `/Combat/Combat_dungeon`;
-    } else {
-        console.log("set character first");
-    }
-});
-
-$(arenaBtn).on("click", function () {
-    if (characterId) {
-        window.location = `/Combat/Combat_arena`;
-    } else {
-        console.log("set character first");
-    }
-
-});
 
 
 // functions
-function addLoadCharacterClickEvent() {
+function addCharacterClickEvent() {
     $(".characterBtn").on("click", function () {
 
-        if (this.title == "loadFight") {
-            localStorage.setItem("characterId", this.id);
-            window.location = `/Combat/Fight`;
-        } else {
-            var otherChars = $(".characterBtn");
-            for (var i = 0; i < otherChars.length; i++) {
-                if (otherChars[i].title != "loadFight") {
-                    otherChars[i].className = "btn btn-outline-info characterBtn";
-                }
-            }
-            this.className = "btn btn-info characterBtn";
-
-            characterId = this.id;
-            localStorage.setItem("characterId", this.id);
+        var object = {
+            PlayerId: playerId,
+            PlayerName: playerName,
+            CharacterId: this.id
         }
+        var request = {
+            message: JSON.stringify(object)
+        }
+
+    $.ajax({
+        type: "POST",
+        url: JoinParty,
+        contentType: "application/json",
+        data: JSON.stringify(request),
+        success: function (resp) {
+            var response = JSON.parse(resp);
+
+            if (response.Error) {
+                console.log(response.Error);
+                return;
+            } else {
+                window.location.reload();
+            }
+        },
+        error: function (err) {
+            console.log(err);
+        }
+    });
+
+
+
 
     });
 }
+

@@ -16,6 +16,7 @@ namespace Avelraangame.Models.POCOs
         public string Race { get; set; }
         public string Culture { get; set; }
         public int Fights { get; set; }
+        public List<string> Renown { get; set; }
 
         //public LocationUtils.Location Location { get; set; }
 

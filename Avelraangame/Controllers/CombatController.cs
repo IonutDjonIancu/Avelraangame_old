@@ -28,5 +28,10 @@ namespace Avelraangame.Controllers
         {
             return View();
         }
+
+        public IActionResult Combat_party()
+        {
+            return View();
+        }
     }
 }

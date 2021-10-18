@@ -45,12 +45,12 @@ namespace Avelraangame.Services.SubService
             }
         }
 
-        protected (CharacterVm att, CharacterVm def, int dmgDone) RollAttack(CharacterVm attacker, CharacterVm defender)
+        protected (CharacterVm attacker, CharacterVm defender, int dmgDone) RollAttack(CharacterVm attacker, CharacterVm defender)
         {
             var attackerRoll = Dice.Roll_d_20();
-            var attackResult = attacker.Skills.Melee * attackerRoll / 10;
+            var attackResult = attacker.Skills.Melee * attackerRoll / 20;
             var defenderRoll = Dice.Roll_d_20();
-            var defendResult = defender.Skills.Melee * defenderRoll / 10;
+            var defendResult = defender.Skills.Melee * defenderRoll / 20;
 
             attacker.AttackToken = false;
 
@@ -77,32 +77,35 @@ namespace Avelraangame.Services.SubService
         protected FightVm RollNpcAttack(FightVm fight)
         {
             var attackingNpc = fight.BadGuys.Where(s => s.AttackToken).FirstOrDefault();
-            if (attackingNpc == null) { return fight; }
+            if (attackingNpc == null) 
+            { 
+                return fight; 
+            }
 
-            var howManyGoodGuys = fight.GoodGuys.Where(s => s.IsAlive.Equals(true)).ToList().Count - 1;
+            var howManyGoodGuys = fight.GoodGuys.Where(s => s.IsAlive).ToList().Count - 1;
             var attackedGoodGuy = Dice.Roll_0_to_max(howManyGoodGuys);
 
-            var (npc, goodguy, dmg) = RollAttack(attackingNpc, fight.GoodGuys.Where(s => s.IsAlive.Equals(true)).ToList()[attackedGoodGuy]);
+            var (npc, goodguy, dmg) = RollAttack(attackingNpc, fight.GoodGuys.Where(s => s.IsAlive).ToList()[attackedGoodGuy]);
 
-            var indexGoood = fight.GoodGuys.FindIndex(s => s.CharacterId == goodguy.CharacterId);
+            var indexGoood = fight.GoodGuys.FindIndex(s => s.CharacterId.Equals(goodguy.CharacterId));
             fight.GoodGuys.RemoveAt(indexGoood);
             fight.GoodGuys.Add(goodguy);
 
             if (dmg > 0)
             {
-                fight.LastActionResult = string.Concat(Scribe.ShortMessages.NpcDmg, $": {dmg} dmg taken.");
+                fight.FightDetails.LastActionResult = string.Concat(Scribe.ShortMessages.NpcDmg, $": {dmg} dmg taken.");
             }
             else
             {
-                fight.LastActionResult = string.Concat(Scribe.ShortMessages.NpcDmg, $": npc missed!");
+                fight.FightDetails.LastActionResult = string.Concat(Scribe.ShortMessages.NpcDmg, $": npc missed!");
             }
 
             var result = RollNpcAttack(fight);
-
+                       
             return result;
         }
 
-        protected FightVm ReimburseTokens(FightVm fight)
+        protected FightVmOld ReimburseTokens(FightVmOld fight)
         {
             for (int i = 0; i < fight.GoodGuys.Count; i++)
             {
@@ -144,13 +147,16 @@ namespace Avelraangame.Services.SubService
         protected void MarkForDeath(Guid characterId)
         {
             var character = DataService.GetCharacterById(characterId);
-            if (character == null) { return; }
+            if (character == null)
+            { 
+                return; 
+            }
             character.IsAlive = false;
 
             DataService.UpdateCharacter(character);
         }
 
-        protected string EndFight(FightVm fight)
+        protected string EndFight(FightVmOld fight)
         {
             if (fight.GoodGuys.Where(s => s.IsAlive).Count() <= 0)
             {
@@ -158,7 +164,7 @@ namespace Avelraangame.Services.SubService
                 {
                     var dbchr = DataService.GetCharacterById(chr.CharacterId);
                     dbchr.FightId = null;
-                    dbchr.InFight = false;
+                    dbchr.IsInFight = false;
 
                     DataService.UpdateCharacter(dbchr);
                 }
@@ -172,7 +178,7 @@ namespace Avelraangame.Services.SubService
                 {
                     var dbchr = DataService.GetCharacterById(chr.CharacterId);
                     dbchr.FightId = null;
-                    dbchr.InFight = false;
+                    dbchr.IsInFight = false;
                     dbchr.Logbook = IncrementFightsWon(dbchr.Logbook);
                     dbchr.Supplies = LootSupplies(dbchr.Supplies, dbchr.Id);
 

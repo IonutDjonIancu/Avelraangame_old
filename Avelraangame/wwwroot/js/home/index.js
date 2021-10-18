@@ -25,7 +25,6 @@ if (playerName) {
     $(loggedDiv).append(`Welcome, ${playerName} ...`);
 } else {
     $(nonLoggedDiv).show();
-
 }
 
 

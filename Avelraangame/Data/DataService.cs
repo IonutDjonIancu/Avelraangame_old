@@ -1,6 +1,7 @@
 ﻿using Avelraangame.Data;
 using Avelraangame.Models;
 using Avelraangame.Services.ServiceUtils;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -136,6 +137,13 @@ namespace Avelraangame.Services
                 .ToList();
         }
 
+        public List<Character> GetCharactersByPartyId(Guid partyId)
+        {
+            return Context.Characters
+                .Where(s => s.PartyId.Equals(partyId))
+                .ToList();
+        } 
+
         public void SaveCharacter(Character chr)
         {
             Context.Characters.Add(chr);
@@ -183,6 +191,17 @@ namespace Avelraangame.Services
         {
             Context.Party.Add(party);
             Context.SaveChanges();
+        }
+
+        public void DeleteParty(Party party)
+        {
+            Context.Remove(party);
+            Context.SaveChanges();
+        }
+
+        public Party GetPartyById(Guid partyId)
+        {
+            return Context.Party.Where(s => s.Id.Equals(partyId)).FirstOrDefault();
         }
         #endregion
 
@@ -300,6 +319,36 @@ namespace Avelraangame.Services
         {
             Context.Acts.Remove(act);
             Context.SaveChanges();
+        }
+        #endregion
+
+        #region Fight
+        public void CreateFight(Fight fight)
+        {
+            Context.Fights.Add(fight);
+            Context.SaveChanges();
+        }
+
+        public void UpdateFight(Fight fight)
+        {
+            Context.Fights.Update(fight);
+            Context.SaveChanges();
+        }
+
+        public void DeleteFight(Fight fight)
+        {
+            Context.Fights.Remove(fight);
+            Context.SaveChanges();
+        }
+
+        public List<Fight> GetAllFights()
+        {
+            return Context.Fights.ToList();
+        }
+
+        public Fight GetFightById(string fightId)
+        {
+            return Context.Fights.Where(s => s.Id.Equals(fightId)).FirstOrDefault();
         }
         #endregion
     }

@@ -13,49 +13,34 @@ namespace Avelraangame.Services.SubService
 
     public class CharacterSubService : ServiceBase
     {
-        protected CharacterVm GenerateWeakNpc()
+        protected CharacterVm GenerateNPC(int minHitMarker, int maxHitMarker, Guid fightId)
         {
-            var stats = new Stats
-            {
-                Strength = 10,
-                Toughness = 10,
-                Awareness = 10,
-                Abstract = 10
-            };
-            var assets = new Assets
-            {
-                Harm = 10,
-                Health = 100,
-                Mana = 0
-            };
-            var expertise = new Expertise
-            {
-                DRM = 10,
-                Experience = 10
-            };
-            var skills = new Skills
-            {
-                Melee = 50,
-                Tactics = 10
-            };
-            var logbook = new Logbook
-            {
-                PortraitNr = 1
-            };
+            var entityLevel = GetNpc_entityLevel(Dice.Roll_0_to_100());
+            var experience = GetNpc_experience(entityLevel);
+            var stats = GetNpc_stats(entityLevel, experience);
+            var expertise = GetNpc_expertise(experience);
+            var skills = GetNpc_skills(minHitMarker, maxHitMarker, experience);
+            var logbook = GetNpc_logbook(entityLevel);
+            var equipment = GetNpc_equipment();
 
-            var chr = new Character()
+            var npc = new CharacterVm
             {
-                Id = Guid.NewGuid(),
-                Name = "Weak Npc",
-                Stats = JsonConvert.SerializeObject(stats),
-                Assets = JsonConvert.SerializeObject(assets),
-                Expertise = JsonConvert.SerializeObject(expertise),
-                Skills = JsonConvert.SerializeObject(skills),
-                Logbook = JsonConvert.SerializeObject(logbook),
+                CharacterId = Guid.NewGuid(),
+                Name = "Enemy",
+
+                Stats = stats,
+                Expertise = expertise,
+                Skills = skills,
+                Logbook = logbook,
+                Equippment = equipment,
+
+                FightId = fightId,
+                AttackToken = true,
+                InFight = true,
                 IsAlive = true
             };
 
-            return new CharacterVm(chr);
+            return GetCalculatedCharacter(npc.CharacterId, npc);
         }
 
 
@@ -230,7 +215,7 @@ namespace Avelraangame.Services.SubService
 
                 IsAlive = true,
                 HasLevelup = true,
-                InParty = false,
+                IsInParty = false,
                 Logbook = JsonConvert.SerializeObject(logbook),
                 Supplies = JsonConvert.SerializeObject(supplies)
             };
@@ -238,10 +223,19 @@ namespace Avelraangame.Services.SubService
             return chr;
         }
 
-        protected CharacterVm GetCalculatedCharacter(Guid charId)
+        protected CharacterVm GetCalculatedCharacter(Guid charId, CharacterVm characterVm = null)
         {
-            var chr = DataService.GetCharacterById(charId);
-            var charVm = new CharacterVm(chr);
+            CharacterVm charVm;
+
+            if (characterVm != null)
+            {
+                charVm = characterVm;
+            }
+            else
+            {
+                var chr = DataService.GetCharacterById(charId);
+                charVm = new CharacterVm(chr);
+            }
 
             charVm.Stats.Strength = FormulaStr(charVm);
             charVm.Stats.Toughness = FormulaTou(charVm);
@@ -549,7 +543,131 @@ namespace Avelraangame.Services.SubService
 
         #endregion
 
+        #region NPC formulae
+        private int GetNpc_entityLevel(int roll)
+        {
+            if (roll <= 80)
+            {
+                return 1;
+            }
+            else if (roll > 80 && roll <= 95)
+            {
+                return 2;
+            }
+            else if (roll > 95 && roll <= 99)
+            {
+                return 3;
+            }
+            else
+            {
+                var secondRoll = Dice.Roll_0_to_100();
+                
+                if (secondRoll <= 90)
+                {
+                    return 4;
+                }
+                else if (secondRoll > 90 && secondRoll <= 99)
+                {
+                    return 5;
+                }
+                else
+                {
+                    return 6;
+                }
+            }
+        }
 
+        private int GetNpc_experience(int level)
+        {
+            var roll = Dice.Roll_d_20();
+
+            if (roll < 20) // level 1
+            {
+                return Dice.Roll_min_to_max(20, 100);
+            }
+            else if (roll > 20 && roll < 40) // level 2
+            {
+                return Dice.Roll_min_to_max(50, 300);
+            }
+            else if (roll > 40 && roll < 60) // level 3
+            {
+                return Dice.Roll_min_to_max(200, 600);
+            }
+            else if (roll > 60 && roll < 80) // level 4
+            {
+                return Dice.Roll_min_to_max(400, 1000);
+            }
+            else if (roll > 80 && roll < 100) // level 5
+            {
+                return Dice.Roll_min_to_max(800, 3000);
+            }
+            else // level 6
+            {
+                return Dice.Roll_min_to_max(2000, 20000);
+            }
+        }
+
+        private Stats GetNpc_stats(int level, int exp)
+        {
+            return new Stats
+            {
+                Strength = Dice.Roll_min_to_max(10, exp) * level,
+                Toughness = Dice.Roll_min_to_max(10, exp) * level,
+                Awareness = Dice.Roll_min_to_max(10, exp) * level,
+                Abstract = Dice.Roll_min_to_max(10, exp) * level
+            };
+        }
+
+        private Expertise GetNpc_expertise(int exp)
+        {
+            return new Expertise
+            {
+                DRM = 0,
+                Experience = exp
+            };
+        }
+
+        private Skills GetNpc_skills(int minHitMarker, int maxHitMarker, int exp)
+        {
+            return new Skills
+            {
+                Melee = Dice.Roll_min_to_max(minHitMarker, maxHitMarker) + exp / 10,
+                Ranged = Dice.Roll_min_to_max(minHitMarker, maxHitMarker) + exp / 10,
+                Arcane = Dice.Roll_min_to_max(minHitMarker, maxHitMarker) + exp / 10,
+                Dodge = Dice.Roll_min_to_max(minHitMarker, maxHitMarker) + exp / 10,
+                Hide = Dice.Roll_min_to_max(minHitMarker, maxHitMarker) + exp / 10,
+                Psionics = Dice.Roll_min_to_max(minHitMarker, maxHitMarker) + exp / 10,
+                Resistance = Dice.Roll_min_to_max(minHitMarker, maxHitMarker) + exp / 10,
+                Spot = Dice.Roll_min_to_max(minHitMarker, maxHitMarker) + exp / 10,
+                Unarmed = Dice.Roll_min_to_max(minHitMarker, maxHitMarker) + exp / 10
+            };
+        }
+
+        private Logbook GetNpc_logbook(int level)
+        {
+            return new Logbook
+            {
+                PortraitNr = level,
+                EntityLevel = level,
+            };
+        }
+
+        private Equipment GetNpc_equipment()
+        {
+            var itemService = new ItemsService();
+
+            return new Equipment
+            {
+                Armour = itemService.GenerateRandomArmour(),
+                Mainhand = itemService.GenerateRandomMainHandWeapon(),
+                Offhand = itemService.GenerateRandomOffHandWeapon(),
+                Ranged = itemService.GenerateRandomRangedWeapon(),
+                Trinkets = itemService.GenerateRandomTrinketsStash()
+            };
+        }
+
+
+        #endregion
 
 
     }

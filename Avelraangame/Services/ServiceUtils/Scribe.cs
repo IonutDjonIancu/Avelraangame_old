@@ -9,6 +9,7 @@
         public const string Characters_GenericName = "Marqus";
         #endregion
 
+
         #region Stats
         public const string Stats_Strength = "Strength";
         public const string Stats_Toughness = "Toughness";
@@ -226,6 +227,15 @@
             /// 7
             /// </summary>
             public static string D7_Random = "Random"; // TODO: random should consider the level of the character
+        }
+
+        public static class PartySize
+        {
+            public static string party = "party";
+            public static string group = "group";
+            public static string band = "band";
+            public static string company = "company";
+            public static string troops = "troops";
         }
         #endregion
     }

@@ -104,48 +104,62 @@ function drawCharacters_base(data, whereTo) {
     }
 }
 
-function drawCharactersNonFight_base(data, whereTo) {
+function base_drawCharacters(data, whereTo) {
     $(whereTo).empty();
 
     for (var i = 0; i < data.length; i++) {
 
-        if (!data[i].InFight) {
-            var html = `
-                <button id="${data[i].CharacterId}" class="btn btn-outline-info characterBtn">
-                    ${data[i].Name}
-                    <span>
-                        <img style="border-radius:10px" src="../media/images/humans/human${data[i].Logbook.PortraitNr}.png"/>
-                    </span>
-                </button>
-            `;
+        var html = `
+            <button id="${data[i].CharacterId}" class="btn btn-outline-dark characterBtn">
+                ${data[i].Name}
+                <span>
+                    <img style="border-radius:10px" src="../media/images/humans/human${data[i].Logbook.PortraitNr}.png"/>
+                </span>
+            </button>
+        `;
 
-            $(whereTo).append(html);
-        }
-
+        $(whereTo).append(html);
     }
 }
 
-function drawCharactersInFights_base(data, whereTo) {
+function base_drawCharactersInParty(data, whereTo) {
     $(whereTo).empty();
 
     for (var i = 0; i < data.length; i++) {
 
-        if (data[i].InFight == true) {
-            var html = `
-                <button id="${data[i].CharacterId}" title="loadFight" class="btn btn-outline-warning characterBtn">
-                    ${data[i].Name}
-                    <span>
-                        <img style="border-radius:10px" src="../media/images/humans/human${data[i].Logbook.PortraitNr}.png"/>
-                    </span>
-                </button>
-            `;
+        var html = `
+            <button id="${data[i].CharacterId}" class="btn btn-outline-info characterBtn">
+                ${data[i].Name}
+                <span>
+                    <img style="border-radius:10px" src="../media/images/humans/human${data[i].Logbook.PortraitNr}.png"/>
+                </span>
+            </button>
+        `;
 
-            $(whereTo).append(html);
-        } 
+        $(whereTo).append(html);
     }
 }
 
-function getCharactersByPlayerNameAndId_base(playerName, playerId, callback) {
+function base_drawCharactersInFight(data, whereTo) {
+    $(whereTo).empty();
+
+    for (var i = 0; i < data.length; i++) {
+
+        var html = `
+            <button id="${data[i].CharacterId}" value="${data[i].FightId}" class="btn btn-outline-warning characterBtn">
+                ${data[i].Name}
+                <span>
+                    <img style="border-radius:10px" src="../media/images/humans/human${data[i].Logbook.PortraitNr}.png"/>
+                </span>
+            </button>
+        `;
+
+        $(whereTo).append(html);
+    }
+}
+
+
+function base_getAliveCharactersByPlayerId(playerId, playerName, callback) {
 
     var object = {
         PlayerId: playerId,
@@ -157,7 +171,7 @@ function getCharactersByPlayerNameAndId_base(playerName, playerId, callback) {
 
     $.ajax({
         type: "GET",
-        url: "/api/palantir/GetCharactersByPlayer",
+        url: "/api/palantir/GetAliveCharactersByPlayerId",
         contentType: "text",
         data: request,
         success: function (resp) {

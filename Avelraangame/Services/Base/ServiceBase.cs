@@ -201,7 +201,7 @@ namespace Avelraangame.Services.Base
         #endregion
 
         #region CharacterValidation
-        protected CharacterVm ValidateRequestDeserializationIntoCharacterVm(string request)
+        protected CharacterVm ValidateRequestDeserializationInto_CharacterVm(string request)
         {
             CharacterVm charVm;
 
@@ -290,7 +290,7 @@ namespace Avelraangame.Services.Base
 
         public CharacterVm ValidateRollDetailsBeforeStoring(RequestVm request)
         {
-            var charvm = ValidateRequestDeserializationIntoCharacterVm(request.Message);
+            var charvm = ValidateRequestDeserializationInto_CharacterVm(request.Message);
             ValidatePlayerByIdNamePair(charvm.PlayerId, charvm.PlayerName);
 
             return charvm;
@@ -528,6 +528,28 @@ namespace Avelraangame.Services.Base
             return actVm;
         }
         #endregion
+
+        #region FightValidation
+        protected List<CharacterVm> ValidateReqDeserializationInto_GoodGuys(string request)
+        {
+            List<CharacterVm> goodGuys;
+
+            try
+            {
+                goodGuys = JsonConvert.DeserializeObject<List<CharacterVm>>(request);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.BadRequest, ": ", ex.Message));
+            }
+
+            return goodGuys;
+        }
+
+
+
+        #endregion
+
 
 
     }

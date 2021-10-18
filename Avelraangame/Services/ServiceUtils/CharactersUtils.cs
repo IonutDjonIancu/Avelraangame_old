@@ -26,7 +26,7 @@ namespace Avelraangame.Services.ServiceUtils
         }
 
         #region Stats
-        public static int CalculateStrength(int strBase, Equippment equipp)
+        public static int CalculateStrength(int strBase, Equipment equipp)
         {
             var itemBonuses = equipp.Armour.Bonuses.ToStrength +
                 equipp.Mainhand.Bonuses.ToStrength +
@@ -37,7 +37,7 @@ namespace Avelraangame.Services.ServiceUtils
             return strBase + itemBonuses;
         }
 
-        public static int CalculateToughness(int touBase, Equippment equipp)
+        public static int CalculateToughness(int touBase, Equipment equipp)
         {
             var itemBonuses = equipp.Armour.Bonuses.ToToughness +
                 equipp.Mainhand.Bonuses.ToToughness +
@@ -48,7 +48,7 @@ namespace Avelraangame.Services.ServiceUtils
             return touBase + itemBonuses;
         }
 
-        public static int CalculateAwareness(int awaBase, Equippment equipp)
+        public static int CalculateAwareness(int awaBase, Equipment equipp)
         {
             var itemBonuses = equipp.Armour.Bonuses.ToAwareness +
                 equipp.Mainhand.Bonuses.ToAwareness +
@@ -59,7 +59,7 @@ namespace Avelraangame.Services.ServiceUtils
             return awaBase + itemBonuses;
         }
 
-        public static int CalculateAbstract(int absBase, Equippment equipp)
+        public static int CalculateAbstract(int absBase, Equipment equipp)
         {
             var itemBonuses = equipp.Armour.Bonuses.ToAbstract +
                 equipp.Mainhand.Bonuses.ToAbstract +
@@ -70,7 +70,7 @@ namespace Avelraangame.Services.ServiceUtils
             return absBase + itemBonuses;
         }
         #endregion
-        public static int CalculateExperience(int expBase, Equippment equipp)
+        public static int CalculateExperience(int expBase, Equipment equipp)
         {
             var itemBonuses = equipp.Armour.Bonuses.ToExperience +
                 equipp.Mainhand.Bonuses.ToExperience +
@@ -81,7 +81,7 @@ namespace Avelraangame.Services.ServiceUtils
             return expBase + itemBonuses;
         }
 
-        public static int CalculateDRM(int drmBase, Equippment equipp)
+        public static int CalculateDRM(int drmBase, Equipment equipp)
         {
             var itemBonuses = equipp.Armour.Bonuses.ToDRM +
                 equipp.Mainhand.Bonuses.ToDRM +
@@ -98,7 +98,7 @@ namespace Avelraangame.Services.ServiceUtils
         #endregion
 
         #region Assets
-        public static int CalculateHealth (int tou, int str, int awa, int exp, int entityLevel, Equippment equipp)
+        public static int CalculateHealth (int tou, int str, int awa, int exp, int entityLevel, Equipment equipp)
         {
             var itemBonuses = equipp.Armour.Bonuses.ToHealth +
                equipp.Mainhand.Bonuses.ToHealth +
@@ -109,7 +109,7 @@ namespace Avelraangame.Services.ServiceUtils
             return (5 * tou + 2 * str + awa + exp / 10) * entityLevel + itemBonuses;
         }
 
-        public static int CalculateMana(int tou, int abs, int exp, int entityLevel, Equippment equipp)
+        public static int CalculateMana(int tou, int abs, int exp, int entityLevel, Equipment equipp)
         {
             var itemBonuses = equipp.Armour.Bonuses.ToMana +
                equipp.Mainhand.Bonuses.ToMana +
@@ -120,7 +120,7 @@ namespace Avelraangame.Services.ServiceUtils
             return ((2 * tou + exp / 5) * entityLevel + itemBonuses) * abs / 10;
         }
 
-        public static int CalculateHarm(int str, int awa, int exp, int entityLevel, Equippment equipp)
+        public static int CalculateHarm(int str, int awa, int exp, int entityLevel, Equipment equipp)
         {
             var itemBonuses = equipp.Armour.Bonuses.ToHarm +
                equipp.Mainhand.Bonuses.ToHarm +

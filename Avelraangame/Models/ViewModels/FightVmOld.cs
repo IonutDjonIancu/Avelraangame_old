@@ -1,11 +1,10 @@
-﻿using Avelraangame.Models.ViewModels;
-using Avelraangame.Services.ServiceUtils;
+﻿using Avelraangame.Services.ServiceUtils;
 using System;
 using System.Collections.Generic;
 
-namespace Avelraangame.Models.POCOs
+namespace Avelraangame.Models.ViewModels
 {
-    public class FightVm
+    public class FightVmOld
     {
         public Guid FightId { get; set; }
         public List<CharacterVm> GoodGuys { get; set; }

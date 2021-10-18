@@ -13,7 +13,7 @@ let playerName;
 playerId = establishPlayerId_base();
 playerName = establishPlayerName_base();
 
-getCharactersByPlayerNameAndId_base(playerName, playerId, function (data) {
+base_getAliveCharactersByPlayerId(playerName, playerId, function (data) {
 
     var alive = 0;
     var dead = 0;

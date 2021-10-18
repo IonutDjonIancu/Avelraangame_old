@@ -38,6 +38,119 @@ namespace Avelraangame.Services.SubService
             return item;
         }
 
+        protected Item GenerateNormalMainHand(int itemLevel)
+        {
+            var type = GetRandomItemWeaponType();
+
+            var item = new Item
+            {
+                Id = Guid.NewGuid(),
+                Level = itemLevel,
+                Type = type,
+                IsEquipped = true,
+                InSlot = ItemsUtils.Slots.Mainhand
+            };
+
+            item.Name = GenerateItemNameByLevelAndType(itemLevel, type, false);
+            item.Worth = GenerateItemWorthByLevelAndType(itemLevel, type);
+            item.IsConsumable = false;
+
+            var bonuses = GenerateItemBonusesByLevelAndType(itemLevel, type);
+
+            if (bonuses.ToWealth > 0)
+            {
+                item.Worth += bonuses.ToWealth;
+            }
+
+            item.Bonuses = JsonConvert.SerializeObject(bonuses);
+
+            return item;
+        }
+
+        protected Item GenerateNormalOffHand(int itemLevel)
+        {
+            var type = GetRandomItemWeaponType();
+
+            var item = new Item
+            {
+                Id = Guid.NewGuid(),
+                Level = itemLevel,
+                Type = type,
+                IsEquipped = true,
+                InSlot = ItemsUtils.Slots.Offhand
+            };
+
+            item.Name = GenerateItemNameByLevelAndType(itemLevel, type, false);
+            item.Worth = GenerateItemWorthByLevelAndType(itemLevel, type);
+            item.IsConsumable = false;
+
+            var bonuses = GenerateItemBonusesByLevelAndType(itemLevel, type);
+
+            if (bonuses.ToWealth > 0)
+            {
+                item.Worth += bonuses.ToWealth;
+            }
+
+            item.Bonuses = JsonConvert.SerializeObject(bonuses);
+
+            return item;
+        }
+
+        protected Item GenerateNormalRanged(int itemLevel)
+        {
+            var type = GetRandomItemRangedType();
+
+            var item = new Item
+            {
+                Id = Guid.NewGuid(),
+                Level = itemLevel,
+                Type = type,
+                IsEquipped = true,
+                InSlot = ItemsUtils.Slots.Ranged
+            };
+
+            item.Name = GenerateItemNameByLevelAndType(itemLevel, type, false);
+            item.Worth = GenerateItemWorthByLevelAndType(itemLevel, type);
+            item.IsConsumable = false;
+
+            var bonuses = GenerateItemBonusesByLevelAndType(itemLevel, type);
+
+            if (bonuses.ToWealth > 0)
+            {
+                item.Worth += bonuses.ToWealth;
+            }
+
+            item.Bonuses = JsonConvert.SerializeObject(bonuses);
+
+            return item;
+        }
+
+        protected Item GenerateNormalTrinket(int itemLevel)
+        {
+            var item = new Item
+            {
+                Id = Guid.NewGuid(),
+                Level = itemLevel,
+                Type = ItemsUtils.Types.Apparatus,
+                IsEquipped = true,
+                InSlot = ItemsUtils.Slots.Trinkets
+            };
+
+            item.Name = GenerateItemNameByLevelAndType(itemLevel, ItemsUtils.Types.Apparatus, false);
+            item.Worth = GenerateItemWorthByLevelAndType(itemLevel, ItemsUtils.Types.Apparatus);
+            item.IsConsumable = false;
+
+            var bonuses = GenerateItemBonusesByLevelAndType(itemLevel, ItemsUtils.Types.Apparatus);
+
+            if (bonuses.ToWealth > 0)
+            {
+                item.Worth += bonuses.ToWealth;
+            }
+
+            item.Bonuses = JsonConvert.SerializeObject(bonuses);
+
+            return item;
+        }
 
         protected Item GenerateNormalItem(int itemLevel, string charId = null)
         {
@@ -495,6 +608,33 @@ namespace Avelraangame.Services.SubService
             else return $"{ItemsUtils.itemNames.ObjectFromAfar}";
 
             // levels 5 and 6 (Artifacts and Relics) will have their own names
+        }
+
+        private ItemsUtils.Types GetRandomItemWeaponType()
+        {
+            var roll = Dice.Roll_min_to_max(1, 8);
+            return roll switch
+            {
+                1 => ItemsUtils.Types.Axe,
+                2 => ItemsUtils.Types.Club,
+                3 => ItemsUtils.Types.Mace,
+                4 => ItemsUtils.Types.Polearm,
+                5 => ItemsUtils.Types.Shield,
+                6 => ItemsUtils.Types.Spear,
+                7 => ItemsUtils.Types.Warhammer,
+                _ => ItemsUtils.Types.Sword,
+            };
+        }
+
+        private ItemsUtils.Types GetRandomItemRangedType()
+        {
+            var roll = Dice.Roll_min_to_max(1, 3);
+            return roll switch
+            {
+                1 => ItemsUtils.Types.Bow,
+                2 => ItemsUtils.Types.Crossbow,
+                _ => ItemsUtils.Types.Spear,
+            };
         }
 
         private string GeneratePotion(int level)
