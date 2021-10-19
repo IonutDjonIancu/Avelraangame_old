@@ -126,17 +126,18 @@ function base_drawCharactersInParty(data, whereTo) {
     $(whereTo).empty();
 
     for (var i = 0; i < data.length; i++) {
+        if (data[i].InParty) {
+            var html = `
+                <button id="${data[i].CharacterId}" class="btn btn-outline-info characterBtn">
+                    ${data[i].Name}
+                    <span>
+                        <img style="border-radius:10px" src="../media/images/humans/human${data[i].Logbook.PortraitNr}.png"/>
+                    </span>
+                </button>
+            `;
 
-        var html = `
-            <button id="${data[i].CharacterId}" class="btn btn-outline-info characterBtn">
-                ${data[i].Name}
-                <span>
-                    <img style="border-radius:10px" src="../media/images/humans/human${data[i].Logbook.PortraitNr}.png"/>
-                </span>
-            </button>
-        `;
-
-        $(whereTo).append(html);
+            $(whereTo).append(html);
+        }
     }
 }
 

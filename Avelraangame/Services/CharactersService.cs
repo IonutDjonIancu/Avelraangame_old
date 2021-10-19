@@ -16,6 +16,11 @@ namespace Avelraangame.Services
 
         public Guid JoinParty(Character chr)
         {
+            if (chr.IsInFight)
+            {
+                throw new Exception(message: string.Join(": ", Scribe.ShortMessages.Failure, "character is fighting."));
+            }
+
             Party party;
 
             try
@@ -41,6 +46,11 @@ namespace Avelraangame.Services
 
         public void LeaveParty(Character chr)
         {
+            if (chr.IsInFight)
+            {
+                throw new Exception(message: string.Join(": ", Scribe.ShortMessages.Failure, "character is fighting."));
+            }
+
             var party = DataService.GetPartyById(chr.PartyId.GetValueOrDefault());
             if (party == null)
             {

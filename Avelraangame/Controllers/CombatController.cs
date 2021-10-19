@@ -9,7 +9,7 @@ namespace Avelraangame.Controllers
             return View();
         }
 
-        public IActionResult Combat_storyMode()
+        public IActionResult Combat_story()
         {
             return View();
         }

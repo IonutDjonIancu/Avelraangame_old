@@ -162,7 +162,7 @@ namespace Avelraangame.Services
             var fightService = new FightService();
 
             var requester = ValidateRequestDeserializationInto_CharacterVm(request.Message);
-            var fightvm = fightService.StartAFight(requester);
+            var fightvm = fightService.StartAFight(requester); // the fight starts here
 
             fightvm.FightDetails.TacticalSituation = DecideTacticalSituation(fightvm.GoodGuys, fightvm.BadGuys);
 

@@ -1,32 +1,31 @@
 ﻿// URLs
 const GetEpisodes = "/api/palantir/GetEpisodes";
 const GetCharacter = "/api/palantir/GetCharacter";
+
 // divs
-const nameDiv = "#nameDiv";
-const charactersSelectDiv = "#charactersSelectDiv";
-const episodeSelectDiv = "#episodeSelectDiv";
-const episodeBtnDiv = "#episodeBtnDiv";
-const modalPlaceholderDiv = "#modalPlaceholderDiv";
-const modalBtn = "#modalBtn";
 const stopAudio = "#stopAudio";
-const modalDiv = "#modalDiv";
-const selectedCharDiv = "#selectedCharDiv";
+const charactersDiv = "#charactersDiv";
 const beginBtn = "#beginBtn";
+const episodesDiv = "#episodesDiv";
+const modalDiv = "#modalDiv";
 let playerId;
 let playerName;
 let characterId;
-let characters;
-
 
 // on page load
 playerId = establishPlayerId_base();
 playerName = establishPlayerName_base();
-characterId = localStorage.getItem("characterId");
-if (!characterId) {
-    window.location = `/Combat/Combat_index`;
-}
-getCharacter();
+
+base_getAliveCharactersByPlayerId(playerId, playerName, function (res) {
+    base_drawCharactersInParty(res, charactersDiv);
+});
+
 getEpisodes();
+
+
+
+
+
 
 
 
@@ -38,35 +37,48 @@ $(stopAudio).on("click", function () {
     }); 
 });
 
-$(modalBtn).on("click", function () {
-
-    $(modalPlaceholderDiv).empty();
-
-    var html = `
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    ${text}
-                </div>
-            </div>
-        </div>
-    </div>`;
-
-    $(modalPlaceholderDiv).append(html);
-    $("#myModal").modal("toggle");
-    callSound();
-});
-
 $(beginBtn).on("click", function () {
     window.location = `/Combat/Fight`;
 });
+
+$(stopAudio).on("click", function () {
+    $('audio').each(function () {
+        this.pause(); // Stop playing
+        this.currentTime = 0; // Reset time
+    });
+});
+
+
+
+
+
+
+//$(modalBtn).on("click", function () {
+
+//    $(modalPlaceholderDiv).empty();
+
+//    var html = `
+//    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+//        <div class="modal-dialog" role="document">
+//            <div class="modal-content">
+//                <div class="modal-header">
+//                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+//                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+//                        <span aria-hidden="true">&times;</span>
+//                    </button>
+//                </div>
+//                <div class="modal-body">
+//                    ${text}
+//                </div>
+//            </div>
+//        </div>
+//    </div>`;
+
+//    $(modalPlaceholderDiv).append(html);
+//    $("#myModal").modal("toggle");
+//    callSound();
+//});
+
 
 
 
@@ -77,42 +89,40 @@ function callSound() {
     $(`audio${oldKingSound}`)[0].play();
 }
 
-function stopSounds() {
-    $(`audio${coinSound}`)[0].play();
-}
 
-function getCharacter() {
-    var object = {
-        PlayerId: playerId,
-        PlayerName: playerName,
-        CharacterId: characterId
-    }
-    var request = {
-        message: JSON.stringify(object)
-    }
 
-    $.ajax({
-        type: "GET",
-        url: GetCharacter,
-        contentType: "text",
-        data: request,
-        success: function (resp) {
-            var response = JSON.parse(resp);
+//function getCharacter() {
+//    var object = {
+//        PlayerId: playerId,
+//        PlayerName: playerName,
+//        CharacterId: characterId
+//    }
+//    var request = {
+//        message: JSON.stringify(object)
+//    }
 
-            if (response.Error) {
-                console.log(response.Error);
-                return;
-            }
+//    $.ajax({
+//        type: "GET",
+//        url: GetCharacter,
+//        contentType: "text",
+//        data: request,
+//        success: function (resp) {
+//            var response = JSON.parse(resp);
 
-            var data = JSON.parse(response.Data);
-            console.log(data);
-            drawOneCharacter_base(data, selectedCharDiv);
-        },
-        error: function (err) {
-            console.log(err);
-        }
-    });
-}
+//            if (response.Error) {
+//                console.log(response.Error);
+//                return;
+//            }
+
+//            var data = JSON.parse(response.Data);
+//            console.log(data);
+//            drawOneCharacter_base(data, selectedCharDiv);
+//        },
+//        error: function (err) {
+//            console.log(err);
+//        }
+//    });
+//}
 
 function getEpisodes() {
     $.ajax({
@@ -139,17 +149,17 @@ function getEpisodes() {
 
 function drawEpisodes(data) {
 
-    $(episodeBtnDiv).empty();
+    $(episodesDiv).empty();
 
     for (var i = 0; i < data.length; i++) {
         var html = `
             <div id="${data[i].Id}_name" class="btn-group">
-                <button class="btn btn-secondary episode">${data[i].Name}</button>
+                <button class="btn btn-outline-info episode">${data[i].Name}</button>
                 <button id="${data[i].Name}_prologue" class="btn btn-outline-secondary prologue">Prologue</button>
             </div>
         `;
 
-        $(episodeBtnDiv).append(html);
+        $(episodesDiv).append(html);
 
         for (var j = 0; j < data[i].Acts.length; j++) {
 
@@ -159,7 +169,7 @@ function drawEpisodes(data) {
             // end of because
 
             var html2 = `
-                <button id="${data[i].Acts[j].Name}" title="Act: ${data[i].Acts[j].ActNumber}" value="${data[i].Acts[j].Id}" class="btn btn-outline-warning act">${resultActDisplayName}</button>
+                <button id="${data[i].Acts[j].Name}" title="Act: ${data[i].Acts[j].ActNumber}" value="${data[i].Acts[j].Id}" class="btn btn-outline-warning act">Act ${data[i].Acts[j].ActNumber}: ${resultActDisplayName}</button>
             `;
 
             $(`#${data[i].Id}_name`).append(html2);
@@ -172,9 +182,9 @@ function drawEpisodes(data) {
         $(`#${data[i].Id}_name`).append(html3);
     }
 
-    addPrologueClickEvent();
-    addActClickEvent();
-    addEpilogueClickEvent();
+    //addPrologueClickEvent();
+    //addActClickEvent();
+    //addEpilogueClickEvent();
 }
 
 function addPrologueClickEvent() {
