@@ -1,6 +1,5 @@
 ﻿// URLs
 const GetEpisodes = "/api/palantir/GetEpisodes";
-const GetCharacter = "/api/palantir/GetCharacter";
 
 // divs
 const stopAudio = "#stopAudio";
@@ -13,11 +12,13 @@ let playerName;
 let characterId;
 
 // on page load
+clearCharacterAndActFromStorage();
 playerId = establishPlayerId_base();
 playerName = establishPlayerName_base();
 
 base_getAliveCharactersByPlayerId(playerId, playerName, function (res) {
     base_drawCharactersInParty(res, charactersDiv);
+    setCharacterClickEvent();
 });
 
 getEpisodes();
@@ -49,81 +50,7 @@ $(stopAudio).on("click", function () {
 });
 
 
-
-
-
-
-//$(modalBtn).on("click", function () {
-
-//    $(modalPlaceholderDiv).empty();
-
-//    var html = `
-//    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-//        <div class="modal-dialog" role="document">
-//            <div class="modal-content">
-//                <div class="modal-header">
-//                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-//                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-//                        <span aria-hidden="true">&times;</span>
-//                    </button>
-//                </div>
-//                <div class="modal-body">
-//                    ${text}
-//                </div>
-//            </div>
-//        </div>
-//    </div>`;
-
-//    $(modalPlaceholderDiv).append(html);
-//    $("#myModal").modal("toggle");
-//    callSound();
-//});
-
-
-
-
-
-
 // functions
-function callSound() {
-    $(`audio${oldKingSound}`)[0].play();
-}
-
-
-
-//function getCharacter() {
-//    var object = {
-//        PlayerId: playerId,
-//        PlayerName: playerName,
-//        CharacterId: characterId
-//    }
-//    var request = {
-//        message: JSON.stringify(object)
-//    }
-
-//    $.ajax({
-//        type: "GET",
-//        url: GetCharacter,
-//        contentType: "text",
-//        data: request,
-//        success: function (resp) {
-//            var response = JSON.parse(resp);
-
-//            if (response.Error) {
-//                console.log(response.Error);
-//                return;
-//            }
-
-//            var data = JSON.parse(response.Data);
-//            console.log(data);
-//            drawOneCharacter_base(data, selectedCharDiv);
-//        },
-//        error: function (err) {
-//            console.log(err);
-//        }
-//    });
-//}
-
 function getEpisodes() {
     $.ajax({
         type: "GET",
@@ -155,65 +82,69 @@ function drawEpisodes(data) {
         var html = `
             <div id="${data[i].Id}_name" class="btn-group">
                 <button class="btn btn-outline-info episode">${data[i].Name}</button>
-                <button id="${data[i].Name}_prologue" class="btn btn-outline-secondary prologue">Prologue</button>
+                <button id="${data[i].Name}_prologue" value="${data[i].Prologue}" title="${data[i].Name} prologue" class="btn btn-outline-secondary prologue">Prologue</button>
             </div>
+            <br />
+            <br />
         `;
 
         $(episodesDiv).append(html);
 
         for (var j = 0; j < data[i].Acts.length; j++) {
 
-            var actDisplayName = data[i].Acts[j].Name.split("_")[2];
+            var actDisplayName = data[i].Acts[j].Name.split(":")[1];
             // because fucking javascript doesnt fucking have a fucking first letter to capital ohhh my fucking gawd
             var resultActDisplayName = actDisplayName.charAt(0).toUpperCase() + actDisplayName.slice(1);
             // end of because
 
             var html2 = `
-                <button id="${data[i].Acts[j].Name}" title="Act: ${data[i].Acts[j].ActNumber}" value="${data[i].Acts[j].Id}" class="btn btn-outline-warning act">Act ${data[i].Acts[j].ActNumber}: ${resultActDisplayName}</button>
+                <button id="${data[i].Acts[j].Id}" value="${data[i].Acts[j].Description}" title="${data[i].Acts[j].Name}" class="btn btn-outline-warning act">Act ${data[i].Acts[j].ActNumber}: ${resultActDisplayName}</button>
             `;
 
             $(`#${data[i].Id}_name`).append(html2);
         }
 
         var html3 = `
-            <button id="${data[i].Name}_epilogue" class="btn btn-outline-secondary epilogue">Epilogue</button>
+            <button id="${data[i].Name}_epilogue" value="${data[i].Epilogue}" title="${data[i].Name} epilogue" class="btn btn-outline-secondary epilogue">Epilogue</button>
         `;
 
         $(`#${data[i].Id}_name`).append(html3);
     }
 
-    //addPrologueClickEvent();
-    //addActClickEvent();
-    //addEpilogueClickEvent();
+    addPrologueClickEvent();
+    addActClickEvent();
+    addEpilogueClickEvent();
+    setActClickEvent();
 }
 
 function addPrologueClickEvent() {
     $(".prologue").on("click", function () {
 
         $(modalDiv).empty();
-        var name = this.id.split("_")[0];
-        var nameSuffix = this.id.split("_")[1];
+        var name = this.title;
+        var text = $(this).val();
 
         var textHtml = `
         <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">${name} ${nameSuffix}</h5>
+                        <h5 class="modal-title" id="exampleModalLabel">${name}</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        ${huurlingTexts[this.id]}
+                        ${text}
                     </div>
                 </div>
             </div>
         </div>`;
 
+        var audioName = name.replaceAll(" ", "_");
         var audioHtml = `
-        <audio id="${this.id}_audio" preload="none" controls="" style="margin-top: 5px;" hidden="hidden">
-            <source src="/media/sounds/${this.id}.ogg" type="audio/ogg; codecs=&quot;vorbis&quot;">
+        <audio id="${audioName}_audio" preload="none" controls="" style="margin-top: 5px;" hidden="hidden">
+            <source src="/media/sounds/${audioName}.ogg" type="audio/ogg; codecs=&quot;vorbis&quot;">
         </audio>`;
 
 
@@ -222,7 +153,7 @@ function addPrologueClickEvent() {
         $('audio').each(function () {
             this.pause(); // Stop playing
         });
-        $(`#${this.id}_audio`)[0].play();
+        $(`#${audioName}_audio`)[0].play();
         $("#myModal").modal("toggle");
     });
 
@@ -232,48 +163,48 @@ function addActClickEvent() {
     $(".act").on("click", function () {
 
         $(modalDiv).empty();
-        var name = this.id.split("_")[0];
-        var nameSuffix = this.id.split("_")[1];
-        var nameSuffixName = this.id.split("_")[2];
-        var actId = `#${this.id}`;
+        var name = this.title;
+        var text = $(this).val();
 
         var textHtml = `
         <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">${name} ${nameSuffix}: ${nameSuffixName}</h5>
+                        <h5 class="modal-title" id="exampleModalLabel">${name}</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        ${huurlingTexts[this.id]}
+                        ${text}
                     </div>
+                    <button class="btn btn-light mute">Mute narrator</button>
                 </div>
             </div>
         </div>`;
 
+        var audioName1 = name.replace(":", "");
+        var audioName = audioName1.replaceAll(" ", "_");
         var audioHtml = `
-        <audio id="${this.id}_audio" preload="none" controls="" style="margin-top: 5px;" hidden="hidden">
-            <source src="/media/sounds/${this.id}.ogg" type="audio/ogg; codecs=&quot;vorbis&quot;">
+        <audio id="${audioName}_audio" preload="none" controls="" style="margin-top: 5px;" hidden="hidden">
+            <source src="/media/sounds/${audioName}.ogg" type="audio/ogg; codecs=&quot;vorbis&quot;">
         </audio>`;
-
-        var otherActs = $(".act");
-        for (var i = 0; i < otherActs.length; i++) {
-            otherActs[i].className = "btn btn-outline-warning act";
-        }
-        this.className = "btn btn-warning act";
-
-        localStorage.setItem("actId", $(actId).val());
-        showBeginBtn();
 
         $(modalDiv).append(audioHtml);
         $(modalDiv).append(textHtml);
         $('audio').each(function () {
             this.pause(); // Stop playing
         });
-        $(`#${this.id}_audio`)[0].play();
+        $(`#${audioName}_audio`)[0].play();
+
+        $(".mute").on("click", function () {
+            $('audio').each(function () {
+                this.pause(); // Stop playing
+                this.currentTime = 0; // Reset time
+            });
+        });
+
         $("#myModal").modal("toggle");
     });
 }
@@ -282,29 +213,30 @@ function addEpilogueClickEvent() {
     $(".epilogue").on("click", function () {
 
         $(modalDiv).empty();
-        var name = this.id.split("_")[0];
-        var nameSuffix = this.id.split("_")[1];
+        var name = this.title;
+        var text = $(this).val();
 
         var textHtml = `
         <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">${name} ${nameSuffix}</h5>
+                        <h5 class="modal-title" id="exampleModalLabel">${name}</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        ${huurlingTexts[this.id]}
+                        ${text}
                     </div>
                 </div>
             </div>
         </div>`;
 
+        var audioName = name.replaceAll(" ", "_");
         var audioHtml = `
-        <audio id="${this.id}_audio" preload="none" controls="" style="margin-top: 5px;" hidden="hidden">
-            <source src="/media/sounds/${this.id}.ogg" type="audio/ogg; codecs=&quot;vorbis&quot;">
+        <audio id="${audioName}_audio" preload="none" controls="" style="margin-top: 5px;" hidden="hidden">
+            <source src="/media/sounds/${audioName}.ogg" type="audio/ogg; codecs=&quot;vorbis&quot;">
         </audio>`;
 
 
@@ -313,7 +245,7 @@ function addEpilogueClickEvent() {
         $('audio').each(function () {
             this.pause(); // Stop playing
         });
-        $(`#${this.id}_audio`)[0].play();
+        $(`#${audioName}_audio`)[0].play();
         $("#myModal").modal("toggle");
     });
 
@@ -324,9 +256,37 @@ function showBeginBtn() {
     var hasAct = localStorage.getItem("actId");
 
     if (hasCharacter && hasAct) {
-        $(beginBtn).show();
+        $(beginBtn).show(300);
     }
 }
 
+function setCharacterClickEvent() {
+    $(".characterBtn").on("click", function () {
 
+        for (var i = 0; i < $(".characterBtn").length ; i++) {
+            $($(".characterBtn")[i]).removeClass("btn-info").addClass("btn-outline-info");
+        }
+        $(this).removeClass("btn-outline-info").addClass("btn-info");
 
+        localStorage.setItem("characterId", this.id);
+        showBeginBtn();
+    });
+}
+
+function setActClickEvent() {
+    $(".act").on("click", function () {
+
+        for (var i = 0; i < $(".act").length; i++) {
+            $($(".act")[i]).removeClass("btn-warning").addClass("btn-outline-warning");
+        }
+        $(this).removeClass("btn-outline-warning").addClass("btn-warning");
+
+        localStorage.setItem("actId", this.id);
+        showBeginBtn();
+    });
+}
+
+function clearCharacterAndActFromStorage() {
+    localStorage.removeItem("characterId");
+    localStorage.removeItem("actId");
+}

@@ -25,7 +25,7 @@
     <Folder Include="wwwroot\media\background\" />
     <Folder Include="wwwroot\media\images\humans\" />
     <Folder Include="wwwroot\media\images\items\" />
-    <Folder Include="wwwroot\media\sounds\" />
+    <Folder Include="wwwroot\media\story scripts\" />
   </ItemGroup>
 
 </Project>
