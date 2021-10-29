@@ -44,14 +44,10 @@ namespace Avelraangame.Services
         {
             var list = new List<string>
             {
-                Scribe.Difficulty.D0_Custom,
+                Scribe.Difficulty.D0_Random,
                 Scribe.Difficulty.D1_Easy,
                 Scribe.Difficulty.D2_Normal,
-                Scribe.Difficulty.D3_Hard,
-                Scribe.Difficulty.D4_Heroic,
-                Scribe.Difficulty.D5_Legendary,
-                Scribe.Difficulty.D6_Astral,
-                Scribe.Difficulty.D7_Random
+                Scribe.Difficulty.D3_Hard
             };
 
             return JsonConvert.SerializeObject(list);

@@ -110,7 +110,7 @@ function base_drawCharacters(data, whereTo) {
     for (var i = 0; i < data.length; i++) {
 
         var html = `
-            <button id="${data[i].CharacterId}" class="btn btn-outline-dark characterBtn">
+            <button id="${data[i].CharacterId}" class="btn btn-outline-dark characterBtn" value="inTavern">
                 ${data[i].Name}
                 <span>
                     <img style="border-radius:10px" src="../media/images/humans/human${data[i].Logbook.PortraitNr}.png"/>
@@ -122,13 +122,275 @@ function base_drawCharacters(data, whereTo) {
     }
 }
 
+function base_drawGoodGuys(data, whereTo) {
+    $(whereTo).empty();
+
+    for (var i = 0; i < data.length; i++) {
+
+        var hp;
+        if (data[i].Assets.Health <= 500) {
+            hp = "black";
+        } else if (data[i].Assets.Health > 500 && data[i].Assets.Health <= 1000) {
+            hp = "darkgreen";
+        } else if (data[i].Assets.Health > 1000 && data[i].Assets.Health <= 3000) {
+            hp = "yellow";
+        } else if (data[i].Assets.Health > 3000 && data[i].Assets.Health <= 5000) {
+            hp = "coral";
+        } else if (data[i].Assets.Health > 5000 && data[i].Assets.Health <= 9000) {
+            hp = "darkred";
+        } else {
+            hp = "white";
+        }
+
+        var drm;
+        if (data[i].Expertise.DRM <= 10) {
+            drm = "black";
+        } else if (data[i].Expertise.DRM > 10 && data[i].Expertise.DRM <= 25) {
+            drm = "darkgreen";
+        } else if (data[i].Expertise.DRM > 25 && data[i].Expertise.DRM <= 50) {
+            drm = "yellow";
+        } else if (data[i].Expertise.DRM > 50 && data[i].Expertise.DRM <= 75) {
+            drm = "coral";
+        } else if (data[i].Expertise.DRM > 75 && data[i].Expertise.DRM <= 89) {
+            drm = "darkred";
+        } else {
+            drm = "white";
+        }
+
+        var harm;
+        if (data[i].Assets.Harm <= 500) {
+            harm = "black";
+        } else if (data[i].Assets.Harm > 500 && data[i].Assets.Harm <= 1000) {
+            harm = "darkgreen";
+        } else if (data[i].Assets.Harm > 1000 && data[i].Assets.Harm <= 3000) {
+            harm = "yellow";
+        } else if (data[i].Assets.Harm > 3000 && data[i].Assets.Harm <= 5000) {
+            harm = "coral";
+        } else if (data[i].Assets.Harm > 5000 && data[i].Assets.Harm <= 9000) {
+            harm = "darkred";
+        } else {
+            harm = "white";
+        }
+
+        var mana;
+        if (data[i].Assets.Mana <= 10) {
+            mana = "black";
+        } else if (data[i].Assets.Mana > 10 && data[i].Assets.Mana <= 100) {
+            mana = "darkgreen";
+        } else if (data[i].Assets.Mana > 100 && data[i].Assets.Mana <= 500) {
+            mana = "yellow";
+        } else if (data[i].Assets.Mana > 500 && data[i].Assets.Mana <= 1000) {
+            mana = "coral";
+        } else if (data[i].Assets.Mana > 1000 && data[i].Assets.Mana <= 3000) {
+            mana = "darkred";
+        } else {
+            mana = "white";
+        }
+
+        var token;
+        if (data[i].AttackToken) {
+            token = "white";
+        } else {
+            token = "black";
+        }
+
+        var exp;
+        if (data[i].Expertise.Experience <= 10) {
+            exp = "black";
+        } else if (data[i].Expertise.Experience > 10 && data[i].Expertise.Experience <= 100) {
+            exp = "darkgreen";
+        } else if (data[i].Expertise.Experience > 100 && data[i].Expertise.Experience <= 500) {
+            exp = "yellow";
+        } else if (data[i].Expertise.Experience > 500 && data[i].Expertise.Experience <= 1000) {
+            exp = "coral";
+        } else if (data[i].Expertise.Experience > 1000 && data[i].Expertise.Experience <= 3000) {
+            exp = "darkred";
+        } else {
+            exp = "white";
+        }
+
+        var html = `
+            <div id="${data[i].CharacterId}" class="btn btn-outline-dark goodGuy" style="padding:5px; float:right" title="${data[i].Name}">
+                <div class="container">
+                    <div class="row">
+                        <div class="col">
+                            <div class="row" style="padding:0px">
+                                <span class="material-icons" style="color:${hp}">
+                                    favorite_border
+                                </span>
+                                <span class="material-icons" style="color:${drm}">
+                                    shield
+                                </span>
+                            </div>
+                            <div class="row" style="padding:0px">
+                                <span class="material-icons" style="color:${harm}">
+                                    fitness_center
+                                </span>
+                                <span class="material-icons" style="color:${mana}">
+                                    star_half
+                                </span>
+                            </div>
+                            <div class="row" style="padding:0px">
+                                <span class="material-icons" style="color:${token}">
+                                    radio_button_checked
+                                </span>
+                                <span class="material-icons" style="color:${exp}">
+                                    military_tech
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <span>
+                                <img style="border-radius:10px" src="../media/images/humans/human${data[i].Logbook.PortraitNr}.png" />
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        $(whereTo).append(html);
+    }
+}
+
+function base_drawBadGuys(data, whereTo) {
+    $(whereTo).empty();
+
+    for (var i = 0; i < data.length; i++) {
+
+        var hp;
+        if (data[i].Assets.Health <= 500) {
+            hp = "black";
+        } else if (data[i].Assets.Health > 500 && data[i].Assets.Health <= 1000) {
+            hp = "darkgreen";
+        } else if (data[i].Assets.Health > 1000 && data[i].Assets.Health <= 3000) {
+            hp = "yellow";
+        } else if (data[i].Assets.Health > 3000 && data[i].Assets.Health <= 5000) {
+            hp = "coral";
+        } else if (data[i].Assets.Health > 5000 && data[i].Assets.Health <= 9000) {
+            hp = "darkred";
+        } else {
+            hp = "white";
+        }
+
+        var drm;
+        if (data[i].Expertise.DRM <= 10) {
+            drm = "black";
+        } else if (data[i].Expertise.DRM > 10 && data[i].Expertise.DRM <= 25) {
+            drm = "darkgreen";
+        } else if (data[i].Expertise.DRM > 25 && data[i].Expertise.DRM <= 50) {
+            drm = "yellow";
+        } else if (data[i].Expertise.DRM > 50 && data[i].Expertise.DRM <= 75) {
+            drm = "coral";
+        } else if (data[i].Expertise.DRM > 75 && data[i].Expertise.DRM <= 89) {
+            drm = "darkred";
+        } else {
+            drm = "white";
+        }
+
+        var harm;
+        if (data[i].Assets.Harm <= 500) {
+            harm = "black";
+        } else if (data[i].Assets.Harm > 500 && data[i].Assets.Harm <= 1000) {
+            harm = "darkgreen";
+        } else if (data[i].Assets.Harm > 1000 && data[i].Assets.Harm <= 3000) {
+            harm = "yellow";
+        } else if (data[i].Assets.Harm > 3000 && data[i].Assets.Harm <= 5000) {
+            harm = "coral";
+        } else if (data[i].Assets.Harm > 5000 && data[i].Assets.Harm <= 9000) {
+            harm = "darkred";
+        } else {
+            harm = "white";
+        }
+
+        var mana
+        if (data[i].Assets.Mana <= 10) {
+            mana = "black";
+        } else if (data[i].Assets.Mana > 10 && data[i].Assets.Mana <= 100) {
+            mana = "darkgreen";
+        } else if (data[i].Assets.Mana > 100 && data[i].Assets.Mana <= 500) {
+            mana = "yellow";
+        } else if (data[i].Assets.Mana > 500 && data[i].Assets.Mana <= 1000) {
+            mana = "coral";
+        } else if (data[i].Assets.Mana > 1000 && data[i].Assets.Mana <= 3000) {
+            mana = "darkred";
+        } else {
+            mana = "white";
+        }
+
+        var token;
+        if (data[i].AttackToken) {
+            token = "white";
+        } else {
+            token = "black";
+        }
+
+        var exp;
+        if (data[i].Expertise.Experience <= 10) {
+            exp = "black";
+        } else if (data[i].Expertise.Experience > 10 && data[i].Expertise.Experience <= 50) {
+            exp = "darkgreen";
+        } else if (data[i].Expertise.Experience > 50 && data[i].Expertise.Experience <= 500) {
+            exp = "yellow";
+        } else if (data[i].Expertise.Experience > 500 && data[i].Expertise.Experience <= 1000) {
+            exp = "coral";
+        } else if (data[i].Expertise.Experience > 1000 && data[i].Expertise.Experience <= 3000) {
+            exp = "darkred";
+        } else {
+            exp = "white";
+        }
+
+        var html = `
+            <div id="${data[i].CharacterId}" class="btn btn-outline-dark badGuy" style="padding:5px" title="${data[i].Name}">
+                <div class="container">
+                    <div class="row">
+                        <div class="col">
+                            <span>
+                                <img style="border-radius:10px" src="../media/images/npcs/npc${data[i].Logbook.PortraitNr}.png" />
+                            </span>
+                        </div>
+                        <div class="col">
+                            <div class="row" style="padding:0px">
+                                <span class="material-icons" style="color:${hp}">
+                                    favorite_border
+                                </span>
+                                <span class="material-icons" style="color:${drm}">
+                                    shield
+                                </span>
+                            </div>
+                            <div class="row" style="padding:0px">
+                                <span class="material-icons" style="color:${harm}">
+                                    fitness_center
+                                </span>
+                                <span class="material-icons" style="color:${mana}">
+                                    star_half
+                                </span>
+                            </div>
+                            <div class="row" style="padding:0px">
+                                <span class="material-icons" style="color:black">
+                                    radio_button_checked
+                                </span>
+                                <span class="material-icons" style="color:${exp}">
+                                    military_tech
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        $(whereTo).append(html);
+    }
+}
+
 function base_drawCharactersInParty(data, whereTo) {
     $(whereTo).empty();
 
     for (var i = 0; i < data.length; i++) {
-        if (data[i].InParty) {
+        if (data[i].InParty && !data[i].InFight) {
             var html = `
-                <button id="${data[i].CharacterId}" class="btn btn-outline-info characterBtn">
+                <button id="${data[i].CharacterId}" class="btn btn-outline-info characterBtn" value="inParty">
                     ${data[i].Name}
                     <span>
                         <img style="border-radius:10px" src="../media/images/humans/human${data[i].Logbook.PortraitNr}.png"/>
@@ -147,7 +409,7 @@ function base_drawCharactersInFight(data, whereTo) {
     for (var i = 0; i < data.length; i++) {
 
         var html = `
-            <button id="${data[i].CharacterId}" value="${data[i].FightId}" class="btn btn-outline-warning characterBtn">
+            <button id="${data[i].CharacterId}" class="btn btn-outline-warning characterBtn" value="inFight">
                 ${data[i].Name}
                 <span>
                     <img style="border-radius:10px" src="../media/images/humans/human${data[i].Logbook.PortraitNr}.png"/>
@@ -159,6 +421,39 @@ function base_drawCharactersInFight(data, whereTo) {
     }
 }
 
+
+function base_getCharactersByPlayerId(playerId, playerName, callback) {
+
+    var object = {
+        PlayerId: playerId,
+        PlayerName: playerName
+    }
+    var request = {
+        message: JSON.stringify(object)
+    }
+
+    $.ajax({
+        type: "GET",
+        url: "/api/palantir/GetCharactersByPlayerId",
+        contentType: "application/text",
+        data: request,
+        success: function (resp) {
+            var response = JSON.parse(resp);
+
+            if (response.Error) {
+                console.log(response.Error);
+                return;
+            }
+
+            var data = JSON.parse(response.Data);
+            callback(data);
+        },
+        error: function (err) {
+            console.log(err);
+        }
+    });
+
+}
 
 function base_getAliveCharactersByPlayerId(playerId, playerName, callback) {
 
@@ -204,35 +499,18 @@ function establishPlayerName_base() {
     return playerName;
 }
 
+function establishCharacterId_base() {
+    var characterId = localStorage.getItem("characterId");
+
+    return characterId;
+}
+
 function setSessionCredentials_base(playerId, playerName) {
     localStorage.clear();
     localStorage.setItem("playerId", playerId);
     localStorage.setItem("playerName", playerName);
 }
 
-
-
-
-
-//// texts
-//let storyTexts = {
-//    // Huurling
-//    // Prologue
-//    "Huurling_prologue": "Duty, honor or payment, they’re all the same to you.",
-//    // Act 1
-//    "Huurling act 1: sellsword": "The world turns, the days pass...",
-//    // Epilogue
-//    "Huurling_epilogue": "You go about your day.",
-
-//    // Aquila Foedus
-//    // Prologue
-//    "Aquila prologue": "After the death of the old king, his children fought over the crown of Farlindor. Quintus and Maedra, having the backing of the northern duchies, took over the majority of the land army, while Lisandros and Eneer fled to the south of the large island kingdom, while also retaining control over an impressive fleet. The conflict that followed led to all out civil war between the brothers, that took place mostly in the large valleys of Tael’dorthir mountains, neither gaining an upper hand during the early years. The established states in the south, Londorth and Ennuy, controlled the trade routes between the fractured old kingdom with the rest of the continent, depleting the resources of the northern side and isolating Quintus and his armies to only what the windswept plains of Farlindor could produce. Any land assault was always repulsed by the well prepared troops of Haelva, capital city of Farlindor, leading to significant losses on the southern side, as was the case during the Battle of Ruotsgen Valley approximately 900 years before the Aeldanic calendar. The battle was made famous by the charge led by Quintus of Haelva, clad in a striking golden armour, shining in the bright afternoon sun. Although being unhorsed soon after, he made his way back to the camp, took another charger and repeated the attack. His retinue hacked their way to Lisandros which was waiting on a hill further away at the edge of the battle. When Quintus found himself close enough he pulled out his father’s crown and threw it towards the banner bearers of his brother, only to see his horse die under him once again. The act itself was a statement of how things would go for the young prince, while also causing massive disarray in between the allies nobility, since both of the older brothers wished to ascend to the throne of Haelva. Lisandros’ forces withdrew from the battle soon after, and the ensuing military confrontation ended with haelvan victory.",
-//    // Act 1
-//    "Aquila act 1: the eagle and the sea": "Aware that the southern kingdoms will reorganize their armies and attack into Farlindor, Quintus expected a seaborne invasion. In an attempt to prevent being outnumbered in his own lands, he ordered the transport of ships from the eastern ocean to the fiery sea of Gaerlith. He boarded his finest warriors and set sail along the western coast to the Kingdom of Ennuy. The hazardous trip through plumes of ash coming from the underwater volcanoes cost him dearly as the ships entered one by one into the darkened lands of Mount Moot. The air was noxious and barely breathable, the winds burned the skin. Some of the ships fell under the water due to the gases rising upwards, disappearing forever under the waves. Others, more fortunate, would see their masts set ablaze, watching with dread how the fire spreads slowly against their efforts. It was an impossible feat to navigate these waters, and the men of Haelva were losing hope. As customary, Quintus would travel with a golden eagle, a beast indigenous to the peaks of Farlindor. In a desperate attempt to find a path towards land, he used a small lantern tied to the eagles’ legs and set it free, ordering every ship to row towards the light. As the eagle made its way towards the sky, trying to get above the fumes, it quickly found its way towards the west and the men rowed with renewed hope. Quintus’s ship survived the trip and landed on the tall shores of Ennuy, surprising the small watchtowers built ages ago. The bay where his troops landed was later called the Ashen Swords, due to the fact that his troops covered in ash were in stark contrast with the white sands of Ennuy. Soon after debarking his men, Quintus found the eagle lying dead on the sand, its wings spread to their fullest in a last attempt to fly. This event, witnessed by many around him, was taken as an omen and soon after became the symbol of his house, the black eagle on a white background. Quintus took water and ordered the eagle to be cleaned, but not removed, it’s golden feathers shining in the afternoon sky for all troops to see as they came ashore.",
-//    // Epilogue
-//    "AquilaFoedus_epilogue": "The black ships of Haelva reached the lands of Seracleea.",
-
-//};
 
 
 

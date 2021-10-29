@@ -1,5 +1,6 @@
 ﻿// URLs
 const GetEpisodes = "/api/palantir/GetEpisodes";
+const StartCombatFromStory = "/api/palantir/StartCombatFromStory";
 
 // divs
 const stopAudio = "#stopAudio";
@@ -10,6 +11,7 @@ const modalDiv = "#modalDiv";
 let playerId;
 let playerName;
 let characterId;
+let actId;
 
 // on page load
 clearCharacterAndActFromStorage();
@@ -36,10 +38,6 @@ $(stopAudio).on("click", function () {
         this.pause(); // Stop playing
         this.currentTime = 0; // Reset time
     }); 
-});
-
-$(beginBtn).on("click", function () {
-    window.location = `/Combat/Fight`;
 });
 
 $(stopAudio).on("click", function () {
@@ -258,6 +256,41 @@ function showBeginBtn() {
     if (hasCharacter && hasAct) {
         $(beginBtn).show(300);
     }
+
+    if (hasCharacter && hasAct) {
+        $(beginBtn).on("click", function () {
+
+            var object = {
+                PlayerId: playerId,
+                CharacterId: hasCharacter,
+                ActId: hasAct
+            }
+            var request = {
+                message: JSON.stringify(object)
+            }
+
+            $.ajax({
+                type: "GET",
+                url: StartCombatFromStory,
+                contentType: "text",
+                data: request,
+                success: function (resp) {
+                    var response = JSON.parse(resp);
+
+                    if (response.Error) {
+                        console.log(response.Error);
+                        return;
+                    } else {
+                        localStorage.setItem("characterId", hasCharacter);
+                        window.location = "/Combat/Fight";     
+                    }
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            });
+        });
+    }
 }
 
 function setCharacterClickEvent() {
@@ -281,6 +314,7 @@ function setActClickEvent() {
         }
         $(this).removeClass("btn-outline-warning").addClass("btn-warning");
 
+        actId = this.id;
         localStorage.setItem("actId", this.id);
         showBeginBtn();
     });

@@ -4,7 +4,7 @@ namespace Avelraangame.Controllers
 {
     public class CombatController : Controller
     {
-        public IActionResult Combat_index()
+        public IActionResult Combat_party()
         {
             return View();
         }
@@ -25,11 +25,6 @@ namespace Avelraangame.Controllers
         }
 
         public IActionResult Fight()
-        {
-            return View();
-        }
-
-        public IActionResult Combat_party()
         {
             return View();
         }

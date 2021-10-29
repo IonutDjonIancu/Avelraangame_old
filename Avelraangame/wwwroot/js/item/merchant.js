@@ -1,6 +1,6 @@
 ﻿// URLs
 const GetFight = "/api/palantir/GetFight";
-const GetCharactersByPlayer = "/api/palantir/GetCharactersByPlayer";
+const GetAliveCharactersByPlayerId = "/api/palantir/GetAliveCharactersByPlayerId";
 const GetItemsByCharacter = "/api/palantir/GetItemsByCharacter";
 const SellItem = "/api/palantir/SellItem";
 
@@ -160,7 +160,7 @@ function getCharacters() {
 
     $.ajax({
         type: "GET",
-        url: GetCharactersByPlayer,
+        url: GetAliveCharactersByPlayerId,
         contentType: "application/text",
         data: request,
         success: function (resp) {
@@ -187,13 +187,16 @@ function drawDropdown(data) {
     $(charactersListDiv).empty();
 
     for (var i = 0; i < data.length; i++) {
-        var html = `
-            <img class="characterImg" title="${data[i].Name}" id="${data[i].CharacterId}" style="border-radius:30px; opacity:0.5" src="../media/images/humans/human${data[i].Logbook.PortraitNr}.png" />
-            <span id="${data[i].CharacterId}span">${data[i].Logbook.Wealth}</span>
-            
-        `;
 
-        $(charactersListDiv).append(html);
+        if (data[i].InFight == false) {
+            var html = `
+                <img class="characterImg" title="${data[i].Name}" id="${data[i].CharacterId}" style="border-radius:30px; opacity:0.5" src="../media/images/humans/human${data[i].Logbook.PortraitNr}.png" />
+                <span id="${data[i].CharacterId}span">${data[i].Logbook.Wealth}</span>
+            
+            `;
+
+            $(charactersListDiv).append(html);
+        }
     }
 
     addMouseoverEvents();

@@ -11,6 +11,11 @@ namespace Avelraangame.Services.SubService
 {
     public class FightSubService : ServiceBase
     {
+        protected Fight GetFightById(Guid fightId)
+        {
+            return DataService.GetFightById(fightId);
+        }
+
         protected void UlockCharactersFromFight(List<Character> characters)
         {
             foreach (var chr in characters)
@@ -103,19 +108,19 @@ namespace Avelraangame.Services.SubService
         {
             var roll = Dice.Roll_min_to_max(1, 100);
 
-            if (roll <= 50)
+            if (roll <= 80)
             {
                 return (Dice.Roll_min_to_max(2, 5), Scribe.PartySize.party); 
             }
-            else if (roll > 50 && roll <= 75)
+            else if (roll > 80 && roll <= 90)
             {
                 return (Dice.Roll_min_to_max(3, 8), Scribe.PartySize.group);
             }
-            else if (roll > 75 && roll <= 90)
+            else if (roll > 90 && roll <= 96)
             {
                 return (Dice.Roll_min_to_max(6, 12), Scribe.PartySize.band);
             }
-            else if (roll > 90 && roll <= 99)
+            else if (roll > 96 && roll <= 99)
             {
                 return (Dice.Roll_min_to_max(10, 20), Scribe.PartySize.company);
             }
@@ -123,8 +128,6 @@ namespace Avelraangame.Services.SubService
             {
                 return (Dice.Roll_min_to_max(20, 50), Scribe.PartySize.troops);
             }
-
-
         }
 
     }

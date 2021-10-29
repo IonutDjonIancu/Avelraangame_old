@@ -480,17 +480,38 @@ namespace Avelraangame.Controllers
         //    return JsonConvert.SerializeObject(responseVm);
         //}
 
-        // GET: /api/palantir/EndCombat
-        [HttpGet("EndCombat")]
-        public string EndCombat([FromQuery] RequestVm request)
+        //// GET: /api/palantir/EndCombat
+        //[HttpGet("EndCombat")]
+        //public string EndCombat([FromQuery] RequestVm request)
+        //{
+        //    var responseVm = new ResponseVm();
+        //    var combatService = new CombatService();
+
+        //    try
+        //    {
+        //        PalantirBase.ValidateRequest(request);
+        //        responseVm.Data = combatService.EndCombat(request);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        responseVm.Error = ex.Message;
+        //        return JsonConvert.SerializeObject(responseVm);
+        //    }
+
+        //    return JsonConvert.SerializeObject(responseVm);
+        //}
+
+        // GET: /api/palantir/GetFightById
+        [HttpGet("GetFightById")]
+        public string GetFightById([FromQuery] RequestVm request)
         {
             var responseVm = new ResponseVm();
-            var combatService = new CombatService();
+            var fightService = new FightService();
 
             try
             {
                 PalantirBase.ValidateRequest(request);
-                responseVm.Data = combatService.EndCombat(request);
+                responseVm.Data = fightService.GetFightById(request);
             }
             catch (Exception ex)
             {
@@ -501,17 +522,16 @@ namespace Avelraangame.Controllers
             return JsonConvert.SerializeObject(responseVm);
         }
 
-        // GET: /api/palantir/GetFight
-        [HttpGet("GetFight")]
-        public string GetFight([FromQuery] RequestVm request)
+        // GET: /api/palantir/StartCombatFromStory
+        [HttpGet("StartCombatFromStory")]
+        public string StartCombatFromStory([FromQuery] RequestVm request)
         {
             var responseVm = new ResponseVm();
             var combatService = new CombatService();
 
             try
             {
-                PalantirBase.ValidateRequest(request);
-                responseVm.Data = combatService.GetFight(request);
+                responseVm.Data = combatService.StartCombatFromStory(request);
             }
             catch (Exception ex)
             {
@@ -521,27 +541,6 @@ namespace Avelraangame.Controllers
 
             return JsonConvert.SerializeObject(responseVm);
         }
-
-        // GET: /api/palantir/StartCombat
-        [HttpGet("StartCombat")]
-        public string StartCombat([FromQuery] RequestVm request)
-        {
-            var responseVm = new ResponseVm();
-            var combatService = new CombatService();
-
-            try
-            {
-                responseVm.Data = combatService.StartCombat(request);
-            }
-            catch (Exception ex)
-            {
-                responseVm.Error = ex.Message;
-                return JsonConvert.SerializeObject(responseVm);
-            }
-
-            return JsonConvert.SerializeObject(responseVm);
-        }
-
 
         #endregion
         #region POST

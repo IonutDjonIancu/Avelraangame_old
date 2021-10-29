@@ -1,5 +1,5 @@
 ﻿// URLs
-const GetCharactersByPlayer = "/api/palantir/GetCharactersByPlayer";
+const GetAliveCharactersByPlayerId = "/api/palantir/GetAliveCharactersByPlayerId";
 
 // divs
 const players = "#players";
@@ -39,7 +39,7 @@ function getCharactersPerPlayer() {
 
     $.ajax({
         type: "GET",
-        url: GetCharactersByPlayer,
+        url: GetAliveCharactersByPlayerId,
         contentType: "application/text",
         data: request,
         success: function (resp) {
@@ -65,21 +65,14 @@ function getCharactersPerPlayer() {
                         data[i].Culture,
                         data[i].Name,
                         data[i].Logbook.PortraitNr,
-                        data[i].HasLevelup);
+                        data[i].HasLevelup,
+                        data[i].InFight
+                    );
                 }
 
                 $(characterBtn).on("click", function () {
 
-                    var character = {
-                        CharacterId: this.id,
-                        PlayerId: playerId
-                    }
-
-                    var request2 = JSON.stringify(character)
-
-
                     if (this.hasAttribute("draggable")) {
-
                         localStorage.setItem("characterId", this.id);
                         window.location = `/Character/Character_levelup`;
                     } else {
@@ -101,7 +94,11 @@ function getCharactersPerPlayer() {
 }
 
 
-function drawCharacter(id, race, culture, name, portraitNr, hasLevelup) {
+function drawCharacter(id, race, culture, name, portraitNr, hasLevelup, inFight) {
+
+    if (inFight) {
+        return;
+    }
 
     if (hasLevelup == true) {
         var btnStyle = `

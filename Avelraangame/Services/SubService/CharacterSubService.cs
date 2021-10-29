@@ -15,13 +15,14 @@ namespace Avelraangame.Services.SubService
     {
         protected CharacterVm GenerateNPC(int minHitMarker, int maxHitMarker, Guid fightId)
         {
-            var entityLevel = GetNpc_entityLevel(Dice.Roll_0_to_100());
-            var experience = GetNpc_experience(entityLevel);
-            var stats = GetNpc_stats(entityLevel, experience);
-            var expertise = GetNpc_expertise(experience);
-            var skills = GetNpc_skills(minHitMarker, maxHitMarker, experience);
-            var logbook = GetNpc_logbook(entityLevel);
-            var equipment = GetNpc_equipment();
+            var entityLevel = NPC_level();
+            var experience = NPC_experience();
+            var stats = NPC_stats(experience);
+            var expertise = NPC_expertise(experience);
+            var assets = NPC_assets(experience);
+            var skills = NPC_skills(minHitMarker, maxHitMarker, experience);
+            var logbook = NPC_logbook(entityLevel);
+            var equipment = NPC_Equipment();
 
             var npc = new CharacterVm
             {
@@ -30,6 +31,7 @@ namespace Avelraangame.Services.SubService
 
                 Stats = stats,
                 Expertise = expertise,
+                Assets = assets,
                 Skills = skills,
                 Logbook = logbook,
                 Equippment = equipment,
@@ -258,7 +260,7 @@ namespace Avelraangame.Services.SubService
         #region Assets formulae
         private int FormulaMana(CharacterVm charVm)
         {
-            var fromBase = charVm.Assets.Mana;
+            var fromBase = charVm.Assets != null ? charVm.Assets.Mana : 0;
             var fromItems = 0;
             if (charVm.Equippment != null)
             {
@@ -276,7 +278,7 @@ namespace Avelraangame.Services.SubService
         }
         private int FormulaHealth(CharacterVm charVm)
         {
-            var fromBase = charVm.Assets.Health;
+            var fromBase = charVm.Assets != null ? charVm.Assets.Health : 0;
             var fromItems = 0;
             if (charVm.Equippment != null)
             {
@@ -294,7 +296,7 @@ namespace Avelraangame.Services.SubService
         }
         private int FormulaHarm(CharacterVm charVm)
         {
-            var fromBase = charVm.Assets.Harm;
+            var fromBase = charVm.Assets != null ? charVm.Assets.Harm : 0;
             var fromItems = 0;
             if (charVm.Equippment != null)
             {
@@ -315,7 +317,7 @@ namespace Avelraangame.Services.SubService
         #region Expertise formulae
         private int FormulaDRM(CharacterVm charVm)
         {
-            var fromBase = charVm.Expertise.DRM;
+            var fromBase = charVm.Expertise != null ? charVm.Expertise.DRM : 0;
             var fromItems = 0;
             if (charVm.Equippment != null)
             {
@@ -332,7 +334,7 @@ namespace Avelraangame.Services.SubService
         }
         private int FormulaExp(CharacterVm charVm)
         {
-            var fromBase = charVm.Expertise.Experience;
+            var fromBase = charVm.Expertise != null ? charVm.Expertise.Experience : 0;
             var fromItems = 0;
             if (charVm.Equippment != null)
             {
@@ -352,7 +354,7 @@ namespace Avelraangame.Services.SubService
         #region Stats formulae
         private int FormulaAbs(CharacterVm charVm)
         {
-            var fromBase = charVm.Stats.Abstract;
+            var fromBase = charVm.Stats != null ? charVm.Stats.Abstract : 0;
             var fromItems = 0;
             if (charVm.Equippment != null)
             {
@@ -369,7 +371,7 @@ namespace Avelraangame.Services.SubService
         }
         private int FormulaAwa(CharacterVm charVm)
         {
-            var fromBase = charVm.Stats.Awareness;
+            var fromBase = charVm.Stats != null ? charVm.Stats.Awareness : 0;
             var fromItems = 0;
             if (charVm.Equippment != null)
             {
@@ -386,7 +388,7 @@ namespace Avelraangame.Services.SubService
         }
         private int FormulaTou(CharacterVm charVm)
         {
-            var fromBase = charVm.Stats.Toughness;
+            var fromBase = charVm.Stats != null ? charVm.Stats.Toughness : 0;
             var fromItems = 0;
             if (charVm.Equippment != null)
             {
@@ -403,7 +405,7 @@ namespace Avelraangame.Services.SubService
         }
         private int FormulaStr(CharacterVm charVm)
         {
-            var fromBase = charVm.Stats.Strength;
+            var fromBase = charVm.Stats != null ? charVm.Stats.Strength : 0;
             var fromItems = 0;
             if (charVm.Equippment != null)
             {
@@ -544,17 +546,19 @@ namespace Avelraangame.Services.SubService
         #endregion
 
         #region NPC formulae
-        private int GetNpc_entityLevel(int roll)
+        private int NPC_level()
         {
+            var roll = Dice.Roll_0_to_100();
+
             if (roll <= 80)
             {
                 return 1;
             }
-            else if (roll > 80 && roll <= 95)
+            else if (roll > 80 && roll <= 96)
             {
                 return 2;
             }
-            else if (roll > 95 && roll <= 99)
+            else if (roll > 96 && roll <= 99)
             {
                 return 3;
             }
@@ -577,7 +581,7 @@ namespace Avelraangame.Services.SubService
             }
         }
 
-        private int GetNpc_experience(int level)
+        private int NPC_experience()
         {
             var roll = Dice.Roll_d_20();
 
@@ -607,18 +611,18 @@ namespace Avelraangame.Services.SubService
             }
         }
 
-        private Stats GetNpc_stats(int level, int exp)
+        private Stats NPC_stats(int exp)
         {
             return new Stats
             {
-                Strength = Dice.Roll_min_to_max(10, exp) * level,
-                Toughness = Dice.Roll_min_to_max(10, exp) * level,
-                Awareness = Dice.Roll_min_to_max(10, exp) * level,
-                Abstract = Dice.Roll_min_to_max(10, exp) * level
+                Strength = Dice.Roll_min_to_max(10, exp),
+                Toughness = Dice.Roll_min_to_max(10, exp),
+                Awareness = Dice.Roll_min_to_max(10, exp),
+                Abstract = Dice.Roll_min_to_max(10, exp)
             };
         }
 
-        private Expertise GetNpc_expertise(int exp)
+        private Expertise NPC_expertise(int exp)
         {
             return new Expertise
             {
@@ -627,7 +631,17 @@ namespace Avelraangame.Services.SubService
             };
         }
 
-        private Skills GetNpc_skills(int minHitMarker, int maxHitMarker, int exp)
+        private Assets NPC_assets(int exp)
+        {
+            return new Assets
+            {
+                Harm = Dice.Roll_min_to_max(10, exp),
+                Health = Dice.Roll_min_to_max(10, exp),
+                Mana = Dice.Roll_min_to_max(10, exp)
+            };
+        }
+
+        private Skills NPC_skills(int minHitMarker, int maxHitMarker, int exp)
         {
             return new Skills
             {
@@ -639,11 +653,13 @@ namespace Avelraangame.Services.SubService
                 Psionics = Dice.Roll_min_to_max(minHitMarker, maxHitMarker) + exp / 10,
                 Resistance = Dice.Roll_min_to_max(minHitMarker, maxHitMarker) + exp / 10,
                 Spot = Dice.Roll_min_to_max(minHitMarker, maxHitMarker) + exp / 10,
-                Unarmed = Dice.Roll_min_to_max(minHitMarker, maxHitMarker) + exp / 10
+                Unarmed = Dice.Roll_min_to_max(minHitMarker, maxHitMarker) + exp / 10,
+
+                Tactics = Dice.Roll_min_to_max(minHitMarker, maxHitMarker) + exp / 10
             };
         }
 
-        private Logbook GetNpc_logbook(int level)
+        private Logbook NPC_logbook(int level)
         {
             return new Logbook
             {
@@ -652,7 +668,7 @@ namespace Avelraangame.Services.SubService
             };
         }
 
-        private Equipment GetNpc_equipment()
+        private Equipment NPC_Equipment()
         {
             var itemService = new ItemsService();
 

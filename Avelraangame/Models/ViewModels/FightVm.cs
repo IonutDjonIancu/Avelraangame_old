@@ -13,5 +13,18 @@ namespace Avelraangame.Models.ViewModels
         public List<CharacterVm> BadGuys { get; set; }
 
         public FightDetails FightDetails { get; set; }
+
+        public FightVm()
+        {
+
+        }
+
+        public FightVm(Fight fight)
+        {
+            FightId = fight.Id;
+            GoodGuys = JsonConvert.DeserializeObject<List<CharacterVm>>(fight.GoodGuys);
+            BadGuys = JsonConvert.DeserializeObject<List<CharacterVm>>(fight.BadGuys);
+            FightDetails = JsonConvert.DeserializeObject<FightDetails>(fight.FightDetails);
+        }
     }
 }

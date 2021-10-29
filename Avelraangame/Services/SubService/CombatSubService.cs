@@ -191,7 +191,6 @@ namespace Avelraangame.Services.SubService
             return fight.LastActionResult;
         }
 
-
         private string LootSupplies(string oldSupplies, Guid characterId)
         {
             var itemService = new ItemsService();

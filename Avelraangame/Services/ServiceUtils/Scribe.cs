@@ -198,35 +198,19 @@
             /// <summary>
             /// 0
             /// </summary>
-            public static string D0_Custom = "Custom";
+            public static string D0_Random = "Random"; // takes into consideration only the skills of the characters
             /// <summary>
             /// 1
             /// </summary>
-            public static string D1_Easy = "Easy";
+            public static string D1_Easy = "Easy"; // 1/4 to all stats, assets, expertise
             /// <summary>
             /// 2
             /// </summary>
-            public static string D2_Normal = "Normal";
+            public static string D2_Normal = "Normal"; // 1/2 to all stats, assets, expertise
             /// <summary>
             /// 3
             /// </summary>
-            public static string D3_Hard = "Hard";
-            /// <summary>
-            /// 4
-            /// </summary>
-            public static string D4_Heroic = "Heroic";
-            /// <summary>
-            /// 5
-            /// </summary>
-            public static string D5_Legendary = "Legendary";
-            /// <summary>
-            /// 6
-            /// </summary>
-            public static string D6_Astral = "Astral";
-            /// <summary>
-            /// 7
-            /// </summary>
-            public static string D7_Random = "Random"; // TODO: random should consider the level of the character
+            public static string D3_Hard = "Hard"; // all stats, assets and expertise suffer no penalties
         }
 
         public static class PartySize

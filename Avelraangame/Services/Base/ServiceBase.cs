@@ -249,7 +249,10 @@ namespace Avelraangame.Services.Base
         {
             var chr = ValidateCharacterById(charId);
 
-            if (chr.PlayerId.Equals(playerId)) { return chr; }
+            if (chr.PlayerId.Equals(playerId)) 
+            { 
+                return chr; 
+            }
 
             throw new Exception(message: string.Concat(Scribe.ShortMessages.Failure, ": character does not match player id."));
         }
@@ -438,6 +441,22 @@ namespace Avelraangame.Services.Base
             return combatVm;
         }
 
+        protected StoryVm ValidateRequestDeserializationInto_CombatStoryVm(string request)
+        {
+            StoryVm requestVm;
+
+            try
+            {
+                requestVm = JsonConvert.DeserializeObject<StoryVm>(request);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.BadRequest, ": ", ex.Message));
+            }
+
+            return requestVm;
+        }
+
         #endregion
 
         #region EpisodeValidation
@@ -546,6 +565,21 @@ namespace Avelraangame.Services.Base
             return goodGuys;
         }
 
+        protected FightVm ValidateRequestDeserializationInto_FightVm(string request)
+        {
+            FightVm fightvm;
+
+            try
+            {
+                fightvm = JsonConvert.DeserializeObject<FightVm>(request);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.BadRequest, ": ", ex.Message));
+            }
+
+            return fightvm;
+        }
 
 
         #endregion

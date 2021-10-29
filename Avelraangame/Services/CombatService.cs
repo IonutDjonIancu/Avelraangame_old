@@ -157,19 +157,43 @@ namespace Avelraangame.Services
             }
         }
 
-        public string StartCombat(RequestVm request)
+        public string StartCombatFromStory(RequestVm request)
+        {
+            var storyvm = ValidateRequestDeserializationInto_CombatStoryVm(request.Message);
+
+            var requester = ValidateCharacterByPlayerId(storyvm.CharacterId, storyvm.PlayerId);
+            if (!requester.IsAlive)
+            {
+                throw new Exception(message: string.Join(": ", Scribe.ShortMessages.Failure, "character is dead."));
+            }
+            if (requester.IsInFight)
+            {
+                throw new Exception(message: string.Join(": ", Scribe.ShortMessages.Failure, "character is already in a fight."));
+            }
+
+            var requesterVm = new CharacterVm(requester);
+
+            var act = DataService.GetActById(storyvm.ActId);
+
+            return StartCombat(requesterVm, act.Name);
+        }
+
+        public string StartCombat(CharacterVm requester, string renown)
         {
             var fightService = new FightService();
 
-            var requester = ValidateRequestDeserializationInto_CharacterVm(request.Message);
             var fightvm = fightService.StartAFight(requester); // the fight starts here
+            fightvm.FightDetails.Renown = renown;
 
             fightvm.FightDetails.TacticalSituation = DecideTacticalSituation(fightvm.GoodGuys, fightvm.BadGuys);
-
             if (fightvm.FightDetails.TacticalSituation.Equals(TacticalSituation.Major_tactical_disadvantage) ||
                 fightvm.FightDetails.TacticalSituation.Equals(TacticalSituation.Slight_tactical_disadvantage))
             {
                 fightvm = RollNpcAttack(fightvm);
+            }
+            else
+            {
+                fightvm.FightDetails.LastActionResult = "The advantage is yours";
             }
 
             var fight = new Fight()
@@ -184,25 +208,10 @@ namespace Avelraangame.Services
 
             return JsonConvert.SerializeObject(fightvm);
         }
-
-
         
         #endregion
 
         #region Getters
-        public string GetFight(RequestVm request)
-        {
-            var charVm = ValidateRequestDeserializationInto_CharacterVm(request.Message);
-            var character = ValidateCharacterByPlayerId(charVm.CharacterId, charVm.PlayerId);
-            var storage = new StorageService();
-
-            if (!character.IsInFight)
-            {
-                throw new Exception(message: string.Concat(Scribe.ShortMessages.ResourceNotFound, ": character is not fighting."));
-            }
-
-            return storage.GetStorageValueById(character.FightId.GetValueOrDefault());
-        }
         #endregion
 
 

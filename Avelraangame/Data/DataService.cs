@@ -303,6 +303,13 @@ namespace Avelraangame.Services
                 .FirstOrDefault();
         }
 
+        public Act GetActById(Guid id)
+        {
+            return Context.Acts
+                .Where(s => s.Id.Equals(id))
+                .FirstOrDefault();
+        }
+
         public void CreateAct(Act act)
         {
             Context.Acts.Add(act);
@@ -346,9 +353,11 @@ namespace Avelraangame.Services
             return Context.Fights.ToList();
         }
 
-        public Fight GetFightById(string fightId)
+        public Fight GetFightById(Guid fightId)
         {
-            return Context.Fights.Where(s => s.Id.Equals(fightId)).FirstOrDefault();
+            return Context.Fights
+                .Where(s => s.Id.Equals(fightId))
+                .FirstOrDefault();
         }
         #endregion
     }

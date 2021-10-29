@@ -1,19 +1,16 @@
-﻿// js template
-// URLs
-const GetCharacter = "/api/palantir/GetCharacter";
-// divs
+﻿// divs
 const aliveBtn = "#aliveBtn";
 const deadBtn = "#deadBtn";
 let playerId;
 let playerName;
 
-// objects
-
 // on page load
 playerId = establishPlayerId_base();
 playerName = establishPlayerName_base();
 
-base_getAliveCharactersByPlayerId(playerName, playerId, function (data) {
+localStorage.removeItem("characterId");
+
+base_getCharactersByPlayerId(playerId, playerName, function (data) {
 
     var alive = 0;
     var dead = 0;
@@ -30,7 +27,3 @@ base_getAliveCharactersByPlayerId(playerName, playerId, function (data) {
     $(deadBtn).text(dead);
 });
 
-
-// events
-
-// functions

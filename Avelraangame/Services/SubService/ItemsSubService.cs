@@ -24,6 +24,7 @@ namespace Avelraangame.Services.SubService
             item.Name = GenerateItemNameByLevelAndType(itemLevel, ItemsUtils.Types.Armour, false);
             item.Worth = GenerateItemWorthByLevelAndType(itemLevel, ItemsUtils.Types.Armour);
             item.IsConsumable = false;
+            item.Slots = JsonConvert.SerializeObject(GenerateItemSlotsByType(item.Type));
 
             var bonuses = GenerateItemBonusesByLevelAndType(itemLevel, ItemsUtils.Types.Armour);
 
@@ -54,6 +55,7 @@ namespace Avelraangame.Services.SubService
             item.Name = GenerateItemNameByLevelAndType(itemLevel, type, false);
             item.Worth = GenerateItemWorthByLevelAndType(itemLevel, type);
             item.IsConsumable = false;
+            item.Slots = JsonConvert.SerializeObject(GenerateItemSlotsByType(item.Type));
 
             var bonuses = GenerateItemBonusesByLevelAndType(itemLevel, type);
 
@@ -83,6 +85,7 @@ namespace Avelraangame.Services.SubService
             item.Name = GenerateItemNameByLevelAndType(itemLevel, type, false);
             item.Worth = GenerateItemWorthByLevelAndType(itemLevel, type);
             item.IsConsumable = false;
+            item.Slots = JsonConvert.SerializeObject(GenerateItemSlotsByType(item.Type));
 
             var bonuses = GenerateItemBonusesByLevelAndType(itemLevel, type);
 
@@ -112,6 +115,7 @@ namespace Avelraangame.Services.SubService
             item.Name = GenerateItemNameByLevelAndType(itemLevel, type, false);
             item.Worth = GenerateItemWorthByLevelAndType(itemLevel, type);
             item.IsConsumable = false;
+            item.Slots = JsonConvert.SerializeObject(GenerateItemSlotsByType(item.Type));
 
             var bonuses = GenerateItemBonusesByLevelAndType(itemLevel, type);
 
@@ -139,6 +143,7 @@ namespace Avelraangame.Services.SubService
             item.Name = GenerateItemNameByLevelAndType(itemLevel, ItemsUtils.Types.Apparatus, false);
             item.Worth = GenerateItemWorthByLevelAndType(itemLevel, ItemsUtils.Types.Apparatus);
             item.IsConsumable = false;
+            item.Slots = JsonConvert.SerializeObject(GenerateItemSlotsByType(item.Type));
 
             var bonuses = GenerateItemBonusesByLevelAndType(itemLevel, ItemsUtils.Types.Apparatus);
 

@@ -239,7 +239,12 @@ namespace Avelraangame.Services
         public string GetCharacterWithLevelUp(RequestVm request)
         {
             var reqCharVm = ValidateRequestDeserializationInto_CharacterVm(request.Message);
-            ValidateCharacterByPlayerId(reqCharVm.CharacterId, reqCharVm.PlayerId);
+            var chr = ValidateCharacterByPlayerId(reqCharVm.CharacterId, reqCharVm.PlayerId);
+
+            if (chr.IsInFight)
+            {
+                throw new Exception(message: string.Join(": ", Scribe.ShortMessages.Failure, "character is fighting."));
+            }
 
             var charvm = new CharacterVm(DataService.GetCharacterById(reqCharVm.CharacterId));
             var temps = new TempsService();
