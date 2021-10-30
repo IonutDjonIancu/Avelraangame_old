@@ -1,0 +1,75 @@
+﻿@{
+    ViewData["Title"] = "Admin";
+}
+
+<br />
+<p style="color:orangered">Admin</p>
+
+<div id="modelJumbo" class="text-left jumbotron" style="opacity:0.7; background-color:black; color:navajowhite">
+    <div>
+        <div class="mb-3" style="width:250px">
+            &Sigma;
+            <input type="password" class="form-control" id="sigmaWard" placeholder="sigma ward">
+        </div>
+    </div>
+    <hr />
+    <div>
+        Episode
+        <br />
+        <div class="mb-3">
+            <input title="name" type="text" class="form-control" id="episode_name_input" placeholder="name">
+        </div>
+        <div class="mb-3">
+            <input title="story" type="text" class="form-control" id="episode_story_input" placeholder="story">
+        </div>
+        <div class="mb-3">
+            <input title="date" type="text" class="form-control" id="episode_date_input" placeholder="date">
+        </div>
+        <div class="mb-3">
+            <input title="prologue" type="text" class="form-control" id="episode_prologue_input" placeholder="prologue">
+        </div>
+        <div class="mb-3">
+            <input title="epilogue" type="text" class="form-control" id="episode_epilogue_input" placeholder="epilogue">
+        </div>
+        <select class="form-select" id="episode_crudAction">
+            <option value="Create">Create</option>
+            <option value="Read">Read</option>
+            <option value="Update">Update</option>
+            <option value="Delete">Delete</option>
+        </select>
+        <button id="create_episodeBtn" class="btn btn-sm btn-outline-success float-right" style="width:200px">Submit Episode</button>
+    </div>
+
+    <hr />
+    <hr />
+
+    <div>
+        Act
+        <br />
+        <div class="mb-3">
+            <input title="name" type="text" class="form-control" id="act_name_input" placeholder="name" />
+        </div>
+        <div class="mb-3">
+            <input title="description" type="text" class="form-control" id="act_description_input" placeholder="description" />
+        </div>
+        <select class="form-select" id="act_difficulty">
+        </select>
+        <select class="form-select" id="act_episode">
+        </select>
+        <select class="form-select" id="act_crudAction">
+            <option value="Create">Create</option>
+            <option value="Read">Read</option>
+            <option value="Update">Update</option>
+            <option value="Delete">Delete</option>
+        </select>
+        <button id="create_actBtn" class="btn btn-sm btn-outline-success float-right" style="width:200px">Submit Act</button>
+    </div>
+
+    <hr />
+
+
+
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="~/js/admin/index.js"></script>

@@ -8,5 +8,10 @@ namespace Avelraangame.Controllers
         {
             return View();
         }
+
+        public IActionResult Merchant()
+        {
+            return View();
+        }
     }
 }

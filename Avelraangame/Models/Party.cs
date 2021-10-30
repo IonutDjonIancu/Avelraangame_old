@@ -7,7 +7,8 @@ namespace Avelraangame.Models
     {
         public Guid Id { get; set; }
 
-        public ICollection<Character> Characters{ get; set; }
+        public bool IsPartyLocked { get; set; }
 
+        public ICollection<Character> Characters{ get; set; }
     }
 }

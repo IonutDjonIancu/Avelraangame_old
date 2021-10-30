@@ -1,4 +1,4 @@
-﻿using Avelraangame.Models.ModelScraps;
+﻿using Avelraangame.Models.POCOs;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -20,11 +20,14 @@ namespace Avelraangame.Models.ViewModels
 
         public bool IsAlive { get; set; }
         public bool HasLevelup { get; set; }
+        public bool AttackToken { get; set; }
         public bool InParty { get; set; }
         public Guid? PartyId { get; set; }
 
+        public bool? InFight { get; set; }
+        public Guid? FightId { get; set; }
 
-        public Equippment Equippment { get; set; }
+        public Equipment Equippment { get; set; }
         public List<HeroicTraits> HeroicTraits { get; set; }
         public List<NegativePerks> NegativePerks { get; set; }
 
@@ -35,10 +38,11 @@ namespace Avelraangame.Models.ViewModels
 
         public CharacterVm()
         {
-            Equippment = new Equippment();
+            Equippment = new Equipment();
             HeroicTraits = new List<HeroicTraits>();
             NegativePerks = new List<NegativePerks>();
             Logbook = new Logbook();
+            AttackToken = true;
         }
 
         public CharacterVm(Character chr)
@@ -50,8 +54,11 @@ namespace Avelraangame.Models.ViewModels
 
             IsAlive = chr.IsAlive;
             HasLevelup = chr.HasLevelup;
-            InParty = chr.InParty;
+            InParty = chr.IsInParty;
             PartyId = chr.PartyId;
+            InFight = chr.IsInFight;
+            FightId = chr.FightId;
+            AttackToken = true;
 
             if (!string.IsNullOrWhiteSpace(chr.Stats))
             {
@@ -76,7 +83,7 @@ namespace Avelraangame.Models.ViewModels
             
             if (!string.IsNullOrWhiteSpace(chr.Equippment))
             {
-                Equippment = JsonConvert.DeserializeObject<Equippment>(chr.Equippment);
+                Equippment = JsonConvert.DeserializeObject<Equipment>(chr.Equippment);
             }
 
             if (!string.IsNullOrWhiteSpace(chr.HeroicTraits))

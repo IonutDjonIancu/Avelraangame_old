@@ -13,23 +13,21 @@
     <a class="btn btn-outline-dark btn-sm" asp-controller="Character" asp-action="Character_roll">Roll</a>
     <a class="btn btn-outline-dark btn-sm" asp-controller="Character" asp-action="Character_select">Select</a>
     <a class="btn btn-outline-dark btn-sm" asp-controller="Character" asp-action="Character_levelup">Levelup</a>
-    <a class="btn btn-outline-dark btn-sm" asp-controller="Character" asp-action="Character_model">Model</a>
 </div>
 
 <div id="modelJumbo" class="text-left jumbotron" style="opacity:0.7; background-color:black; color:navajowhite">
-    <p style="color:orangered">TODO: create logon validation on this page</p>
-    <h5 id="welcome"></h5>
-    <div>
-        <select class="btn btn-outline-light" aria-label="playersSelect" name="players" id="players">
-            <option selected>Change player</option>
-            @foreach (var item in list)
-            {
-                <option value="@item">@item</option>
-            }
-        </select>
-        <p id="playerPlaceholder" style="float:right"></p>
+    <div class="btn-group">
+        <button class="btn btn-info">Alive</button>
+        <button class="btn btn-info disabled" id="aliveBtn"></button>
+    </div>
+    <div class="btn-group">
+        <button class="btn btn-dark">Dead</button>
+        <button class="btn btn-dark disabled" id="deadBtn"></button>
     </div>
 </div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<script src="~/js/character/index.js"></script>
+<script src="~/js/character/character_index.js"></script>
+
+
+<img style="border-radius:10px; height:20px; width:auto" src="~/media/images/white_aquila.jpeg" />

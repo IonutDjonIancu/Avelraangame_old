@@ -2,7 +2,7 @@
 
 namespace Avelraangame.Services.SubService
 {
-    public class PlayersSubService : PlayerBase
+    public class PlayersSubService : ServiceBase
     {
     }
 }

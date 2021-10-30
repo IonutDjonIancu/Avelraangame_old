@@ -1,26 +1,42 @@
 ﻿@{
     ViewData["Title"] = "Player";
 }
+
 <br />
 <p style="color:navajowhite">Players</p>
 
 <div class="text-left jumbotron" style="opacity: 0.7; background-color:black">
     <p style="color:navajowhite">Create player account</p>
+    <hr />
     <form>
-        <div class="mb-3">
-            <label for="nameField" class="form-label" style="color:navajowhite">Name</label>
-            <input title="Name" type="text" class="form-control" style="width: 50%" id="nameField">
+        <div class="row">
+            <label class="col-form-label col-lg-2" style="color:navajowhite">Name</label>
+            <input title="Name" type="text" class="form-control col-lg-3" style="width: 50%" id="nameField">
         </div>
-        <div class="mb-3">
-            <label for="wardField" class="form-label" style="color:navajowhite">Ward</label>
-            <input title="Ward" type="password" class="form-control" style="width: 50%" id="wardField">
+        <br />
+        <div class="row">
+            <label for="nameField" class="form-label col-lg-2" style="color:navajowhite">Symbol</label>
+            <select id="symbolWard" class="form-select col-lg-3" style="border-radius:5px" aria-label="symbol selector">
+                <option selected>Select symbol</option>
+                <option value="Epsilon">Epsilon &epsilon;</option>
+                <option value="Omicron">Omicron &omicron;</option>
+                <option value="Sigma">Sigma &sigma;</option>
+            </select>
         </div>
-        <div class="mb-3">
-            <label for="wardcheckField" class="form-label" style="color:navajowhite">Confirm ward</label>
-            <input title="Wardcheck" type="password" class="form-control" style="width: 50%" id="wardcheckField">
+        <br />
+        <div class="row">
+            <label for="wardField" class="form-label col-lg-2" style="color:navajowhite">Power Ward</label>
+            <input title="Ward" type="password" class="form-control col-lg-3" style="width: 50%" id="wardField">
         </div>
+        <br />
+        <div class="row">
+            <label for="wardcheckField" class="form-label col-lg-2" style="color:navajowhite">Confirm ward</label>
+            <input title="Wardcheck" type="password" class="form-control col-lg-3" style="width: 50%" id="wardcheckField">
+        </div>
+        <br />
     </form>
-    <button id="saveBtn" class="btn btn-outline-light">Save</button>
+    <br />
+    <button id="saveBtn" class="btn btn-outline-success float-left">Save</button>
 </div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>

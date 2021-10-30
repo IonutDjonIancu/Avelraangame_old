@@ -1,5 +1,5 @@
 ﻿using Avelraangame.Models;
-using Avelraangame.Models.ModelScraps;
+using Avelraangame.Models.POCOs;
 using Avelraangame.Models.ViewModels;
 using Avelraangame.Services.Base;
 using Avelraangame.Services.ServiceUtils;
@@ -11,8 +11,41 @@ using System.Linq;
 namespace Avelraangame.Services.SubService
 {
 
-    public class CharacterSubService : CharacterBase
+    public class CharacterSubService : ServiceBase
     {
+        protected CharacterVm GenerateNPC(int minHitMarker, int maxHitMarker, Guid fightId)
+        {
+            var entityLevel = NPC_level();
+            var experience = NPC_experience();
+            var stats = NPC_stats(experience);
+            var expertise = NPC_expertise(experience);
+            var assets = NPC_assets(experience);
+            var skills = NPC_skills(minHitMarker, maxHitMarker, experience);
+            var logbook = NPC_logbook(entityLevel);
+            var equipment = NPC_Equipment();
+
+            var npc = new CharacterVm
+            {
+                CharacterId = Guid.NewGuid(),
+                Name = "Enemy",
+
+                Stats = stats,
+                Expertise = expertise,
+                Assets = assets,
+                Skills = skills,
+                Logbook = logbook,
+                Equippment = equipment,
+
+                FightId = fightId,
+                AttackToken = true,
+                InFight = true,
+                IsAlive = true
+            };
+
+            return GetCalculatedCharacter(npc.CharacterId, npc);
+        }
+
+
         protected void CompareTempsWithRequest(CharacterVm charVm, Character chr, List<TempInfo> temps)
         {
             var charVmStatsSum = charVm.Stats.Strength + charVm.Stats.Toughness + charVm.Stats.Awareness + charVm.Stats.Abstract;
@@ -105,6 +138,8 @@ namespace Avelraangame.Services.SubService
 
         protected Character CreateHumanCharacter(CharacterVm charVm)
         {
+            var items = new ItemsService();
+
             var chrId = Guid.NewGuid();
             var roll = charVm.Logbook.StatsRoll;
 
@@ -129,6 +164,19 @@ namespace Avelraangame.Services.SubService
                 Mana = 0
             };
 
+            var race = (CharactersUtils.Races)1;
+            var culture = (CharactersUtils.Cultures)1;
+            var logbook = new Logbook
+            {
+                Wealth = 0,
+                EntityLevel = GetEntityLevelByRoll(roll),
+                StatsRoll = roll,
+                ItemsRoll = Dice.Roll_min_to_max(2, 12),
+                PortraitNr = Dice.Roll_min_to_max(1, 7),
+                Race = race.ToString(),
+                Culture = culture.ToString(),
+            };
+            
             var skills = new Skills
             {
                 Apothecary = 10,
@@ -148,29 +196,19 @@ namespace Avelraangame.Services.SubService
                 Traps = 10,
                 Unarmed = 10
             };
-
-            var logbook = new Logbook
-            {
-                Wealth = 0,
-                EntityLevel = GetEntityLevelByRoll(roll),
-                StatsRoll = roll,
-                ItemsRoll = Dice.Roll_min_to_max(2, 12),
-                PortraitNr = Dice.Roll_min_to_max(1, 7),
-                Race = ((CharactersUtils.Races)1).ToString(),
-                Culture = ((CharactersUtils.Cultures)1).ToString(),
-            };
+            skills = ApplyCultureTraits(culture, skills);
 
             var supplies = new List<ItemVm>();
-
             for (int i = 0; i < logbook.ItemsRoll; i++)
             {
-                var item = Items.GenerateRandomItem(chrId.ToString());
+                var item = items.GenerateRandomItem(chrId.ToString());
                 supplies.Add(item);
             }
+            supplies = HeroesBoon(supplies, chrId); // To be removed after the perks system is created
 
             var chr = new Character
             {
-                Id = Guid.NewGuid(),
+                Id = chrId,
                 PlayerId = charVm.PlayerId,
 
                 Name = ValidateCharacterName(charVm.Name),
@@ -182,7 +220,7 @@ namespace Avelraangame.Services.SubService
 
                 IsAlive = true,
                 HasLevelup = true,
-                InParty = false,
+                IsInParty = false,
                 Logbook = JsonConvert.SerializeObject(logbook),
                 Supplies = JsonConvert.SerializeObject(supplies)
             };
@@ -190,10 +228,19 @@ namespace Avelraangame.Services.SubService
             return chr;
         }
 
-        protected CharacterVm GetCalculatedCharacter(Guid charId)
+        protected CharacterVm GetCalculatedCharacter(Guid charId, CharacterVm characterVm = null)
         {
-            var chr = DataService.GetCharacterById(charId);
-            var charVm = new CharacterVm(chr);
+            CharacterVm charVm;
+
+            if (characterVm != null)
+            {
+                charVm = characterVm;
+            }
+            else
+            {
+                var chr = DataService.GetCharacterById(charId);
+                charVm = new CharacterVm(chr);
+            }
 
             charVm.Stats.Strength = FormulaStr(charVm);
             charVm.Stats.Toughness = FormulaTou(charVm);
@@ -207,15 +254,79 @@ namespace Avelraangame.Services.SubService
             charVm.Assets.Health = FormulaHealth(charVm);
             charVm.Assets.Mana = FormulaMana(charVm);
 
-            // will have to calculate skills as well
+            // TODO: calculate skills as well
+            charVm = FormulaSkills(charVm);
 
             return charVm;
-
         }
+
+        private Skills ApplyCultureTraits(CharactersUtils.Cultures culture, Skills skills)
+        {
+            switch (culture)
+            {
+                case CharactersUtils.Cultures.Danarian:
+                    skills.Melee += 120;
+                    skills.Ranged += 60;
+                    skills.Navigation -= 200;
+                    break;
+                case CharactersUtils.Cultures.Ravanon:
+                    skills.Melee += 120;
+                    skills.Ranged += 60;
+                    skills.Navigation -= 200;
+                    break;
+                case CharactersUtils.Cultures.Midheim:
+                    skills.Melee += 120;
+                    skills.Ranged += 60;
+                    skills.Navigation -= 200;
+                    break;
+                case CharactersUtils.Cultures.Endarian:
+                    skills.Melee += 120;
+                    skills.Ranged += 60;
+                    skills.Navigation -= 200;
+                    break;
+                default:
+                    throw new NotImplementedException();
+            }
+
+            return skills;
+        }
+
+        private List<ItemVm> HeroesBoon(List<ItemVm> supplies, Guid charId)
+        {
+            var items = new ItemsService();
+            var ring = items.GenerateRandomItem(charId.ToString());
+            var item = items.GetItemById(ring.Id);
+
+            var heroBoonRing = new ItemVm(item);
+            heroBoonRing.Bonuses.ToHealth += 2000;
+            heroBoonRing.Level = 3;
+            heroBoonRing.IsConsumable = false;
+            heroBoonRing.Name = "Hero's Boon ring";
+            heroBoonRing.Slots = items.GetItemSlotsByType(ItemsUtils.Types.Apparatus);
+            heroBoonRing.Type = ItemsUtils.Types.Apparatus.ToString();
+            supplies.Add(heroBoonRing);
+
+            item.Id = heroBoonRing.Id;
+            item.CharacterId = heroBoonRing.CharacterId;
+            item.Bonuses = JsonConvert.SerializeObject(heroBoonRing.Bonuses);
+            item.InSlot = heroBoonRing.InSlot;
+            item.IsConsumable = heroBoonRing.IsConsumable;
+            item.IsEquipped = false;
+            item.Level = 3;
+            item.Name = heroBoonRing.Name;
+            item.Slots = heroBoonRing.Slots.ToString();
+            item.Type = ItemsUtils.Types.Apparatus;
+            item.Worth = heroBoonRing.Worth;
+            DataService.UpdateItem(item);
+
+            return supplies;
+        }
+
+        #region Formulas
         #region Assets formulae
         private int FormulaMana(CharacterVm charVm)
         {
-            var fromBase = charVm.Assets.Mana;
+            var fromBase = charVm.Assets != null ? charVm.Assets.Mana : 0;
             var fromItems = 0;
             if (charVm.Equippment != null)
             {
@@ -233,7 +344,7 @@ namespace Avelraangame.Services.SubService
         }
         private int FormulaHealth(CharacterVm charVm)
         {
-            var fromBase = charVm.Assets.Health;
+            var fromBase = charVm.Assets != null ? charVm.Assets.Health : 0;
             var fromItems = 0;
             if (charVm.Equippment != null)
             {
@@ -251,7 +362,7 @@ namespace Avelraangame.Services.SubService
         }
         private int FormulaHarm(CharacterVm charVm)
         {
-            var fromBase = charVm.Assets.Harm;
+            var fromBase = charVm.Assets != null ? charVm.Assets.Harm : 0;
             var fromItems = 0;
             if (charVm.Equippment != null)
             {
@@ -272,7 +383,7 @@ namespace Avelraangame.Services.SubService
         #region Expertise formulae
         private int FormulaDRM(CharacterVm charVm)
         {
-            var fromBase = charVm.Expertise.DRM;
+            var fromBase = charVm.Expertise != null ? charVm.Expertise.DRM : 0;
             var fromItems = 0;
             if (charVm.Equippment != null)
             {
@@ -289,7 +400,7 @@ namespace Avelraangame.Services.SubService
         }
         private int FormulaExp(CharacterVm charVm)
         {
-            var fromBase = charVm.Expertise.Experience;
+            var fromBase = charVm.Expertise != null ? charVm.Expertise.Experience : 0;
             var fromItems = 0;
             if (charVm.Equippment != null)
             {
@@ -309,7 +420,7 @@ namespace Avelraangame.Services.SubService
         #region Stats formulae
         private int FormulaAbs(CharacterVm charVm)
         {
-            var fromBase = charVm.Stats.Abstract;
+            var fromBase = charVm.Stats != null ? charVm.Stats.Abstract : 0;
             var fromItems = 0;
             if (charVm.Equippment != null)
             {
@@ -326,7 +437,7 @@ namespace Avelraangame.Services.SubService
         }
         private int FormulaAwa(CharacterVm charVm)
         {
-            var fromBase = charVm.Stats.Awareness;
+            var fromBase = charVm.Stats != null ? charVm.Stats.Awareness : 0;
             var fromItems = 0;
             if (charVm.Equippment != null)
             {
@@ -343,7 +454,7 @@ namespace Avelraangame.Services.SubService
         }
         private int FormulaTou(CharacterVm charVm)
         {
-            var fromBase = charVm.Stats.Toughness;
+            var fromBase = charVm.Stats != null ? charVm.Stats.Toughness : 0;
             var fromItems = 0;
             if (charVm.Equippment != null)
             {
@@ -360,7 +471,7 @@ namespace Avelraangame.Services.SubService
         }
         private int FormulaStr(CharacterVm charVm)
         {
-            var fromBase = charVm.Stats.Strength;
+            var fromBase = charVm.Stats != null ? charVm.Stats.Strength : 0;
             var fromItems = 0;
             if (charVm.Equippment != null)
             {
@@ -377,9 +488,269 @@ namespace Avelraangame.Services.SubService
         }
         #endregion
 
+        #region Skills formulae
+        private CharacterVm FormulaSkills(CharacterVm charVm)
+        {
+            if (charVm.Equippment != null)
+            {
+                var apothecary = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses.ToApothecary : 0) +
+                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses.ToApothecary : 0) +
+                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses.ToApothecary : 0) +
+                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses.ToApothecary : 0) +
+                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s.Bonuses.ToApothecary).Sum() : 0);
+                charVm.Skills.Apothecary += apothecary;
+
+                var arcane = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses.ToArcane : 0) +
+                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses.ToArcane : 0) +
+                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses.ToArcane : 0) +
+                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses.ToArcane : 0) +
+                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s.Bonuses.ToArcane).Sum() : 0);
+                charVm.Skills.Arcane += arcane;
+
+                var dodge = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses.ToDodge : 0) +
+                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses.ToDodge : 0) +
+                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses.ToDodge : 0) +
+                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses.ToDodge : 0) +
+                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s.Bonuses.ToDodge).Sum() : 0);
+                charVm.Skills.Dodge += dodge;
+
+                var hide = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses.ToHide : 0) +
+                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses.ToHide : 0) +
+                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses.ToHide : 0) +
+                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses.ToHide : 0) +
+                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s.Bonuses.ToHide).Sum() : 0);
+                charVm.Skills.Hide += hide;
+
+                var melee = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses.ToMelee : 0) +
+                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses.ToMelee : 0) +
+                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses.ToMelee : 0) +
+                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses.ToMelee : 0) +
+                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s.Bonuses.ToMelee).Sum() : 0);
+                charVm.Skills.Melee += melee;
+
+                var navigation = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses.ToNavigation : 0) +
+                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses.ToNavigation : 0) +
+                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses.ToNavigation : 0) +
+                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses.ToNavigation : 0) +
+                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s.Bonuses.ToNavigation).Sum() : 0);
+                charVm.Skills.Navigation += navigation;
+
+                var psionics = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses.ToPsionics : 0) +
+                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses.ToPsionics : 0) +
+                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses.ToPsionics : 0) +
+                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses.ToPsionics : 0) +
+                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s.Bonuses.ToPsionics).Sum() : 0);
+                charVm.Skills.Psionics += psionics;
+
+                var ranged = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses.ToRanged : 0) +
+                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses.ToRanged : 0) +
+                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses.ToRanged : 0) +
+                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses.ToRanged : 0) +
+                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s.Bonuses.ToRanged).Sum() : 0);
+                charVm.Skills.Ranged += ranged;
+
+                var resistance = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses.ToResistance : 0) +
+                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses.ToResistance : 0) +
+                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses.ToResistance : 0) +
+                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses.ToResistance : 0) +
+                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s.Bonuses.ToResistance).Sum() : 0);
+                charVm.Skills.Resistance += resistance;
+
+                var scouting = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses.ToScouting : 0) +
+                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses.ToScouting : 0) +
+                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses.ToScouting : 0) +
+                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses.ToScouting : 0) +
+                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s.Bonuses.ToScouting).Sum() : 0);
+                charVm.Skills.Scouting += scouting;
+
+                var social = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses.ToSocial : 0) +
+                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses.ToSocial : 0) +
+                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses.ToSocial : 0) +
+                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses.ToSocial : 0) +
+                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s.Bonuses.ToSocial).Sum() : 0);
+                charVm.Skills.Social += social;
+
+                var spot = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses.ToSpot : 0) +
+                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses.ToSpot : 0) +
+                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses.ToSpot : 0) +
+                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses.ToSpot : 0) +
+                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s.Bonuses.ToSpot).Sum() : 0);
+                charVm.Skills.Spot += spot;
+
+                var survival = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses.ToSurvival : 0) +
+                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses.ToSurvival : 0) +
+                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses.ToSurvival : 0) +
+                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses.ToSurvival : 0) +
+                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s.Bonuses.ToSurvival).Sum() : 0);
+                charVm.Skills.Survival += survival;
+
+                var tactics = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses.ToTactics : 0) +
+                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses.ToTactics : 0) +
+                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses.ToTactics : 0) +
+                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses.ToTactics : 0) +
+                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s.Bonuses.ToTactics).Sum() : 0);
+                charVm.Skills.Tactics += tactics;
+
+                var traps = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses.ToTraps : 0) +
+                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses.ToTraps : 0) +
+                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses.ToTraps : 0) +
+                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses.ToTraps : 0) +
+                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s.Bonuses.ToTraps).Sum() : 0);
+                charVm.Skills.Traps += traps;
+
+                var unarmed = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses.ToUnarmed : 0) +
+                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses.ToUnarmed : 0) +
+                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses.ToUnarmed : 0) +
+                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses.ToUnarmed : 0) +
+                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s.Bonuses.ToUnarmed).Sum() : 0);
+                charVm.Skills.Unarmed += unarmed;
+            }
+
+            return charVm;
+        }
+
+        #endregion
+
+        #region NPC formulae
+        private int NPC_level()
+        {
+            var roll = Dice.Roll_0_to_100();
+
+            if (roll <= 80)
+            {
+                return 1;
+            }
+            else if (roll > 80 && roll <= 96)
+            {
+                return 2;
+            }
+            else if (roll > 96 && roll <= 99)
+            {
+                return 3;
+            }
+            else
+            {
+                var secondRoll = Dice.Roll_0_to_100();
+                
+                if (secondRoll <= 90)
+                {
+                    return 4;
+                }
+                else if (secondRoll > 90 && secondRoll <= 99)
+                {
+                    return 5;
+                }
+                else
+                {
+                    return 6;
+                }
+            }
+        }
+
+        private int NPC_experience()
+        {
+            var roll = Dice.Roll_d_20();
+
+            if (roll < 20) // level 1
+            {
+                return Dice.Roll_min_to_max(20, 100);
+            }
+            else if (roll > 20 && roll < 40) // level 2
+            {
+                return Dice.Roll_min_to_max(50, 300);
+            }
+            else if (roll > 40 && roll < 60) // level 3
+            {
+                return Dice.Roll_min_to_max(200, 600);
+            }
+            else if (roll > 60 && roll < 80) // level 4
+            {
+                return Dice.Roll_min_to_max(400, 1000);
+            }
+            else if (roll > 80 && roll < 100) // level 5
+            {
+                return Dice.Roll_min_to_max(800, 3000);
+            }
+            else // level 6
+            {
+                return Dice.Roll_min_to_max(2000, 20000);
+            }
+        }
+
+        private Stats NPC_stats(int exp)
+        {
+            return new Stats
+            {
+                Strength = Dice.Roll_min_to_max(10, exp),
+                Toughness = Dice.Roll_min_to_max(10, exp),
+                Awareness = Dice.Roll_min_to_max(10, exp),
+                Abstract = Dice.Roll_min_to_max(10, exp)
+            };
+        }
+
+        private Expertise NPC_expertise(int exp)
+        {
+            return new Expertise
+            {
+                DRM = 0,
+                Experience = exp
+            };
+        }
+
+        private Assets NPC_assets(int exp)
+        {
+            return new Assets
+            {
+                Harm = Dice.Roll_min_to_max(10, exp),
+                Health = Dice.Roll_min_to_max(10, exp),
+                Mana = Dice.Roll_min_to_max(10, exp)
+            };
+        }
+
+        private Skills NPC_skills(int minHitMarker, int maxHitMarker, int exp)
+        {
+            return new Skills
+            {
+                Melee = Dice.Roll_min_to_max(minHitMarker, maxHitMarker) + exp / 10,
+                Ranged = Dice.Roll_min_to_max(minHitMarker, maxHitMarker) + exp / 10,
+                Arcane = Dice.Roll_min_to_max(minHitMarker, maxHitMarker) + exp / 10,
+                Dodge = Dice.Roll_min_to_max(minHitMarker, maxHitMarker) + exp / 10,
+                Hide = Dice.Roll_min_to_max(minHitMarker, maxHitMarker) + exp / 10,
+                Psionics = Dice.Roll_min_to_max(minHitMarker, maxHitMarker) + exp / 10,
+                Resistance = Dice.Roll_min_to_max(minHitMarker, maxHitMarker) + exp / 10,
+                Spot = Dice.Roll_min_to_max(minHitMarker, maxHitMarker) + exp / 10,
+                Unarmed = Dice.Roll_min_to_max(minHitMarker, maxHitMarker) + exp / 10,
+
+                Tactics = Dice.Roll_min_to_max(minHitMarker, maxHitMarker) + exp / 10
+            };
+        }
+
+        private Logbook NPC_logbook(int level)
+        {
+            return new Logbook
+            {
+                PortraitNr = level,
+                EntityLevel = level,
+            };
+        }
+
+        private Equipment NPC_Equipment()
+        {
+            var itemService = new ItemsService();
+
+            return new Equipment
+            {
+                Armour = itemService.GenerateRandomArmour(),
+                Mainhand = itemService.GenerateRandomMainHandWeapon(),
+                Offhand = itemService.GenerateRandomOffHandWeapon(),
+                Ranged = itemService.GenerateRandomRangedWeapon(),
+                Trinkets = itemService.GenerateRandomTrinketsStash()
+            };
+        }
 
 
-
+        #endregion
+        #endregion
 
     }
 

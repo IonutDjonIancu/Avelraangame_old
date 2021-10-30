@@ -1,4 +1,4 @@
-﻿using Avelraangame.Models.ModelScraps;
+﻿using Avelraangame.Models.POCOs;
 using Avelraangame.Services.ServiceUtils;
 using Newtonsoft.Json;
 using System;
@@ -12,6 +12,7 @@ namespace Avelraangame.Models.ViewModels
         public Guid Id { get; set; }
 
         public Guid? CharacterId { get; set; }
+        public Guid? PlayerId { get; set; }
 
         public string Name { get; set; }
 
