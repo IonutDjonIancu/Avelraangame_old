@@ -80,9 +80,9 @@ namespace Avelraangame.Services.Base
             return player;
         }
 
-        protected Player ValidatePlayerBySymbolWard(string symbol, string ward)
+        protected Player ValidatePlayerBySymbolWardName(string symbol, string ward, string name)
         {
-            var player = DataService.GetPlayerBySymbolWard(symbol, ward);
+            var player = DataService.GetPlayerBySymbolWardName(symbol, ward, name);
 
             if (player == null)
             {
@@ -172,6 +172,10 @@ namespace Avelraangame.Services.Base
             if (!PlayersUtils.PlayerSymbolsList.Contains(playerVm.Symbol))
             {
                 throw new Exception(message: string.Concat(Scribe.ShortMessages.BadRequest, ": invalid symbol."));
+            }
+            if (string.IsNullOrWhiteSpace(playerVm.PlayerName))
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.BadRequest, ": name is missing or invalid."));
             }
         }
 

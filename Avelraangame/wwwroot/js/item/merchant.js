@@ -38,11 +38,20 @@ function drawItems(data) {
 
     for (var i = 0; i < data.length; i++) {
 
-        if (data[i].Level >= 3) {
+        if (data[i].Level >= 4) {
             var html = `
                 <div class="btn-group">
                     <button class="btn btn-outline-secondary" style="width:500px">${data[i].Name}</button>
                     <button title="Item level" class="btn btn-danger">${data[i].Level}</button>
+                    <button title="Item worth" class="btn btn-secondary" style="width:60px">${data[i].Worth}</button>
+                    <button id="${data[i].Id}" title="${data[i].Worth}" class="btn btn-outline-success sellItem">sell</button>
+                </div> <br />
+            `;
+        } else if (data[i].Level == 3) {
+            var html = `
+                <div class="btn-group">
+                    <button class="btn btn-outline-secondary" style="width:500px">${data[i].Name}</button>
+                    <button title="Item level" class="btn btn-success">${data[i].Level}</button>
                     <button title="Item worth" class="btn btn-secondary" style="width:60px">${data[i].Worth}</button>
                     <button id="${data[i].Id}" title="${data[i].Worth}" class="btn btn-outline-success sellItem">sell</button>
                 </div> <br />

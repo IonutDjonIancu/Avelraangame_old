@@ -46,7 +46,7 @@ namespace Avelraangame.Services
             playervm = ValidateRequestDeserializationIntoPlayerVm(request.Message);
 
             ValidatePlayerDetailsOnLogon(playervm);
-            var player = ValidatePlayerBySymbolWard(playervm.Symbol, playervm.Ward);
+            var player = ValidatePlayerBySymbolWardName(playervm.Symbol, playervm.Ward, playervm.PlayerName);
 
             var result = new PlayerVm
             {

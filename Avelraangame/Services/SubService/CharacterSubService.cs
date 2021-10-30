@@ -299,7 +299,7 @@ namespace Avelraangame.Services.SubService
 
             var heroBoonRing = new ItemVm(item);
             heroBoonRing.Bonuses.ToHealth += 2000;
-            heroBoonRing.Level = 3;
+            heroBoonRing.Level = 4;
             heroBoonRing.IsConsumable = false;
             heroBoonRing.Name = "Hero's Boon ring";
             heroBoonRing.Slots = items.GetItemSlotsByType(ItemsUtils.Types.Apparatus);

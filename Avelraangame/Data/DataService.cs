@@ -33,10 +33,10 @@ namespace Avelraangame.Services
             return Context.Players.Where(s => s.Id == id).FirstOrDefault();
         }
 
-        public Player GetPlayerBySymbolWard(string symbol, string ward)
+        public Player GetPlayerBySymbolWardName(string symbol, string ward, string name)
         {
             var players = Context.Players
-                .Where(s => s.Symbol.Equals(symbol) && s.Ward.Equals(ward));
+                .Where(s => s.Symbol.Equals(symbol) && s.Ward.Equals(ward) && s.Name.Equals(name));
 
             if (players.Count() > 1)
             {
