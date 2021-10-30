@@ -5,11 +5,13 @@ const Logon = "/api/palantir/Logon";
 // variables
 const playerNameDiv = "#playerNameDiv";
 const powerWardInput = "#powerWardInput";
+const nameInput = "#nameInput";
 const loggedDiv = "#loggedDiv";
 const nonLoggedDiv = "#nonLoggedDiv";
 const logonBtn = "#logonBtn";
 const symbolWard = "#symbolWard";
 const createPlayerBtn = "#createPlayerBtn";
+const logoutBtn = "#logoutBtn";
 let playerId;
 let playerName;
 
@@ -29,14 +31,20 @@ if (playerName) {
 
 
 // events
-$(createPlayerBtn).on("click", function () {
-    window.location = "/Player/index";
+//$(createPlayerBtn).on("click", function () {
+//    window.location = "/Player";
+//});
+
+$(logoutBtn).on("click", function () {
+    localStorage.clear();
+    location.reload();
 });
 
 $(logonBtn).on("click", function () {
     var object = {
         Symbol: $(symbolWard).val(),
         Ward: $(powerWardInput).val(),
+        PlayerName: $(nameInput).val(),
     }
     var request = {
         message: JSON.stringify(object)
