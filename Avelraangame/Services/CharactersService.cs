@@ -14,6 +14,68 @@ namespace Avelraangame.Services
     {
         #region Business logic
 
+        public Guid JoinParty(Character chr)
+        {
+            if (chr.IsInFight)
+            {
+                throw new Exception(message: string.Join(": ", Scribe.ShortMessages.Failure, "character is fighting."));
+            }
+
+            Party party;
+
+            try
+            {
+                party = new Party()
+                {
+                    Id = new Guid(),
+                    IsPartyLocked = false
+                };
+                DataService.CreateParty(party);
+
+                chr.IsInParty = true;
+                chr.PartyId = party.Id;
+                DataService.UpdateCharacter(chr);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(message: string.Join(": ", Scribe.ShortMessages.Failure, $"{ex.Message}"));
+            }
+
+            return party.Id;
+        }
+
+        public void LeaveParty(Character chr)
+        {
+            if (chr.IsInFight)
+            {
+                throw new Exception(message: string.Join(": ", Scribe.ShortMessages.Failure, "character is fighting."));
+            }
+
+            var party = DataService.GetPartyById(chr.PartyId.GetValueOrDefault());
+            if (party == null)
+            {
+                throw new Exception(message: string.Join(": ", Scribe.ShortMessages.ResourceNotFound, "party not found."));
+            }
+
+            try
+            {
+                chr.IsInParty = false;
+                chr.PartyId = null;
+                DataService.UpdateCharacter(chr);
+
+                var charactersLeft = DataService.GetCharactersByPartyId(chr.PartyId.GetValueOrDefault()).Count;
+
+                if (charactersLeft <= 0)
+                {
+                    DataService.DeleteParty(party);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(message: string.Join(": ", Scribe.ShortMessages.Failure, $"{ex.Message}"));
+            }
+        }
+
         /// <summary>
         /// Adds stats roll and playerId to the newly created character, returns characterId.
         /// </summary>
@@ -36,7 +98,7 @@ namespace Avelraangame.Services
 
         public string SaveCharacterWithLevelUp(RequestVm request)
         {
-            var charvm = ValidateRequestDeserializationIntoCharacterVm(request.Message);
+            var charvm = ValidateRequestDeserializationInto_CharacterVm(request.Message);
             ValidateCharacterByPlayerId(charvm.CharacterId, charvm.PlayerId);
             var temps = new TempsService();
 
@@ -69,7 +131,7 @@ namespace Avelraangame.Services
 
         public (string responseMessage, string keyPlayerId, int roll) CharacterCreationRoll20(RequestVm request)
         {
-            var charvm = ValidateRequestDeserializationIntoCharacterVm(request.Message);
+            var charvm = ValidateRequestDeserializationInto_CharacterVm(request.Message);
             ValidatePlayerByIdNamePair(charvm.PlayerId, charvm.PlayerName);
 
             charvm.Logbook.StatsRoll = Dice.Roll_d_20();
@@ -152,14 +214,14 @@ namespace Avelraangame.Services
             return JsonConvert.SerializeObject(result);
         }
 
-        public new CharacterVm GenerateWeakNpc()
+        public new CharacterVm GenerateNPC(int minHitMarker, int maxHitMarker, Guid fightId)
         {
-            return base.GenerateWeakNpc();
+            return base.GenerateNPC(minHitMarker, maxHitMarker, fightId);
         }
 
         public string GetCalculatedCharacter(RequestVm request)
         {
-            var reqCharVm = ValidateRequestDeserializationIntoCharacterVm(request.Message);
+            var reqCharVm = ValidateRequestDeserializationInto_CharacterVm(request.Message);
             ValidateCharacterByPlayerId(reqCharVm.CharacterId, reqCharVm.PlayerId);
 
             var charvm = GetCalculatedCharacter(reqCharVm.CharacterId);
@@ -176,8 +238,13 @@ namespace Avelraangame.Services
 
         public string GetCharacterWithLevelUp(RequestVm request)
         {
-            var reqCharVm = ValidateRequestDeserializationIntoCharacterVm(request.Message);
-            ValidateCharacterByPlayerId(reqCharVm.CharacterId, reqCharVm.PlayerId);
+            var reqCharVm = ValidateRequestDeserializationInto_CharacterVm(request.Message);
+            var chr = ValidateCharacterByPlayerId(reqCharVm.CharacterId, reqCharVm.PlayerId);
+
+            if (chr.IsInFight)
+            {
+                throw new Exception(message: string.Join(": ", Scribe.ShortMessages.Failure, "character is fighting."));
+            }
 
             var charvm = new CharacterVm(DataService.GetCharacterById(reqCharVm.CharacterId));
             var temps = new TempsService();
@@ -214,10 +281,29 @@ namespace Avelraangame.Services
         /// <returns></returns>
         public string GetCharactersByPlayer(RequestVm request)
         {
-            var charvm = ValidateRequestDeserializationIntoCharacterVm(request.Message);
+            var charvm = ValidateRequestDeserializationInto_CharacterVm(request.Message);
             ValidatePlayerByIdNamePair(charvm.PlayerId, charvm.PlayerName);
 
-            var list = DataService.GetCharactersByPlayerId(charvm.PlayerId);
+            var list = DataService.GetAllCharactersByPlayerId(charvm.PlayerId);
+
+            var returnList = new List<CharacterVm>();
+
+            foreach (var chr in list)
+            {
+                returnList.Add(new CharacterVm(chr));
+            }
+
+            var result = returnList.OrderBy(s => s.Name);
+
+            return JsonConvert.SerializeObject(result);
+        }
+
+        public string GetAliveCharactersByPlayer(RequestVm request)
+        {
+            var charvm = ValidateRequestDeserializationInto_CharacterVm(request.Message);
+            ValidatePlayerByIdNamePair(charvm.PlayerId, charvm.PlayerName);
+
+            var list = DataService.GetAliveCharactersByPlayerId(charvm.PlayerId);
 
             var returnList = new List<CharacterVm>();
 
@@ -232,7 +318,5 @@ namespace Avelraangame.Services
         }
 
         #endregion
-
-
     }
 }

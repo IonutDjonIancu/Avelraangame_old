@@ -13,96 +13,106 @@ namespace Avelraangame.Services.SubService
 {
     public class CombatSubService : ServiceBase
     {
-        protected TacticalSituation DecideTacticalSituation(List<CharacterVm> goodGuys, List<CharacterVm> badGuys) // the highest skill in the party decides the tactics
+        protected string DecideTacticalSituation(List<CharacterVm> goodGuys, List<CharacterVm> badGuys) // the highest skill in the party decides the tactics
         {
             var goodGuyTactician = goodGuys.OrderByDescending(s => s.Skills.Tactics).First();
             var badGuyTactician = badGuys.OrderByDescending(s => s.Skills.Tactics).First();
 
-            var goodRoll = goodGuyTactician.Skills.Tactics * Dice.Roll_d_20();
-            var badRoll = badGuyTactician.Skills.Tactics * Dice.Roll_d_20();
+            double attackerRoll = Dice.Roll_d_20() * 0.05;
+            double attackResult = goodGuyTactician.Skills.Tactics * attackerRoll;
+            double defenderRoll = Dice.Roll_d_20() * 0.05;
+            double defendResult = badGuyTactician.Skills.Tactics * defenderRoll;
 
-            var diff = goodRoll - badRoll;
+            var diff = attackResult - defendResult;
 
             if (diff < -100)
             {
-                return TacticalSituation.Major_tactical_disadvantage;
+                return TacticalSituation.Major_tactical_disadvantage.ToString();
             }
             else if (diff >= -100 && diff < 0)
             {
-                return TacticalSituation.Slight_tactical_disadvantage;
+                return TacticalSituation.Slight_tactical_disadvantage.ToString();
             }
             else if (diff > 50 && diff <= 100)
             {
-                return TacticalSituation.Slight_tactical_advantage;
+                return TacticalSituation.Slight_tactical_advantage.ToString();
             }
             else if (diff > 100)
             {
-                return TacticalSituation.Major_tactical_advantage;
+                return TacticalSituation.Major_tactical_advantage.ToString();
             }
             else
             {
-                return TacticalSituation.OnPar;
+                return TacticalSituation.OnPar.ToString();
             }
         }
 
-        protected (CharacterVm att, CharacterVm def, int dmgDone) RollAttack(CharacterVm attacker, CharacterVm defender)
+        protected (CharacterVm attacker, CharacterVm target, int dmgDone) RollAttack(CharacterVm attacker, CharacterVm target)
         {
-            var attackerRoll = Dice.Roll_d_20();
-            var attackResult = attacker.Skills.Melee * attackerRoll / 10;
-            var defenderRoll = Dice.Roll_d_20();
-            var defendResult = defender.Skills.Melee * defenderRoll / 10;
+            double attackerRoll = Dice.Roll_d_20() * 0.05;
+            double attackResult = attacker.Skills.Melee * attackerRoll;
+            double defenderRoll = Dice.Roll_d_20() * 0.05;
+            double defendResult = target.Skills.Melee * defenderRoll;
 
             attacker.AttackToken = false;
 
-            var rollResult = attackResult - defendResult;
-            if (rollResult <= 0)
+            double hitResult = attackResult - defendResult;
+            if (hitResult <= 0)
             {
-                return (attacker, defender, rollResult);
+                return (attacker, target, 0);
             }
 
-            rollResult += attacker.Assets.Harm;
+            double hitDmg = attacker.Assets.Harm * hitResult / 100;
 
-            var damage = rollResult - rollResult * defender.Expertise.DRM / 100;
-            defender.Assets.Health -= damage;
+            double damage = hitDmg - hitDmg * target.Expertise.DRM / 100;
+            target.Assets.Health -= (int)Math.Round(damage);
 
-            if (defender.Assets.Health <= 0)
+            if (target.Assets.Health <= 0)
             {
-                defender.IsAlive = false;
-                MarkForDeath(defender.CharacterId);
+                target.IsAlive = false;
+                MarkForDeath(target.CharacterId);
             }
 
-            return (attacker, defender, damage);
+            return (attacker, target, (int)damage);
         }
 
-        protected Fight RollNpcAttack(Fight fight)
+        protected FightVm RollNpcAttack(FightVm fight)
         {
-            var attackingNpc = fight.BadGuys.Where(s => s.AttackToken).FirstOrDefault();
-            if (attackingNpc == null) { return fight; }
+            var attackingNpc = fight.BadGuys.Where(s => s.AttackToken && s.IsAlive).FirstOrDefault();
+            if (attackingNpc == null) 
+            { 
+                return fight; 
+            }
 
-            var howManyGoodGuys = fight.GoodGuys.Where(s => s.IsAlive.Equals(true)).ToList().Count - 1;
+            var howManyGoodGuys = fight.GoodGuys.Where(s => s.IsAlive).ToList().Count - 1;
+            if (howManyGoodGuys < 0)
+            {
+                return fight;
+            }
+
             var attackedGoodGuy = Dice.Roll_0_to_max(howManyGoodGuys);
 
-            var (npc, goodguy, dmg) = RollAttack(attackingNpc, fight.GoodGuys.Where(s => s.IsAlive.Equals(true)).ToList()[attackedGoodGuy]);
+            var (npc, goodguy, dmg) = RollAttack(attackingNpc, fight.GoodGuys.Where(s => s.IsAlive).ToList()[attackedGoodGuy]);
 
-            var indexGoood = fight.GoodGuys.FindIndex(s => s.CharacterId == goodguy.CharacterId);
+            var indexGoood = fight.GoodGuys.FindIndex(s => s.CharacterId.Equals(goodguy.CharacterId));
             fight.GoodGuys.RemoveAt(indexGoood);
             fight.GoodGuys.Add(goodguy);
 
             if (dmg > 0)
             {
-                fight.LastActionResult = string.Concat(Scribe.ShortMessages.NpcDmg, $": {dmg} dmg taken.");
+                fight.FightDetails.LastActionResult = string.Concat(Scribe.ShortMessages.NpcDmg, $": {dmg} dmg taken.");
             }
             else
             {
-                fight.LastActionResult = string.Concat(Scribe.ShortMessages.NpcDmg, $": npc missed!");
+                fight.FightDetails.LastActionResult = string.Concat(Scribe.ShortMessages.NpcDmg, $": npc missed!");
             }
 
             var result = RollNpcAttack(fight);
-
+                       
             return result;
         }
 
-        protected Fight ReimburseTokens(Fight fight)
+        protected FightVm ReimburseTokens(FightVm fight)
         {
             for (int i = 0; i < fight.GoodGuys.Count; i++)
             {
@@ -144,61 +154,109 @@ namespace Avelraangame.Services.SubService
         protected void MarkForDeath(Guid characterId)
         {
             var character = DataService.GetCharacterById(characterId);
-            if (character == null) { return; }
+            if (character == null)
+            { 
+                return; 
+            }
             character.IsAlive = false;
 
             DataService.UpdateCharacter(character);
         }
 
-        protected string EndFight(Fight fight)
+        protected FightVm EndFight(FightVm fightvm)
         {
-            if (fight.GoodGuys.Where(s => s.IsAlive).Count() <= 0)
+            if (fightvm.GoodGuys.Where(s => s.IsAlive).Count() <= 0)
             {
-                foreach (var chr in fight.GoodGuys)
+                foreach (var chr in fightvm.GoodGuys)
                 {
                     var dbchr = DataService.GetCharacterById(chr.CharacterId);
+                    if (!dbchr.IsAlive)
+                    {
+                        continue;
+                    }
+
+                    dbchr.IsAlive = false;
                     dbchr.FightId = null;
-                    dbchr.InFight = false;
+                    dbchr.IsInFight = false;
+                    dbchr.PartyId = null;
+                    dbchr.IsInParty = false;
 
                     DataService.UpdateCharacter(dbchr);
                 }
 
-                return string.Concat(Scribe.ShortMessages.Failure, ": defeat!");
+                fightvm.FightDetails.LastActionResult = string.Join(": ", Scribe.ShortMessages.Failure, "defeat!");
+                return fightvm;
             }
 
-            if (fight.BadGuys.Where(s => s.IsAlive).Count() <= 0)
+            if (fightvm.BadGuys.Where(s => s.IsAlive).Count() <= 0)
             {
-                foreach (var chr in fight.GoodGuys)
+                foreach (var chr in fightvm.GoodGuys)
                 {
                     var dbchr = DataService.GetCharacterById(chr.CharacterId);
                     dbchr.FightId = null;
-                    dbchr.InFight = false;
+                    dbchr.IsInFight = false;
                     dbchr.Logbook = IncrementFightsWon(dbchr.Logbook);
-                    dbchr.Supplies = LootSupplies(dbchr.Supplies, dbchr.Id);
+                    dbchr.Supplies = LootSupplies(dbchr.Supplies, dbchr.Id, fightvm.FightDetails.Loot);
 
                     DataService.UpdateCharacter(dbchr);
                 }
 
-                return string.Concat(Scribe.ShortMessages.Success, ": victory! You loot supplies and leave.");
+                fightvm.FightDetails.LastActionResult = string.Concat(Scribe.ShortMessages.Success, ": victory! You loot supplies and leave.");
+                return fightvm;
             }
-            
-            return fight.LastActionResult;
+
+            return fightvm;
         }
 
-
-        private string LootSupplies(string oldSupplies, Guid characterId)
+        protected FightVm ValidateFightDetails(AttackVm attackvm)
         {
-            var itemService = new ItemsService();
-            var newSupplies = JsonConvert.DeserializeObject<List<ItemVm>>(oldSupplies);
-            var loots = Dice.Roll_d_20() / 4;
+            var fservice = new FightService();
 
-            for (int i = 0; i < loots; i++)
+            var fightvm = fservice.GetFightById(attackvm.FightId);
+
+            if (!fightvm.GoodGuys.Where(s => s.CharacterId.Equals(attackvm.AttackerId)).Any())
             {
-                var item = itemService.GenerateRandomItem(characterId.ToString());
-                newSupplies.Add(item);
+                throw new Exception(message: string.Join(": ", Scribe.ShortMessages.BadRequest, "attacker id is incompatible with fight."));
             }
 
-            return JsonConvert.SerializeObject(newSupplies);
+            if (!fightvm.BadGuys.Where(s => s.CharacterId.Equals(attackvm.TargetId)).Any())
+            {
+                throw new Exception(message: string.Join(": ", Scribe.ShortMessages.BadRequest, "target id is incompatible with fight."));
+            }
+
+            return fightvm;
+        }
+
+        private string LootSupplies(string oldSupplies, Guid characterId, List<ItemVm> loot)
+        {
+            var supplies = JsonConvert.DeserializeObject<List<ItemVm>>(oldSupplies);
+            var itemsService = new ItemsService();
+
+            foreach (var item in loot)
+            {
+                supplies.Add(item);
+                item.InSlot = ItemsUtils.Slots.Supplies;
+                item.IsEquipped = false;
+
+                var itm = new Item
+                {
+                    Id = item.Id,
+                    Bonuses = JsonConvert.SerializeObject(item.Bonuses),
+                    CharacterId = characterId,
+                    InSlot = item.InSlot,
+                    IsConsumable = item.IsConsumable,
+                    IsEquipped = item.IsEquipped,
+                    Level = item.Level,
+                    Name = item.Name,
+                    Slots = JsonConvert.SerializeObject(item.Slots),
+                    Type = itemsService.GetItemType(item.Type),
+                    Worth = item.Worth
+                };
+
+                DataService.CreateItem(itm);
+            }
+
+            return JsonConvert.SerializeObject(supplies);
         }
 
         private string IncrementFightsWon(string logbook)
@@ -209,5 +267,7 @@ namespace Avelraangame.Services.SubService
 
             return JsonConvert.SerializeObject(log);
         }
+
+       
     }
 }

@@ -17,6 +17,7 @@ const episode_crudAction = "#episode_crudAction";
 const act_episode = "#act_episode";
 const act_difficulty = "#act_difficulty";
 const act_name_input = "#act_name_input";
+const act_description_input = "#act_description_input";
 const act_crudAction = "#act_crudAction";
 
 
@@ -88,6 +89,7 @@ $(create_actBtn).on("click", function () {
 
     var object = {
         Name: $(act_name_input).val(),
+        Description: $(act_description_input).val(),
         Difficulty: $(act_difficulty).val(),
         EpisodeName: $(act_episode).val(),
         ActCrudOperation: $(act_crudAction).val(),

@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Avelraangame</title>
+    <title>Avelraangame - @ViewData["Title"]</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
@@ -14,12 +14,12 @@
             <a class="btn btn-outline-dark btn-sm" asp-controller="Home" asp-action="Index">Home</a>
             <a class="btn btn-outline-dark btn-sm" asp-controller="Player" asp-action="Index">Players</a>
             <a class="btn btn-outline-dark btn-sm" asp-controller="Character" asp-action="Character_index">Characters</a>
-            <a class="btn btn-outline-dark btn-sm" asp-controller="Combat" asp-action="Combat_index">Combat</a>
+            <a class="btn btn-outline-dark btn-sm" asp-controller="Combat" asp-action="Combat_party">Party</a>
             <a class="btn btn-outline-dark btn-sm" asp-controller="Item" asp-action="Index">Items</a>
             <a class="btn btn-outline-dark btn-sm" asp-controller="Item" asp-action="Merchant">Merchant</a>
             <a class="btn btn-outline-dark btn-sm" asp-controller="Home" asp-action="Fame">Fame</a>
         </div>
-        <a class="btn btn-outline-warning btn-sm float-right" asp-controller="Admin" asp-action="Admin_index">Admin</a>
+        <a class="btn btn-outline-warning btn-sm float-right" asp-controller="Admin" asp-action="Admin_index" hidden="hidden">Admin</a>
     </header>
     
     <script src="~/js/site.js" asp-append-version="true"></script>
@@ -28,6 +28,14 @@
             @RenderBody()
         </main>
     </div>
+
+    @*<footer class="footer" style="color:sienna">*@
+    <footer class="footer">
+        <span style="color:navajowhite; opacity:0.7">Quickactions</span>
+        <a class="btn btn-outline-dark" style="width:100px" asp-controller="Character" asp-action="Character_model">Model</a>
+        <a class="btn btn-outline-dark" style="width:100px" asp-controller="Item" asp-action="Merchant">Merchant</a>
+        <a class="btn btn-outline-dark" style="width:100px" asp-controller="Combat" asp-action="Fight">Fight</a>
+    </footer>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

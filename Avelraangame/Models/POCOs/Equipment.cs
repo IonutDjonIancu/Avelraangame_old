@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Avelraangame.Models.POCOs
 {
-    public class Equippment
+    public class Equipment
     {
         public ItemVm Armour { get; set; }
         public ItemVm Mainhand { get; set; }
@@ -11,7 +11,7 @@ namespace Avelraangame.Models.POCOs
         public ItemVm Ranged { get; set; }
         public List<ItemVm> Trinkets { get; set; }
 
-        public Equippment()
+        public Equipment()
         {
             Trinkets = new List<ItemVm>();
         }

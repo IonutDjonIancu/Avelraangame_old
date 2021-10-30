@@ -26,6 +26,12 @@ namespace Avelraangame.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<int>("ActNumber")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Difficulty")
                         .HasColumnType("nvarchar(max)");
 
@@ -66,13 +72,13 @@ namespace Avelraangame.Migrations
                     b.Property<string>("HeroicTraits")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool?>("InFight")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("InParty")
-                        .HasColumnType("bit");
-
                     b.Property<bool>("IsAlive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsInFight")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsInParty")
                         .HasColumnType("bit");
 
                     b.Property<string>("Logbook")
@@ -133,6 +139,26 @@ namespace Avelraangame.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Episodes");
+                });
+
+            modelBuilder.Entity("Avelraangame.Models.Fight", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("BadGuys")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FightDetails")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("GoodGuys")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Fights");
                 });
 
             modelBuilder.Entity("Avelraangame.Models.HeroicTraits", b =>
@@ -225,8 +251,8 @@ namespace Avelraangame.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("ActId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<bool>("IsPartyLocked")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
@@ -239,13 +265,17 @@ namespace Avelraangame.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("LastLogin")
+                    b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Symbol")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Ward")
                         .IsRequired()

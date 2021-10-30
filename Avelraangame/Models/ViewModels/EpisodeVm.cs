@@ -1,5 +1,5 @@
-﻿using Avelraangame.Services.ServiceUtils;
-using System;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Avelraangame.Models.ViewModels
 {
@@ -17,5 +17,7 @@ namespace Avelraangame.Models.ViewModels
 
         public string EpisodeCrudOperation { get; set; }
         public string SigmaWard { get; set; }
+
+        public List<Act> Acts { get; set; }
     }
 }

@@ -24,12 +24,37 @@ namespace Avelraangame.Services
                 Id = Guid.NewGuid(),
                 Name = playervm.PlayerName,
                 Ward = playervm.Ward,
-                LastLogin = DateTime.Now
+                Symbol = playervm.Symbol,
+                CreationDate = DateTime.Now
             };
 
             DataService.SavePlayer(player);
 
-            return Scribe.ShortMessages.Success.ToString();
+            var result = new PlayerVm()
+            {
+                PlayerId = player.Id,
+                PlayerName = player.Name
+            };
+
+            return JsonConvert.SerializeObject(result);
+        }
+
+        public string Logon(RequestVm request)
+        {
+            PlayerVm playervm;
+
+            playervm = ValidateRequestDeserializationIntoPlayerVm(request.Message);
+
+            ValidatePlayerDetailsOnLogon(playervm);
+            var player = ValidatePlayerBySymbolWard(playervm.Symbol, playervm.Ward);
+
+            var result = new PlayerVm
+            {
+                PlayerId = player.Id,
+                PlayerName = player.Name
+            };
+
+            return JsonConvert.SerializeObject(result);
         }
         #endregion
 

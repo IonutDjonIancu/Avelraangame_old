@@ -17,10 +17,10 @@ namespace Avelraangame.Models
 
         public bool IsAlive { get; set; }
         public bool HasLevelup { get; set; }
-        public bool InParty { get; set; }
+        public bool IsInParty { get; set; }
         public Guid? PartyId { get; set; }
 
-        public bool? InFight { get; set; }
+        public bool IsInFight { get; set; }
         public Guid? FightId { get; set; }
 
         public string Equippment { get; set; }

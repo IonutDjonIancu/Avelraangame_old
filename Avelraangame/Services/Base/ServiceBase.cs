@@ -80,6 +80,18 @@ namespace Avelraangame.Services.Base
             return player;
         }
 
+        protected Player ValidatePlayerBySymbolWard(string symbol, string ward)
+        {
+            var player = DataService.GetPlayerBySymbolWard(symbol, ward);
+
+            if (player == null)
+            {
+                throw new Exception(string.Concat(Scribe.ShortMessages.ResourceNotFound, ": the symbol ward matched no player."));
+            }
+
+            return player;
+        }
+
         protected void ValidateWard(string ward, string wardCheck)
         {
             if (string.IsNullOrWhiteSpace(ward))
@@ -141,6 +153,26 @@ namespace Avelraangame.Services.Base
         {
             ValidatePlayerName(playerVm.PlayerName);
             ValidateWards(playerVm.Ward, playerVm.Wardcheck);
+            if (!PlayersUtils.PlayerSymbolsList.Contains(playerVm.Symbol))
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.BadRequest, ": invalid symbol."));
+            }
+        }
+
+        protected void ValidatePlayerDetailsOnLogon(PlayerVm playerVm)
+        {
+            if (string.IsNullOrWhiteSpace(playerVm.Ward))
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.BadRequest, ": ward is missing or invalid."));
+            }
+            if (string.IsNullOrWhiteSpace(playerVm.Symbol))
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.BadRequest, ": symbol is missing or invalid."));
+            }
+            if (!PlayersUtils.PlayerSymbolsList.Contains(playerVm.Symbol))
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.BadRequest, ": invalid symbol."));
+            }
         }
 
         private void ValidateWards(string ward, string wardCheck)
@@ -169,7 +201,7 @@ namespace Avelraangame.Services.Base
         #endregion
 
         #region CharacterValidation
-        protected CharacterVm ValidateRequestDeserializationIntoCharacterVm(string request)
+        protected CharacterVm ValidateRequestDeserializationInto_CharacterVm(string request)
         {
             CharacterVm charVm;
 
@@ -217,7 +249,10 @@ namespace Avelraangame.Services.Base
         {
             var chr = ValidateCharacterById(charId);
 
-            if (chr.PlayerId.Equals(playerId)) { return chr; }
+            if (chr.PlayerId.Equals(playerId)) 
+            { 
+                return chr; 
+            }
 
             throw new Exception(message: string.Concat(Scribe.ShortMessages.Failure, ": character does not match player id."));
         }
@@ -258,7 +293,7 @@ namespace Avelraangame.Services.Base
 
         public CharacterVm ValidateRollDetailsBeforeStoring(RequestVm request)
         {
-            var charvm = ValidateRequestDeserializationIntoCharacterVm(request.Message);
+            var charvm = ValidateRequestDeserializationInto_CharacterVm(request.Message);
             ValidatePlayerByIdNamePair(charvm.PlayerId, charvm.PlayerName);
 
             return charvm;
@@ -320,36 +355,36 @@ namespace Avelraangame.Services.Base
         #endregion
 
         #region CombatValidation
-        public void ValidateAttackDetails(Attack attack)
+        public void ValidateAttackDetails(AttackVm attack)
         {
             if (attack == null)
             {
                 throw new Exception(message: string.Concat(Scribe.ShortMessages.Failure, ": attack is missing or invalid."));
             }
 
-            if (attack.FightId == Guid.Empty || attack.FightId == null)
+            if (attack.FightId.Equals(Guid.Empty) || attack.FightId == null)
             {
                 throw new Exception(message: string.Concat(Scribe.ShortMessages.Failure, ": fightId is missing or invalid."));
             }
 
-            if (attack.Attacker == Guid.Empty || attack.Attacker == null)
+            if (attack.AttackerId.Equals(Guid.Empty) || attack.AttackerId == null)
             {
                 throw new Exception(message: string.Concat(Scribe.ShortMessages.Failure, ": attacker is missing or invalid."));
             }
 
-            if (attack.Defender == Guid.Empty || attack.Defender == null)
+            if (attack.TargetId.Equals(Guid.Empty) || attack.TargetId == null)
             {
-                throw new Exception(message: string.Concat(Scribe.ShortMessages.Failure, ": defender is missing or invalid."));
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.Failure, ": target is missing or invalid."));
             }
         }
 
-        public Defend ValidateRequestDeserializationIntoDefend(string request)
+        public DefendVm ValidateRequestDeserializationInto_DefendVm(string request)
         {
-            Defend defend;
+            DefendVm defend;
 
             try
             {
-                defend = JsonConvert.DeserializeObject<Defend>(request);
+                defend = JsonConvert.DeserializeObject<DefendVm>(request);
             }
             catch (Exception ex)
             {
@@ -375,13 +410,13 @@ namespace Avelraangame.Services.Base
             return combatEnd;
         }
 
-        protected Attack ValidateRequestDeserializationIntoAttack(string request)
+        protected AttackVm ValidateRequestDeserializationInto_AttackVm(string request)
         {
-            Attack attack;
+            AttackVm attack;
 
             try
             {
-                attack = JsonConvert.DeserializeObject<Attack>(request);
+                attack = JsonConvert.DeserializeObject<AttackVm>(request);
             }
             catch (Exception ex)
             {
@@ -404,6 +439,22 @@ namespace Avelraangame.Services.Base
             }
 
             return combatVm;
+        }
+
+        protected StoryVm ValidateRequestDeserializationInto_CombatStoryVm(string request)
+        {
+            StoryVm requestVm;
+
+            try
+            {
+                requestVm = JsonConvert.DeserializeObject<StoryVm>(request);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.BadRequest, ": ", ex.Message));
+            }
+
+            return requestVm;
         }
 
         #endregion
@@ -442,7 +493,7 @@ namespace Avelraangame.Services.Base
             }
         }
 
-        protected void ValidateEpisodeExists(string episodeName)
+        protected void ValidateEpisodeNameUnicity(string episodeName)
         {
             ValidateEpisodeName(episodeName);
 
@@ -466,7 +517,7 @@ namespace Avelraangame.Services.Base
             }
         }
 
-        protected void ValidateActExists(string actName)
+        protected void ValidateActNameUnicity(string actName)
         {
             ValidateActName(actName);
 
@@ -496,6 +547,43 @@ namespace Avelraangame.Services.Base
             return actVm;
         }
         #endregion
+
+        #region FightValidation
+        protected List<CharacterVm> ValidateReqDeserializationInto_GoodGuys(string request)
+        {
+            List<CharacterVm> goodGuys;
+
+            try
+            {
+                goodGuys = JsonConvert.DeserializeObject<List<CharacterVm>>(request);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.BadRequest, ": ", ex.Message));
+            }
+
+            return goodGuys;
+        }
+
+        protected FightVm ValidateRequestDeserializationInto_FightVm(string request)
+        {
+            FightVm fightvm;
+
+            try
+            {
+                fightvm = JsonConvert.DeserializeObject<FightVm>(request);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.BadRequest, ": ", ex.Message));
+            }
+
+            return fightvm;
+        }
+
+
+        #endregion
+
 
 
     }

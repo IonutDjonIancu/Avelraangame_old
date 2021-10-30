@@ -9,6 +9,7 @@
         public const string Characters_GenericName = "Marqus";
         #endregion
 
+
         #region Stats
         public const string Stats_Strength = "Strength";
         public const string Stats_Toughness = "Toughness";
@@ -185,32 +186,40 @@
         #endregion
 
         #region GameSettings
+        public static class Stories
+        {
+            public static string Avelraan = "Avelraan";
+            public static string Dungeon = "Dungeon";
+            public static string Adventure = "Adventure";
+        }
+
         public static class Difficulty
         {
             /// <summary>
+            /// 0
+            /// </summary>
+            public static string D0_Random = "Random"; // takes into consideration only the skills of the characters
+            /// <summary>
             /// 1
             /// </summary>
-            public static string D1_Easy = "Easy";
+            public static string D1_Easy = "Easy"; // 1/4 to all stats, assets, expertise
             /// <summary>
             /// 2
             /// </summary>
-            public static string D2_Normal = "Normal";
+            public static string D2_Normal = "Normal"; // 1/2 to all stats, assets, expertise
             /// <summary>
             /// 3
             /// </summary>
-            public static string D3_Hard = "Hard";
-            /// <summary>
-            /// 4
-            /// </summary>
-            public static string D4_Heroic = "Heroic";
-            /// <summary>
-            /// 5
-            /// </summary>
-            public static string D5_Legendary = "Legendary";
-            /// <summary>
-            /// 6
-            /// </summary>
-            public static string D6_Astral = "Astral";
+            public static string D3_Hard = "Hard"; // all stats, assets and expertise suffer no penalties
+        }
+
+        public static class PartySize
+        {
+            public static string party = "party";
+            public static string group = "group";
+            public static string band = "band";
+            public static string company = "company";
+            public static string troops = "troops";
         }
         #endregion
     }

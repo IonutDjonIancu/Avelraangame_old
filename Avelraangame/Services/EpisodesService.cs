@@ -4,6 +4,7 @@ using Avelraangame.Services.ServiceUtils;
 using Avelraangame.Services.SubService;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 
 namespace Avelraangame.Services
 {
@@ -47,7 +48,12 @@ namespace Avelraangame.Services
 
         public string GetEpisodes()
         {
-            return JsonConvert.SerializeObject(DataService.GetEpisodes());
+            return JsonConvert.SerializeObject(DataService.GetEpisodes(), 
+                Formatting.None, 
+                new JsonSerializerSettings()
+                {
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                });
         }
         #endregion
 

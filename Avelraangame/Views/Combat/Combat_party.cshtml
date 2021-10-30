@@ -1,0 +1,32 @@
+﻿@{
+    ViewData["Title"] = "Combat";
+}
+
+<br />
+<p style="color:navajowhite">Party</p> 
+<div class="btn-group">
+    <a class="btn btn-dark btn-sm" asp-controller="Combat" asp-action="Combat_party">Party</a>
+    <a class="btn btn-outline-dark btn-sm" asp-controller="Combat" asp-action="Combat_story">Story</a>
+    <a class="btn btn-outline-dark disabled btn-sm">Dungeon</a>
+    <a class="btn btn-outline-dark disabled btn-sm">Arena</a>
+</div>
+
+<div id="modelJumbo" class="text-left jumbotron" style="opacity:0.7; background-color:black; color:navajowhite">
+    <div>
+        Tavern
+        <div id="aloneDiv"></div>
+    </div>
+    <hr />
+    <div>
+        In party
+        <div id="inPartyDiv"></div>
+    </div>
+    <hr />
+    <div>
+        Fighting
+        <div id="inFightDiv"></div>
+    </div>
+ </div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="~/js/combat/combat_party.js"></script>

@@ -1,37 +1,31 @@
 ﻿// URLs
-const GenerateWeakNpcFight = "/api/palantir/GenerateWeakNpcFight";
-const GetFight = "/api/palantir/GetFight";
+const GetFightById = "/api/palantir/GetFightById";
 const Attack = "/api/palantir/Attack";
-const Defend = "/api/palantir/Defend";
-const EndCombat = "/api/palantir/EndCombat";
+const Pass = "/api/palantir/Pass";
+const Turn = "/api/palantir/Turn";
 
 // variables
+const lastActionResultBtn = "#lastActionResultBtn";
+const goodGuysDiv = "#goodGuysDiv";
+const badGuysDiv = "#badGuysDiv";
+const attackerDiv = "#attackerDiv";
+const targetDiv = "#targetDiv";
+const attackBtn = "#attackBtn";
+const passBtn = "#passBtn";
+const turnBtn = "#turnBtn";
 let playerName;
 let playerId;
 let characterId;
-let npcId;
 let fightId;
+let data;
 let attackerId;
-let defenderId;
-let respData;
-const weak = "#weak";
-const normal = "#normal";
-const strong = "#strong";
-const combatants = "#combatants";
-const goodGuys = "#goodGuys";
-const badGuys = "#badGuys";
-const attackBtn = "#attackBtn";
-const endTurnBtn = "#endTurnBtn";
-const endFightBtn = "#endFightBtn";
-const generateFightBtns = "#generateFightBtns";
-const attackerDefender = "#attackerDefender";
-const attackerDiv = "#attackerDiv";
-const defenderDiv = "#defenderDiv";
-const lastActionResultBtn = "#lastActionResultBtn";
+let targetId;
+
 
 // on page load
-establishPlayer();
-establishCharacter();
+playerId = establishPlayerId_base();
+playerName = establishPlayerName_base();
+characterId = establishCharacterId_base();
 getFight();
 
 
@@ -41,82 +35,13 @@ getFight();
 
 
 // events
-$(endFightBtn).on("click", function () {
-    if (fightId == undefined) {
-        return;
-    }
-
-    var object = {
-        FightId: fightId
-    }
-    var request = {
-        message: JSON.stringify(object)
-    }
-
-    $.ajax({
-        type: "GET",
-        url: EndCombat,
-        contentType: "application/text",
-        data: request,
-        success: function (resp) {
-            var response = JSON.parse(resp);
-
-            if (response.Error) {
-                $(lastActionResultBtn).text(response.Error);
-                console.log(response.Error);
-                return;
-            }
-
-            window.location = `/Combat/Combat_index`;
-        },
-        error: function (err) {
-            console.log(err);
-        }
-    })
-});
-
-$(weak).on("click", function () {
-    var object = {
-        PlayerId: playerId,
-        PlayerName: playerName,
-        CharacterId: characterId
-    }
-    var request = {
-        message: JSON.stringify(object)
-    }
-
-    $.ajax({
-        type: "GET",
-        url: GenerateWeakNpcFight,
-        contentType: "application/text",
-        data: request,
-        success: function (resp) {
-            var response = JSON.parse(resp);
-
-            if (response.Error) {
-                $(lastActionResultBtn).text(response.Error);
-                console.log(response.Error);
-                return;
-            }
-
-            location.reload();
-        },
-        error: function (err) {
-            console.log(err);
-        }
-    })
-});
-
 $(attackBtn).on("click", function () {
-
-    if (fightId == undefined) {
-        return;
-    }
 
     var object = {
         FightId: fightId,
-        Attacker: characterId,
-        Defender: defenderId
+        PlayerId: playerId,
+        AttackerId: attackerId,
+        TargetId: targetId
     }
     var request = {
         message: JSON.stringify(object)
@@ -135,27 +60,24 @@ $(attackBtn).on("click", function () {
                 console.log(response.Error);
                 return;
             } else {
-                var data = JSON.parse(response.Data);
-
-                console.log(data);
-                drawFight(data);
+                if (response.Data) {
+                    data = JSON.parse(response.Data);
+                    console.log(data);
+                    drawCombatantsAndAddEvents();
+                    redrawGuys(data);
+                }
             }
         },
         error: function (err) {
             console.log(err);
         }
-    })
+    });
 });
 
-$(endTurnBtn).on("click", function () {
-
-    if (fightId == undefined) {
-        return;
-    }
+$(passBtn).on("click", function () {
 
     var object = {
         FightId: fightId,
-        MainCharacterId: characterId,
         PlayerId: playerId
     }
     var request = {
@@ -164,7 +86,7 @@ $(endTurnBtn).on("click", function () {
 
     $.ajax({
         type: "GET",
-        url: Defend,
+        url: Pass,
         contentType: "application/text",
         data: request,
         success: function (resp) {
@@ -175,24 +97,58 @@ $(endTurnBtn).on("click", function () {
                 console.log(response.Error);
                 return;
             } else {
-                var data = JSON.parse(response.Data);
-
-                console.log(data);
-                drawFight(data);
+                if (response.Data) {
+                    data = JSON.parse(response.Data);
+                    console.log(data);
+                    drawCombatantsAndAddEvents();
+                    redrawGuys(data);
+                }
             }
         },
         error: function (err) {
             console.log(err);
         }
-    })
+    });
 });
 
+$(turnBtn).on("click", function () {
+
+    var object = {
+        FightId: fightId,
+        PlayerId: playerId
+    }
+    var request = {
+        message: JSON.stringify(object)
+    }
+
+    $.ajax({
+        type: "GET",
+        url: Turn,
+        contentType: "application/text",
+        data: request,
+        success: function (resp) {
+            var response = JSON.parse(resp);
+
+            if (response.Error) {
+                $(lastActionResultBtn).text(response.Error);
+                console.log(response.Error);
+                return;
+            } else {
+                if (response.Data) {
+                    data = JSON.parse(response.Data);
+                    console.log(data);
+                    drawCombatantsAndAddEvents();
+                    redrawGuys(data);
+                }
+            }
+        },
+        error: function (err) {
+            console.log(err);
+        }
+    });
+});
 
 // functions 
-function hideGenerateFightButtons() {
-    $(generateFightBtns).remove();
-}
-
 function getFight() {
     var object = {
         PlayerId: playerId,
@@ -205,25 +161,21 @@ function getFight() {
 
     $.ajax({
         type: "GET",
-        url: GetFight,
+        url: GetFightById,
         contentType: "application/text",
         data: request,
         success: function (resp) {
             var response = JSON.parse(resp);
 
             if (response.Error) {
-                $(lastActionResultBtn).text(response.Error);
+                $(lastActionResultBtn).text("Everything seems peaceful...");
                 console.log(response.Error);
                 return;
             } else {
                 if (response.Data) {
-                    var data = JSON.parse(response.Data);
-                    hideGenerateFightButtons();
+                    data = JSON.parse(response.Data);
                     console.log(data);
-                    fightId = data.FightId;
-                    respData = data;
-                    drawFight(data);
-                    addFightingCharactersClickEvent();
+                    drawCombatantsAndAddEvents();
                 }
             }
         },
@@ -233,84 +185,169 @@ function getFight() {
     });
 }
 
-function addFightingCharactersClickEvent() {
+function drawCombatantsAndAddEvents() {
+    fightId = data.FightId;
+    displayLastActionResult(data);
+    displayGoodGuys(data);
+    displayBadGuys(data);
+    $(attackerDiv).empty();
+    $(targetDiv).empty();
+}
 
-    $(".goodChr").on("click", function () {
+function displayLastActionResult(data) {
+    $(lastActionResultBtn).text(data.FightDetails.LastActionResult);
+}
+
+function displayGoodGuys(data) {
+    base_drawGoodGuys(data.GoodGuys, goodGuysDiv);
+    setGoodGuysClickEvent();
+}
+
+function displayBadGuys(data) {
+    base_drawBadGuys(data.BadGuys, badGuysDiv);
+    setBadGuysClickEvent();
+}
+
+
+function setGoodGuysClickEvent() {
+    $(".goodGuy").on("click", function () {
+        for (var i = 0; i < $(".goodGuy").length; i++) {
+            $($(".goodGuy")[i]).removeClass("btn-light");
+            $($(".goodGuy")[i]).addClass("btn-outline-dark");
+        }
+
+        $(this).removeClass("btn-outline-dark");
+        $(this).addClass("btn-light");
         attackerId = this.id;
-        showAttacker(attackerId);
-    });
 
-    $(".badChr").on("click", function () {
-        defenderId = this.id;
-        showDefender(defenderId);
+        for (var i = 0; i < data.GoodGuys.length; i++) {
+            if (data.GoodGuys[i].CharacterId == this.id) {
+                drawGuy(data.GoodGuys[i], true);
+            }
+        }
     });
 }
 
-function showAttacker(attackerId) {
-    for (var i = 0; i < respData.GoodGuys.length; i++) {
-        if (respData.GoodGuys[i].CharacterId == attackerId) {
-            var html = `
-                <img class="float-right" title="${respData.GoodGuys[i].Name}" style="border-radius:10px" src="../media/images/humans/human${respData.GoodGuys[i].Logbook.PortraitNr}.png" />
-            `;
-            $(attackerDiv).empty();
-            $(attackerDiv).append(html);
+function setBadGuysClickEvent() {
+    $(".badGuy").on("click", function () {
+        for (var i = 0; i < $(".badGuy").length; i++) {
+            $($(".badGuy")[i]).removeClass("btn-light");
+            $($(".badGuy")[i]).addClass("btn-outline-dark");
+        }
+
+        $(this).removeClass("btn-outline-dark");
+        $(this).addClass("btn-light");
+        targetId = this.id;
+
+        for (var i = 0; i < data.BadGuys.length; i++) {
+            if (data.BadGuys[i].CharacterId == this.id) {
+                drawGuy(data.BadGuys[i], false);
+            }
+        }
+    });
+}
+
+function redrawGuys(data) {
+
+    for (var i = 0; i < data.GoodGuys.length; i++) {
+        if (data.GoodGuys[i].CharacterId == attackerId) {
+            drawGuy(data.GoodGuys[i], true);
+        }
+    }
+
+    for (var i = 0; i < data.BadGuys.length; i++) {
+        if (data.BadGuys[i].CharacterId == targetId) {
+            drawGuy(data.BadGuys[i], false);
         }
     }
 }
 
-function showDefender(defenderId) {
-    for (var i = 0; i < respData.BadGuys.length; i++) {
-        if (respData.BadGuys[i].CharacterId == defenderId) {
-            var html = `
-                <img class="float-left" style="border-radius:10px" src="../media/images/npcs/npc${respData.BadGuys[i].Logbook.PortraitNr}.png" />
+function drawGuy(guy, isGood) {
+
+    if (isGood) {
+        $(attackerDiv).empty();
+
+        var tokenBtn;
+        if (guy.AttackToken) {
+            tokenBtn = `<button title="action token" class="btn btn-sm btn-outline-light" style="width:120px">
+                            <img style="border-radius:10px; height:20px; width:auto" src="../media/images/white_aquila.jpeg" />
+                        </button>
             `;
-            $(defenderDiv).empty();
-            $(defenderDiv).append(html);
+        } else {
+            tokenBtn = `<button class="btn btn-sm btn-outline-dark" style="width:120px">no token</button>`;
         }
+
+        var html = `
+        <div style="border:solid; border-color:darkslategray; border-width:2px; border-radius:5px">
+            <div class="container" style="margin:10px">
+                <div class="row">
+                    <div class="col-3">
+                        <img style="border-radius:10px" src="../media/images/humans/human${guy.Logbook.PortraitNr}.png" />
+                    </div>
+                    <div class="col-9">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="btn-group-vertical">
+                                    <button class="btn btn-sm btn-dark" style="width:120px">Melee ${guy.Skills.Melee}</button>
+                                    <button class="btn btn-sm btn-dark" style="width:120px">Ranged ${guy.Skills.Ranged}</button>
+                                    <button class="btn btn-sm btn-dark" style="width:120px">Hide ${guy.Skills.Hide}</button>
+                                    <button class="btn btn-sm btn-dark" style="width:120px">Spot ${guy.Skills.Spot}</button>
+                                    <button class="btn btn-sm btn-dark" style="width:120px">Resistance ${guy.Skills.Resistance}</button>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="btn-group-vertical">
+                                    <button class="btn btn-sm btn-dark" style="width:120px">HP ${guy.Assets.Health}</button>
+                                    <button class="btn btn-sm btn-dark" style="width:120px">Harm ${guy.Assets.Harm}</button>
+                                    <button class="btn btn-sm btn-dark" style="width:120px">DRM ${guy.Expertise.DRM}</button>
+                                    <button class="btn btn-sm btn-dark" style="width:120px">Mana ${guy.Assets.Mana}</button>
+                                    ${tokenBtn}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+
+        $(attackerDiv).append(html);
+
+    } else {
+        $(targetDiv).empty();
+
+        var html = `
+        <div style="border:solid; border-color:darkslategray; border-width:2px; border-radius:5px">
+            <div class="container" style="margin:10px">
+                <div class="row">
+                    <div class="col-9">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="btn-group-vertical">
+                                    <button class="btn btn-sm btn-dark" style="width:120px">HP ${guy.Assets.Health}</button>
+                                    <button class="btn btn-sm btn-dark" style="width:120px">Harm ${guy.Assets.Harm}</button>
+                                    <button class="btn btn-sm btn-dark" style="width:120px">DRM ${guy.Expertise.DRM}</button>
+                                    <button class="btn btn-sm btn-dark" style="width:120px">Mana ${guy.Assets.Mana}</button>
+                                    <button class="btn btn-sm btn-dark" style="width:120px">${guy.AttackToken == true ? "has token" : "no token"}</button>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="btn-group-vertical">
+                                    <button class="btn btn-sm btn-dark" style="width:120px">Melee ${guy.Skills.Melee}</button>
+                                    <button class="btn btn-sm btn-dark" style="width:120px">Ranged ${guy.Skills.Ranged}</button>
+                                    <button class="btn btn-sm btn-dark" style="width:120px">Hide ${guy.Skills.Hide}</button>
+                                    <button class="btn btn-sm btn-dark" style="width:120px">Spot ${guy.Skills.Spot}</button>
+                                    <button class="btn btn-sm btn-dark" style="width:120px">Resistance ${guy.Skills.Resistance}</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <img style="border-radius:10px" src="../media/images/npcs/npc${guy.Logbook.PortraitNr}.png" />
+                    </div>
+                </div>
+            </div>
+        </div>`;
+
+        $(targetDiv).append(html);
     }
 }
-
-function drawFight(data) {
-    $(goodGuys).empty();
-    var goodHtml = `
-<button id="${data.GoodGuys[0].CharacterId}" title="${data.GoodGuys[0].Name}" class="btn btn-outline-success goodChr">
-    <img class="float-left" style="border-radius:10px" src="../media/images/humans/human${data.GoodGuys[0].Logbook.PortraitNr}.png" />
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
-        <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
-    </svg> ${data.GoodGuys[0].Assets.Health}
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-shield-shaded" viewBox="0 0 16 16">
-        <path fill-rule="evenodd" d="M8 14.933a.615.615 0 0 0 .1-.025c.076-.023.174-.061.294-.118.24-.113.547-.29.893-.533a10.726 10.726 0 0 0 2.287-2.233c1.527-1.997 2.807-5.031 2.253-9.188a.48.48 0 0 0-.328-.39c-.651-.213-1.75-.56-2.837-.855C9.552 1.29 8.531 1.067 8 1.067v13.866zM5.072.56C6.157.265 7.31 0 8 0s1.843.265 2.928.56c1.11.3 2.229.655 2.887.87a1.54 1.54 0 0 1 1.044 1.262c.596 4.477-.787 7.795-2.465 9.99a11.775 11.775 0 0 1-2.517 2.453 7.159 7.159 0 0 1-1.048.625c-.28.132-.581.24-.829.24s-.548-.108-.829-.24a7.158 7.158 0 0 1-1.048-.625 11.777 11.777 0 0 1-2.517-2.453C1.928 10.487.545 7.169 1.141 2.692A1.54 1.54 0 0 1 2.185 1.43 62.456 62.456 0 0 1 5.072.56z" />
-    </svg> ${data.GoodGuys[0].Expertise.DRM}
-</button>
-`;
-
-    $(badGuys).empty();
-
-    var badHtml = `
-<button id="${data.BadGuys[0].CharacterId}" class="btn btn-outline-danger badChr float-right">
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
-        <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
-    </svg> 
-    ${data.BadGuys[0].Assets.Health}
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-shield-shaded" viewBox="0 0 16 16">
-        <path fill-rule="evenodd" d="M8 14.933a.615.615 0 0 0 .1-.025c.076-.023.174-.061.294-.118.24-.113.547-.29.893-.533a10.726 10.726 0 0 0 2.287-2.233c1.527-1.997 2.807-5.031 2.253-9.188a.48.48 0 0 0-.328-.39c-.651-.213-1.75-.56-2.837-.855C9.552 1.29 8.531 1.067 8 1.067v13.866zM5.072.56C6.157.265 7.31 0 8 0s1.843.265 2.928.56c1.11.3 2.229.655 2.887.87a1.54 1.54 0 0 1 1.044 1.262c.596 4.477-.787 7.795-2.465 9.99a11.775 11.775 0 0 1-2.517 2.453 7.159 7.159 0 0 1-1.048.625c-.28.132-.581.24-.829.24s-.548-.108-.829-.24a7.158 7.158 0 0 1-1.048-.625 11.777 11.777 0 0 1-2.517-2.453C1.928 10.487.545 7.169 1.141 2.692A1.54 1.54 0 0 1 2.185 1.43 62.456 62.456 0 0 1 5.072.56z" />
-    </svg>
-    ${data.BadGuys[0].Expertise.DRM}
-    <img class="float-right" style="border-radius:10px" src="../media/images/npcs/npc${data.BadGuys[0].Logbook.PortraitNr}.png" />
-</button>
-`;
-
-    $(goodGuys).append(goodHtml);
-    $(badGuys).append(badHtml);
-    $(lastActionResultBtn).text(data.LastActionResult)
-}
-
-function establishPlayer() {
-    playerName = localStorage.getItem("playerName");
-    playerId = localStorage.getItem("playerId");
-}
-
-function establishCharacter() {
-    characterId = localStorage.getItem("characterId");
-}
-

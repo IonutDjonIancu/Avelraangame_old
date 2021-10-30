@@ -9,9 +9,11 @@ namespace Avelraangame.Models
 
         public Guid Id { get; set; }
         public string Name { get; set; }
+        public string Description { get; set; }
 
         public string Difficulty { get; set; }
 
+        public int ActNumber { get; set; }
         public Guid? EpisodeId { get; set; }
         public Episode Episode { get; set; }
     }

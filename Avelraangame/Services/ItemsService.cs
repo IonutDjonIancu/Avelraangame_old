@@ -39,7 +39,7 @@ namespace Avelraangame.Services
         public Character EquipItemToSlot(Character chr, Item item)
         {
             var supps = new List<ItemVm>();
-            var equipp = new Equippment();
+            var equipp = new Equipment();
 
             if (chr.Supplies != null)
             {
@@ -48,7 +48,7 @@ namespace Avelraangame.Services
 
             if (chr.Equippment != null)
             {
-                equipp = JsonConvert.DeserializeObject<Equippment>(chr.Equippment);
+                equipp = JsonConvert.DeserializeObject<Equipment>(chr.Equippment);
             }
 
             if (item.Type.Equals(ItemsUtils.Types.Apparatus))
@@ -152,7 +152,7 @@ namespace Avelraangame.Services
             return itemVm;
         }
 
-        public ItemVm GenerateRandomArmour(Guid? charId)
+        public ItemVm GenerateRandomArmour(Guid? charId = null)
         {
             var itemLevel = GenerateItemLevel();
             Item item;
@@ -172,22 +172,200 @@ namespace Avelraangame.Services
                 item = GenerateNormalArmour(itemLevel);
             }
 
-            item.CharacterId = charId;
-            DataService.CreateItem(item);
+            if (charId != null)
+            {
+                item.CharacterId = charId;
+                DataService.CreateItem(item);
+            }
 
             var itemVm = new ItemVm(item);
 
             return itemVm;
         }
+
+        public ItemVm GenerateRandomMainHandWeapon(Guid? charId = null)
+        {
+            var itemLevel = GenerateItemLevel();
+            Item item;
+
+            if (itemLevel == 5)
+            {
+                //return GenerateArtifactItem(); // <------ should return ArtifactVm
+                throw new NotImplementedException(message: $"{Scribe.ShortMessages.Failure}: not implemented exception");
+            }
+            else if (itemLevel == 6)
+            {
+                //return GenerateRelicItem(); // <------ should return RelicVm
+                throw new NotImplementedException(message: $"{Scribe.ShortMessages.Failure}: not implemented exception");
+            }
+            else
+            {
+                item = GenerateNormalMainHand(itemLevel);
+            }
+
+            if (charId != null)
+            {
+                item.CharacterId = charId;
+                DataService.CreateItem(item);
+            }
+
+            var itemVm = new ItemVm(item);
+
+            return itemVm;
+        }
+
+        public ItemVm GenerateRandomOffHandWeapon(Guid? charId = null)
+        {
+            var itemLevel = GenerateItemLevel();
+            Item item;
+
+            if (itemLevel == 5)
+            {
+                //return GenerateArtifactItem(); // <------ should return ArtifactVm
+                throw new NotImplementedException(message: $"{Scribe.ShortMessages.Failure}: not implemented exception");
+            }
+            else if (itemLevel == 6)
+            {
+                //return GenerateRelicItem(); // <------ should return RelicVm
+                throw new NotImplementedException(message: $"{Scribe.ShortMessages.Failure}: not implemented exception");
+            }
+            else
+            {
+                item = GenerateNormalOffHand(itemLevel);
+            }
+
+            if (charId != null)
+            {
+                item.CharacterId = charId;
+                DataService.CreateItem(item);
+            }
+
+            var itemVm = new ItemVm(item);
+
+            return itemVm;
+        }
+
+        public ItemVm GenerateRandomRangedWeapon(Guid? charId = null)
+        {
+            var itemLevel = GenerateItemLevel();
+            Item item;
+
+            if (itemLevel == 5)
+            {
+                //return GenerateArtifactItem(); // <------ should return ArtifactVm
+                throw new NotImplementedException(message: $"{Scribe.ShortMessages.Failure}: not implemented exception");
+            }
+            else if (itemLevel == 6)
+            {
+                //return GenerateRelicItem(); // <------ should return RelicVm
+                throw new NotImplementedException(message: $"{Scribe.ShortMessages.Failure}: not implemented exception");
+            }
+            else
+            {
+                item = GenerateNormalRanged(itemLevel);
+            }
+
+            if (charId != null)
+            {
+                item.CharacterId = charId;
+                DataService.CreateItem(item);
+            }
+
+            var itemVm = new ItemVm(item);
+
+            return itemVm;
+        }
+
+        public List<ItemVm> GenerateRandomTrinketsStash(Guid? charId = null)
+        {
+            var itemLevel = GenerateItemLevel();
+            Item item;
+            var trinkets = new List<ItemVm>();
+
+            if (itemLevel == 5)
+            {
+                //return GenerateArtifactItem(); // <------ should return ArtifactVm
+                throw new NotImplementedException(message: $"{Scribe.ShortMessages.Failure}: not implemented exception");
+            }
+            else if (itemLevel == 6)
+            {
+                //return GenerateRelicItem(); // <------ should return RelicVm
+                throw new NotImplementedException(message: $"{Scribe.ShortMessages.Failure}: not implemented exception");
+            }
+            else
+            {
+                var roll = Dice.Roll_min_to_max(1, 12);
+                for (int i = 0; i < roll; i++)
+                {
+                    item = GenerateNormalTrinket(itemLevel);
+                    if (charId != null)
+                    {
+                        item.CharacterId = charId;
+                        DataService.CreateItem(item);
+                    }
+
+                    var itemVm = new ItemVm(item);
+                    trinkets.Add(itemVm);
+                }
+            }
+
+            return trinkets;
+        }
+
         #endregion
 
         #region Public getters
+        public ItemsUtils.Types GetItemType(string itemType)
+        {
+            switch (itemType)
+            {
+                case Scribe.ItemTypes_Apparatus:
+                    return ItemsUtils.Types.Apparatus;
+                case Scribe.ItemTypes_Armour:
+                    return ItemsUtils.Types.Armour;
+                case Scribe.ItemTypes_Axe:
+                    return ItemsUtils.Types.Axe;
+                case Scribe.ItemTypes_Bow:
+                    return ItemsUtils.Types.Bow;
+                case Scribe.ItemTypes_Club:
+                    return ItemsUtils.Types.Club;
+                case Scribe.ItemTypes_Crossbow:
+                    return ItemsUtils.Types.Crossbow;
+                case Scribe.ItemTypes_Mace:
+                    return ItemsUtils.Types.Mace;
+                case Scribe.ItemTypes_Polearm:
+                    return ItemsUtils.Types.Polearm;
+                case Scribe.ItemTypes_Shield:
+                    return ItemsUtils.Types.Shield;
+                case Scribe.ItemTypes_Spear:
+                    return ItemsUtils.Types.Spear;
+                case Scribe.ItemTypes_Sword:
+                    return ItemsUtils.Types.Sword;
+                case Scribe.ItemTypes_Valuables:
+                    return ItemsUtils.Types.Valuables;
+                case Scribe.ItemTypes_Warhammer:
+                    return ItemsUtils.Types.Warhammer;
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+
+        public List<ItemsUtils.Slots> GetItemSlotsByType(ItemsUtils.Types type)
+        {
+            return GenerateItemSlotsByType(type);
+        }
+
         public string GetItemsByCharacter(RequestVm request)
         {
-            var reqCharVm = ValidateRequestDeserializationIntoCharacterVm(request.Message);
+            var reqCharVm = ValidateRequestDeserializationInto_CharacterVm(request.Message);
             var chr = ValidateCharacterByPlayerId(reqCharVm.CharacterId, reqCharVm.PlayerId);
 
             return chr.Supplies;
+        }
+
+        public Item GetItemById(Guid itemId)
+        {
+            return DataService.GetItemById(itemId);
         }
 
         public int GetItemsCount()

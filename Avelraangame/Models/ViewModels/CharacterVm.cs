@@ -27,7 +27,7 @@ namespace Avelraangame.Models.ViewModels
         public bool? InFight { get; set; }
         public Guid? FightId { get; set; }
 
-        public Equippment Equippment { get; set; }
+        public Equipment Equippment { get; set; }
         public List<HeroicTraits> HeroicTraits { get; set; }
         public List<NegativePerks> NegativePerks { get; set; }
 
@@ -38,7 +38,7 @@ namespace Avelraangame.Models.ViewModels
 
         public CharacterVm()
         {
-            Equippment = new Equippment();
+            Equippment = new Equipment();
             HeroicTraits = new List<HeroicTraits>();
             NegativePerks = new List<NegativePerks>();
             Logbook = new Logbook();
@@ -54,9 +54,9 @@ namespace Avelraangame.Models.ViewModels
 
             IsAlive = chr.IsAlive;
             HasLevelup = chr.HasLevelup;
-            InParty = chr.InParty;
+            InParty = chr.IsInParty;
             PartyId = chr.PartyId;
-            InFight = chr.InFight;
+            InFight = chr.IsInFight;
             FightId = chr.FightId;
             AttackToken = true;
 
@@ -83,7 +83,7 @@ namespace Avelraangame.Models.ViewModels
             
             if (!string.IsNullOrWhiteSpace(chr.Equippment))
             {
-                Equippment = JsonConvert.DeserializeObject<Equippment>(chr.Equippment);
+                Equippment = JsonConvert.DeserializeObject<Equipment>(chr.Equippment);
             }
 
             if (!string.IsNullOrWhiteSpace(chr.HeroicTraits))

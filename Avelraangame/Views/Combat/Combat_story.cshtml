@@ -1,0 +1,47 @@
+﻿@{
+    ViewData["Title"] = "Story";
+}
+
+<br />
+<p style="color:navajowhite">Story</p>
+<div class="btn-group">
+    <a class="btn btn-outline-dark btn-sm" asp-controller="Combat" asp-action="Combat_party">Party</a>
+    <a class="btn btn-dark btn-sm" asp-controller="Combat" asp-action="Combat_story">Story</a>
+    <a class="btn btn-outline-dark disabled btn-sm">Dungeon</a>
+    <a class="btn btn-outline-dark disabled btn-sm">Arena</a>
+</div>
+<button id="stopAudio" class="btn btn-dark btn-sm" style="float:right">stop sound</button>
+
+<div id="modelJumbo" class="text-left jumbotron" style="opacity:0.7; background-color:black; color:navajowhite">
+    <div>
+        Select character
+        <div id="charactersDiv"></div>
+    </div>
+    <hr />
+    <button id="beginBtn" class="btn btn-block btn-sm btn-outline-success" style="display:none">Begin</button>
+    <hr />
+    <div>
+        Select act
+        <div id="episodesDiv"></div>
+    </div>
+    <hr />
+    <div>
+        Brief history of Av'el'Raan:
+        <div id="briefHistoryDiv"></div>
+        <p>
+            T0: Triarii monoliths arrive on Nefriatos' orbit. Unable to communicate with them, the Illithos (the population of Nefriatos) perceive them as a threat.
+            Several months later a masive orbital bombardment begins, any major civilized infrastructure destroyed. The Illithos send a plea for help to the far reaches of space, using the Pyramid of Kardah.
+            The Ilithos civilization is wiped out, their cities and cultural stamp lie in ruins. The seeding of Nefriatos begins, the Triarii nurture the first proto-human societies to emerge, and leave the system.
+        </p>
+        <p>
+            T1: The human civilization thrives extending over the lush biosphere of Nefriatos. Cults and beliefs appear based on the ruins of the Stone Seats.
+            The first contact between humans and dwarves happens peacefully, as the dwarves emerge from the 6th core of the planet to the surface.
+        </p>
+    </div>
+</div>
+
+<div id="modalDiv"></div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="~/js/combat/combat_story.js"></script>

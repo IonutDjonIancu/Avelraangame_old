@@ -1,0 +1,61 @@
+﻿@{
+    ViewData["Title"] = "Combat";
+}
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"> 
+
+<br />
+<p style="color:navajowhite">Fight</p>
+
+<div id="modelJumbo" class="text-left jumbotron" style="opacity:0.7; background-color:black; color:navajowhite">
+
+    <div class="container">
+        <div class="row">
+            <div id="attackerDiv" class="col-5">
+
+            </div>
+            <div class="col-2" style="height:180px">
+                <div class="container">
+                    <div class="row" style="text-align:center">
+                        <div class="col-md-12">
+                            <button id="attackBtn" class="btn btn-outline-warning" style="width:80px">Attack</button>
+                        </div>
+                    </div>
+                    <div class="row" style="text-align:center">
+                        <div class="col-md-12">
+                            <button id="passBtn" class="btn btn-outline-warning" style="width:80px">Pass</button>
+                        </div>
+                    </div>
+                    <div class="row" style="text-align:center">
+                        <div class="col-md-12">
+                            <button id="turnBtn" class="btn btn-outline-warning" style="width:80px">Turn</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="targetDiv" class="col-5">
+            
+            </div>
+        </div>
+    </div>
+
+    <hr />
+    <button id="lastActionResultBtn" title="Last action result info-bar" class="btn btn-block btn-outline-light disabled">Last action result</button>
+    <hr />
+
+    <div class="container">
+        <div class="row">
+            <div id="goodGuysDiv" class="col">
+
+            </div>
+            <div id="badGuysDiv" class="col">
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="~/js/combat/fight.js"></script>
+

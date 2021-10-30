@@ -3,11 +3,8 @@ using Avelraangame.Services;
 using Avelraangame.Services.ServiceUtils;
 using Avelraangame.Services.Base;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using Newtonsoft.Json;
 using System;
-using Avelraangame.Services.SubService;
-using Avelraangame.Models.POCOs;
 
 namespace Avelraangame.Controllers
 {
@@ -86,14 +83,35 @@ namespace Avelraangame.Controllers
 
             return JsonConvert.SerializeObject(responseVm);
         }
+
+        // POST: api/palantir/Logon
+        [HttpPost("Logon")]
+        public string Logon([FromBody] RequestVm request)
+        {
+            var responseVm = new ResponseVm();
+            var playersService = new PlayersService();
+
+            try
+            {
+                PalantirBase.ValidateRequest(request);
+                responseVm.Data = playersService.Logon(request);
+            }
+            catch (Exception ex)
+            {
+                responseVm.Error = ex.Message;
+                return JsonConvert.SerializeObject(responseVm);
+            }
+
+            return JsonConvert.SerializeObject(responseVm);
+        }
         #endregion
         #endregion
 
         #region Characters
         #region GET
-        // GET: /api/palantir/GetCharactersByPlayer
-        [HttpGet("GetCharactersByPlayer")]
-        public string GetCharactersByPlayer([FromQuery] RequestVm request)
+        // GET: /api/palantir/GetCharactersByPlayerId
+        [HttpGet("GetCharactersByPlayerId")]
+        public string GetCharactersByPlayerId([FromQuery] RequestVm request)
         {
             var responseVm = new ResponseVm();
             var characterService = new CharactersService();
@@ -102,6 +120,27 @@ namespace Avelraangame.Controllers
             {
                 PalantirBase.ValidateRequest(request);
                 responseVm.Data = characterService.GetCharactersByPlayer(request);
+            }
+            catch (Exception ex)
+            {
+                responseVm.Error = ex.Message;
+                return JsonConvert.SerializeObject(responseVm);
+            }
+
+            return JsonConvert.SerializeObject(responseVm);
+        }
+
+        // GET: /api/palantir/GetAliveCharactersByPlayerId
+        [HttpGet("GetAliveCharactersByPlayerId")]
+        public string GetAliveCharactersByPlayerId([FromQuery] RequestVm request)
+        {
+            var responseVm = new ResponseVm();
+            var characterService = new CharactersService();
+
+            try
+            {
+                PalantirBase.ValidateRequest(request);
+                responseVm.Data = characterService.GetAliveCharactersByPlayer(request);
             }
             catch (Exception ex)
             {
@@ -420,9 +459,9 @@ namespace Avelraangame.Controllers
             return JsonConvert.SerializeObject(responseVm);
         }
 
-        // GET: /api/palantir/Defend
-        [HttpGet("Defend")]
-        public string Defend([FromQuery] RequestVm request)
+        // GET: /api/palantir/Pass
+        [HttpGet("Pass")]
+        public string Pass([FromQuery] RequestVm request)
         {
             var responseVm = new ResponseVm();
             var combatService = new CombatService();
@@ -430,7 +469,7 @@ namespace Avelraangame.Controllers
             try
             {
                 PalantirBase.ValidateRequest(request);
-                responseVm.Data = combatService.Defend(request);
+                responseVm.Data = combatService.Pass(request);
             }
             catch (Exception ex)
             {
@@ -441,9 +480,9 @@ namespace Avelraangame.Controllers
             return JsonConvert.SerializeObject(responseVm);
         }
 
-        // GET: /api/palantir/EndCombat
-        [HttpGet("EndCombat")]
-        public string EndCombat([FromQuery] RequestVm request)
+        // GET: /api/palantir/Turn
+        [HttpGet("Turn")]
+        public string Turn([FromQuery] RequestVm request)
         {
             var responseVm = new ResponseVm();
             var combatService = new CombatService();
@@ -451,7 +490,7 @@ namespace Avelraangame.Controllers
             try
             {
                 PalantirBase.ValidateRequest(request);
-                responseVm.Data = combatService.EndCombat(request);
+                responseVm.Data = combatService.Turn(request);
             }
             catch (Exception ex)
             {
@@ -462,17 +501,38 @@ namespace Avelraangame.Controllers
             return JsonConvert.SerializeObject(responseVm);
         }
 
-        // GET: /api/palantir/GetFight
-        [HttpGet("GetFight")]
-        public string GetFight([FromQuery] RequestVm request)
+        //// GET: /api/palantir/EndCombat
+        //[HttpGet("EndCombat")]
+        //public string EndCombat([FromQuery] RequestVm request)
+        //{
+        //    var responseVm = new ResponseVm();
+        //    var combatService = new CombatService();
+
+        //    try
+        //    {
+        //        PalantirBase.ValidateRequest(request);
+        //        responseVm.Data = combatService.EndCombat(request);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        responseVm.Error = ex.Message;
+        //        return JsonConvert.SerializeObject(responseVm);
+        //    }
+
+        //    return JsonConvert.SerializeObject(responseVm);
+        //}
+
+        // GET: /api/palantir/GetFightById
+        [HttpGet("GetFightById")]
+        public string GetFightById([FromQuery] RequestVm request)
         {
             var responseVm = new ResponseVm();
-            var combatService = new CombatService();
+            var fightService = new FightService();
 
             try
             {
                 PalantirBase.ValidateRequest(request);
-                responseVm.Data = combatService.GetFight(request);
+                responseVm.Data = fightService.GetFightById(request);
             }
             catch (Exception ex)
             {
@@ -483,16 +543,16 @@ namespace Avelraangame.Controllers
             return JsonConvert.SerializeObject(responseVm);
         }
 
-        // GET: /api/palantir/GenerateWeakNpcFight
-        [HttpGet("GenerateWeakNpcFight")]
-        public string GenerateWeakNpcFight([FromQuery] RequestVm request)
+        // GET: /api/palantir/StartCombatFromStory
+        [HttpGet("StartCombatFromStory")]
+        public string StartCombatFromStory([FromQuery] RequestVm request)
         {
             var responseVm = new ResponseVm();
             var combatService = new CombatService();
 
             try
             {
-                responseVm.Data = combatService.GenerateWeakNpcFight(request);
+                responseVm.Data = combatService.StartCombatFromStory(request);
             }
             catch (Exception ex)
             {
@@ -502,13 +562,12 @@ namespace Avelraangame.Controllers
 
             return JsonConvert.SerializeObject(responseVm);
         }
-
 
         #endregion
         #region POST
-        // GET: /api/palantir/GoToParty
-        [HttpPost("GoToParty")]
-        public string GoToParty([FromBody] RequestVm request)
+        // GET: /api/palantir/JoinParty
+        [HttpPost("JoinParty")]
+        public string JoinParty([FromBody] RequestVm request)
         {
             var responseVm = new ResponseVm();
             var combatService = new CombatService();
@@ -516,7 +575,7 @@ namespace Avelraangame.Controllers
             try
             {
                 PalantirBase.ValidateRequest(request);
-                responseVm.Data = combatService.GoToParty(request);
+                responseVm.Data = combatService.JoinParty(request);
             }
             catch (Exception ex)
             {
@@ -526,8 +585,6 @@ namespace Avelraangame.Controllers
 
             return JsonConvert.SerializeObject(responseVm);
         }
-
-
         #endregion
         #endregion
 
@@ -631,7 +688,6 @@ namespace Avelraangame.Controllers
         }
         #endregion
         #endregion
-
 
         #region GameSettings
         #region GET
