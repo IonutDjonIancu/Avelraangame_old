@@ -355,36 +355,36 @@ namespace Avelraangame.Services.Base
         #endregion
 
         #region CombatValidation
-        public void ValidateAttackDetails(Attack attack)
+        public void ValidateAttackDetails(AttackVm attack)
         {
             if (attack == null)
             {
                 throw new Exception(message: string.Concat(Scribe.ShortMessages.Failure, ": attack is missing or invalid."));
             }
 
-            if (attack.FightId == Guid.Empty || attack.FightId == null)
+            if (attack.FightId.Equals(Guid.Empty) || attack.FightId == null)
             {
                 throw new Exception(message: string.Concat(Scribe.ShortMessages.Failure, ": fightId is missing or invalid."));
             }
 
-            if (attack.Attacker == Guid.Empty || attack.Attacker == null)
+            if (attack.AttackerId.Equals(Guid.Empty) || attack.AttackerId == null)
             {
                 throw new Exception(message: string.Concat(Scribe.ShortMessages.Failure, ": attacker is missing or invalid."));
             }
 
-            if (attack.Defender == Guid.Empty || attack.Defender == null)
+            if (attack.TargetId.Equals(Guid.Empty) || attack.TargetId == null)
             {
-                throw new Exception(message: string.Concat(Scribe.ShortMessages.Failure, ": defender is missing or invalid."));
+                throw new Exception(message: string.Concat(Scribe.ShortMessages.Failure, ": target is missing or invalid."));
             }
         }
 
-        public Defend ValidateRequestDeserializationIntoDefend(string request)
+        public DefendVm ValidateRequestDeserializationInto_DefendVm(string request)
         {
-            Defend defend;
+            DefendVm defend;
 
             try
             {
-                defend = JsonConvert.DeserializeObject<Defend>(request);
+                defend = JsonConvert.DeserializeObject<DefendVm>(request);
             }
             catch (Exception ex)
             {
@@ -410,13 +410,13 @@ namespace Avelraangame.Services.Base
             return combatEnd;
         }
 
-        protected Attack ValidateRequestDeserializationIntoAttack(string request)
+        protected AttackVm ValidateRequestDeserializationInto_AttackVm(string request)
         {
-            Attack attack;
+            AttackVm attack;
 
             try
             {
-                attack = JsonConvert.DeserializeObject<Attack>(request);
+                attack = JsonConvert.DeserializeObject<AttackVm>(request);
             }
             catch (Exception ex)
             {

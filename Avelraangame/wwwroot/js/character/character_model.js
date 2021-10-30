@@ -175,18 +175,43 @@ function showInventory(equipment) {
 }
 
 function showSupplies(supplies) {
+    console.log(supplies);
     $(suppliesDiv).empty();
     $(suppliesNr).empty();
     $(suppliesNr).append(`${supplies.length} items`);
 
-    for (var i = 0; i < supplies.length; i++) {
+    var html;
 
-        var html = `
-            <img class="details" id="details_${supplies[i].Id}" title="${supplies[i].Name}" style="border-radius:30px; opacity:0.5" src="../media/images/items/${supplies[i].Type}.png" />
-            <div class="btn-group-vertical">
-                <button id="equip_${supplies[i].Id}" class="btn btn-sm btn-outline-dark equip">&#x2191;</button>
-            </div>
-        `;
+    for (var i = 0; i < supplies.length; i++) {
+        if (supplies[i].Level == 1) {
+            html = `
+                <a class="btn btn-outline-dark">
+                    <img class="details" id="details_${supplies[i].Id}" title="${supplies[i].Name}" style="border-radius:30px; opacity:0.5" src="../media/images/items/${supplies[i].Type}.png" />
+                    <button id="equip_${supplies[i].Id}" class="btn btn-sm btn-outline-dark equip">&#x2191;</button>
+                </a>
+            `;
+        } else if (supplies[i].Level == 2) {
+            html = `
+                <a class="btn btn-outline-warning">
+                    <img class="details" id="details_${supplies[i].Id}" title="${supplies[i].Name}" style="border-radius:30px; opacity:0.5" src="../media/images/items/${supplies[i].Type}.png" />
+                    <button id="equip_${supplies[i].Id}" class="btn btn-sm btn-outline-warning equip">&#x2191;</button>
+                </a>
+            `;
+        } else if (supplies[i].Level == 3) {
+            html = `
+                <a class="btn btn-outline-success">
+                    <img class="details" id="details_${supplies[i].Id}" title="${supplies[i].Name}" style="border-radius:30px; opacity:0.5" src="../media/images/items/${supplies[i].Type}.png" />
+                    <button id="equip_${supplies[i].Id}" class="btn btn-sm btn-outline-success equip">&#x2191;</button>
+                </a>
+            `;
+        } else {
+            html = `
+                <a class="btn btn-outline-danger">
+                    <img class="details" id="details_${supplies[i].Id}" title="${supplies[i].Name}" style="border-radius:30px; opacity:0.5" src="../media/images/items/${supplies[i].Type}.png" />
+                    <button id="equip_${supplies[i].Id}" class="btn btn-sm btn-outline-danger equip">&#x2191;</button>
+                </a>
+            `;
+        } 
 
         $(suppliesDiv).append(html);
     }

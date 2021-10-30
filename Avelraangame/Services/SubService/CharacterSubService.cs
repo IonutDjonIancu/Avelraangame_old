@@ -164,6 +164,19 @@ namespace Avelraangame.Services.SubService
                 Mana = 0
             };
 
+            var race = (CharactersUtils.Races)1;
+            var culture = (CharactersUtils.Cultures)1;
+            var logbook = new Logbook
+            {
+                Wealth = 0,
+                EntityLevel = GetEntityLevelByRoll(roll),
+                StatsRoll = roll,
+                ItemsRoll = Dice.Roll_min_to_max(2, 12),
+                PortraitNr = Dice.Roll_min_to_max(1, 7),
+                Race = race.ToString(),
+                Culture = culture.ToString(),
+            };
+            
             var skills = new Skills
             {
                 Apothecary = 10,
@@ -183,25 +196,15 @@ namespace Avelraangame.Services.SubService
                 Traps = 10,
                 Unarmed = 10
             };
-
-            var logbook = new Logbook
-            {
-                Wealth = 0,
-                EntityLevel = GetEntityLevelByRoll(roll),
-                StatsRoll = roll,
-                ItemsRoll = Dice.Roll_min_to_max(2, 12),
-                PortraitNr = Dice.Roll_min_to_max(1, 7),
-                Race = ((CharactersUtils.Races)1).ToString(),
-                Culture = ((CharactersUtils.Cultures)1).ToString(),
-            };
+            skills = ApplyCultureTraits(culture, skills);
 
             var supplies = new List<ItemVm>();
-
             for (int i = 0; i < logbook.ItemsRoll; i++)
             {
                 var item = items.GenerateRandomItem(chrId.ToString());
                 supplies.Add(item);
             }
+            supplies = HeroesBoon(supplies, chrId); // To be removed after the perks system is created
 
             var chr = new Character
             {
@@ -255,8 +258,71 @@ namespace Avelraangame.Services.SubService
             charVm = FormulaSkills(charVm);
 
             return charVm;
-
         }
+
+        private Skills ApplyCultureTraits(CharactersUtils.Cultures culture, Skills skills)
+        {
+            switch (culture)
+            {
+                case CharactersUtils.Cultures.Danarian:
+                    skills.Melee += 120;
+                    skills.Ranged += 60;
+                    skills.Navigation -= 200;
+                    break;
+                case CharactersUtils.Cultures.Ravanon:
+                    skills.Melee += 120;
+                    skills.Ranged += 60;
+                    skills.Navigation -= 200;
+                    break;
+                case CharactersUtils.Cultures.Midheim:
+                    skills.Melee += 120;
+                    skills.Ranged += 60;
+                    skills.Navigation -= 200;
+                    break;
+                case CharactersUtils.Cultures.Endarian:
+                    skills.Melee += 120;
+                    skills.Ranged += 60;
+                    skills.Navigation -= 200;
+                    break;
+                default:
+                    throw new NotImplementedException();
+            }
+
+            return skills;
+        }
+
+        private List<ItemVm> HeroesBoon(List<ItemVm> supplies, Guid charId)
+        {
+            var items = new ItemsService();
+            var ring = items.GenerateRandomItem(charId.ToString());
+            var item = items.GetItemById(ring.Id);
+
+            var heroBoonRing = new ItemVm(item);
+            heroBoonRing.Bonuses.ToHealth += 2000;
+            heroBoonRing.Level = 3;
+            heroBoonRing.IsConsumable = false;
+            heroBoonRing.Name = "Hero's Boon ring";
+            heroBoonRing.Slots = items.GetItemSlotsByType(ItemsUtils.Types.Apparatus);
+            heroBoonRing.Type = ItemsUtils.Types.Apparatus.ToString();
+            supplies.Add(heroBoonRing);
+
+            item.Id = heroBoonRing.Id;
+            item.CharacterId = heroBoonRing.CharacterId;
+            item.Bonuses = JsonConvert.SerializeObject(heroBoonRing.Bonuses);
+            item.InSlot = heroBoonRing.InSlot;
+            item.IsConsumable = heroBoonRing.IsConsumable;
+            item.IsEquipped = false;
+            item.Level = 3;
+            item.Name = heroBoonRing.Name;
+            item.Slots = heroBoonRing.Slots.ToString();
+            item.Type = ItemsUtils.Types.Apparatus;
+            item.Worth = heroBoonRing.Worth;
+            DataService.UpdateItem(item);
+
+            return supplies;
+        }
+
+        #region Formulas
         #region Assets formulae
         private int FormulaMana(CharacterVm charVm)
         {
@@ -684,7 +750,7 @@ namespace Avelraangame.Services.SubService
 
 
         #endregion
-
+        #endregion
 
     }
 

@@ -438,47 +438,68 @@ namespace Avelraangame.Controllers
 
         #region Combat
         #region GET
-        //// GET: /api/palantir/Attack
-        //[HttpGet("Attack")]
-        //public string Attack([FromQuery] RequestVm request)
-        //{
-        //    var responseVm = new ResponseVm();
-        //    var combatService = new CombatService();
+        // GET: /api/palantir/Attack
+        [HttpGet("Attack")]
+        public string Attack([FromQuery] RequestVm request)
+        {
+            var responseVm = new ResponseVm();
+            var combatService = new CombatService();
 
-        //    try
-        //    {
-        //        PalantirBase.ValidateRequest(request);
-        //        responseVm.Data = combatService.Attack(request);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        responseVm.Error = ex.Message;
-        //        return JsonConvert.SerializeObject(responseVm);
-        //    }
+            try
+            {
+                PalantirBase.ValidateRequest(request);
+                responseVm.Data = combatService.Attack(request);
+            }
+            catch (Exception ex)
+            {
+                responseVm.Error = ex.Message;
+                return JsonConvert.SerializeObject(responseVm);
+            }
 
-        //    return JsonConvert.SerializeObject(responseVm);
-        //}
+            return JsonConvert.SerializeObject(responseVm);
+        }
 
-        //// GET: /api/palantir/Defend
-        //[HttpGet("Defend")]
-        //public string Defend([FromQuery] RequestVm request)
-        //{
-        //    var responseVm = new ResponseVm();
-        //    var combatService = new CombatService();
+        // GET: /api/palantir/Pass
+        [HttpGet("Pass")]
+        public string Pass([FromQuery] RequestVm request)
+        {
+            var responseVm = new ResponseVm();
+            var combatService = new CombatService();
 
-        //    try
-        //    {
-        //        PalantirBase.ValidateRequest(request);
-        //        responseVm.Data = combatService.Defend(request);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        responseVm.Error = ex.Message;
-        //        return JsonConvert.SerializeObject(responseVm);
-        //    }
+            try
+            {
+                PalantirBase.ValidateRequest(request);
+                responseVm.Data = combatService.Pass(request);
+            }
+            catch (Exception ex)
+            {
+                responseVm.Error = ex.Message;
+                return JsonConvert.SerializeObject(responseVm);
+            }
 
-        //    return JsonConvert.SerializeObject(responseVm);
-        //}
+            return JsonConvert.SerializeObject(responseVm);
+        }
+
+        // GET: /api/palantir/Turn
+        [HttpGet("Turn")]
+        public string Turn([FromQuery] RequestVm request)
+        {
+            var responseVm = new ResponseVm();
+            var combatService = new CombatService();
+
+            try
+            {
+                PalantirBase.ValidateRequest(request);
+                responseVm.Data = combatService.Turn(request);
+            }
+            catch (Exception ex)
+            {
+                responseVm.Error = ex.Message;
+                return JsonConvert.SerializeObject(responseVm);
+            }
+
+            return JsonConvert.SerializeObject(responseVm);
+        }
 
         //// GET: /api/palantir/EndCombat
         //[HttpGet("EndCombat")]

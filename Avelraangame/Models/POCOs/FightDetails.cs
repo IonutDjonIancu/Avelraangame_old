@@ -7,7 +7,7 @@ namespace Avelraangame.Models.POCOs
 {
     public class FightDetails
     {
-        public CombatUtils.TacticalSituation TacticalSituation { get; set; }
+        public string TacticalSituation { get; set; }
         public string Difficulty { get; set; }
         public string LastActionResult { get; set; }
         public DateTime StartDate { get; set; }

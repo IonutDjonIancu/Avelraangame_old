@@ -63,7 +63,7 @@ namespace Avelraangame.Services
             var charvm = ValidateRequestDeserializationInto_CharacterVm(request.Message);
             var chr = ValidateCharacterByPlayerId(charvm.CharacterId, charvm.PlayerId);
 
-            var fight = GetFightById(chr.FightId.GetValueOrDefault());
+            var fight = base.GetFightById(chr.FightId.GetValueOrDefault());
 
             if (fight == null)
             {
@@ -73,6 +73,17 @@ namespace Avelraangame.Services
             var fightvm = new FightVm(fight);
 
             return JsonConvert.SerializeObject(fightvm);
+        }
+
+        public new FightVm GetFightById(Guid fightId)
+        {
+            var fight = base.GetFightById(fightId);
+            if (fight == null)
+            {
+                throw new Exception(string.Join(": ", Scribe.ShortMessages.BadRequest, "no fight found for supplied character id."));
+            }
+
+            return new FightVm(fight);
         }
         #endregion
 

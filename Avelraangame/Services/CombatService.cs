@@ -1,13 +1,10 @@
 ﻿using Avelraangame.Models;
-using Avelraangame.Models.POCOs;
 using Avelraangame.Models.ViewModels;
 using Avelraangame.Services.ServiceUtils;
 using Avelraangame.Services.SubService;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using static Avelraangame.Services.ServiceUtils.CombatUtils;
 
 namespace Avelraangame.Services
@@ -15,119 +12,124 @@ namespace Avelraangame.Services
     public class CombatService : CombatSubService
     {
         #region Business logic
-        //public string Attack(RequestVm request)
-        //{
-        //    var attack = ValidateRequestDeserializationIntoAttack(request.Message);
-        //    ValidateAttackDetails(attack);
-            
-        //    var store = new StorageService();
-        //    var storeValue = store.GetStorageValueById(attack.FightId);
-        //    var fight = JsonConvert.DeserializeObject<FightVmOld>(storeValue);
-
-        //    var attacker = fight.GoodGuys.Where(s => s.CharacterId.Equals(attack.Attacker)).FirstOrDefault();
-        //    if (attacker.AttackToken.Equals(false))
-        //    {
-        //        throw new Exception(message: string.Concat(Scribe.ShortMessages.Failure, ": attacker has no token."));
-        //    }
-        //    if (attacker.IsAlive.Equals(false))
-        //    {
-        //        throw new Exception(message: string.Concat(Scribe.ShortMessages.Failure, ": attacker is dead."));
-        //    }
-
-        //    var defender = fight.BadGuys.Where(s => s.CharacterId.Equals(attack.Defender)).FirstOrDefault();
-        //    if (defender.IsAlive.Equals(false))
-        //    {
-        //        throw new Exception(message: string.Concat(Scribe.ShortMessages.Failure, ": defender is dead already."));
-        //    }
-
-        //    var (att, def, dmg) = RollAttack(attacker, defender);
-
-        //    attacker = att;
-        //    defender = def;
-
-        //    if (dmg > 0)
-        //    {
-        //        fight.LastActionResult = string.Concat(Scribe.ShortMessages.Success, $": {dmg} dmg done.");
-        //    }
-        //    else
-        //    {
-        //        fight.LastActionResult = string.Concat(Scribe.ShortMessages.Failure, $": miss");
-        //    }
-
-        //    fight.LastActionResult = EndFight(fight);
-
-        //    var storeVal = JsonConvert.SerializeObject(fight);
-        //    var snapshot = new Storage
-        //    {
-        //        Id = attack.FightId,
-        //        Value = storeVal
-        //    };
-
-        //    DataService.UpdateStorage(snapshot);
-
-        //    return JsonConvert.SerializeObject(fight);
-        //}
-
-        //public string Defend(RequestVm request)
-        //{
-        //    var defend = ValidateRequestDeserializationIntoDefend(request.Message);
-
-        //    var characterService = new CharactersService();
-        //    characterService.ValidateCharacter(defend.MainCharacterId, defend.PlayerId);
-
-        //    var store = new StorageService();
-        //    var storeValue = store.GetStorageValueById(defend.FightId);
-        //    var fight = JsonConvert.DeserializeObject<FightVm>(storeValue);
-
-        //    var isMainCharInFight = fight.GoodGuys.Where(s => s.CharacterId.Equals(defend.MainCharacterId)).Any();
-        //    if (!isMainCharInFight)
-        //    {
-        //        throw new Exception(message: string.Concat(Scribe.ShortMessages.Failure, ": character incompatible with fight."));
-        //    }
-
-        //    var allEnemiesAreDead = !fight.BadGuys.Where(s => s.IsAlive).Any();
-        //    if (allEnemiesAreDead)
-        //    {
-        //        throw new Exception(message: string.Concat(Scribe.ShortMessages.Failure, ": all enemies are defeated."));
-        //    }
-
-        //    fight = RollNpcAttack(fight);
-        //    fight = ReimburseTokens(fight);
-
-        //    if (fight.TacticalSituation.Equals(TacticalSituation.Major_tactical_disadvantage) ||
-        //        fight.TacticalSituation.Equals(TacticalSituation.Slight_tactical_disadvantage))
-        //    {
-        //        fight = RollNpcAttack(fight);
-        //    }
-
-        //    fight.LastActionResult = EndFight(fight);
-
-        //    var storeVal = JsonConvert.SerializeObject(fight);
-        //    var snapshot = new Storage
-        //    {
-        //        Id = fight.FightId,
-        //        Value = storeVal
-        //    };
-        //    DataService.UpdateStorage(snapshot);
-
-        //    return JsonConvert.SerializeObject(fight);
-        //}
-
-        public string EndCombat(RequestVm request)
+        public string Attack(RequestVm request)
         {
-            var combatEnd = ValidateRequestDeserializationIntoEndOfCombat(request.Message);
-            var stored = DataService.GetStorage(combatEnd.FightId);
-            var fight = JsonConvert.DeserializeObject<FightVmOld>(stored.Value);
+            // determine fight
+            var attackvm = ValidateRequestDeserializationInto_AttackVm(request.Message);
+            ValidateAttackDetails(attackvm);
+            var fightvm = ValidateFightDetails(attackvm);
 
-
-            if (fight.BadGuys.Where(s => s.IsAlive).Any() && fight.GoodGuys.Where(s => s.IsAlive).Any())
+            // determine attacker
+            var attacker = fightvm.GoodGuys.Where(s => s.CharacterId.Equals(attackvm.AttackerId)).FirstOrDefault();
+            if (!attacker.AttackToken)
             {
-                throw new Exception(string.Concat(Scribe.ShortMessages.Failure, ": there are still enemies about."));
+                throw new Exception(message: string.Join(": ", Scribe.ShortMessages.Failure, "attacker has no token."));
+            }
+            if (!attacker.IsAlive)
+            {
+                throw new Exception(message: string.Join(": ", Scribe.ShortMessages.Failure, "attacker is dead."));
             }
 
-            DataService.DeleteStorage(stored);
+            // determine target
+            var target = fightvm.BadGuys.Where(s => s.CharacterId.Equals(attackvm.TargetId)).FirstOrDefault();
+            if (!target.IsAlive)
+            {
+                throw new Exception(message: string.Join(": ", Scribe.ShortMessages.Failure, "your target is dead already."));
+            }
 
-            return string.Concat(Scribe.ShortMessages.Success, ": combat ended.");
+            int dmgDone = 0;
+            (attacker, target, dmgDone) = RollAttack(attacker, target);
+
+            if (dmgDone > 0)
+            {
+                fightvm.FightDetails.LastActionResult = string.Join(": ", Scribe.ShortMessages.Success, $"{dmgDone} dmg done.");
+            }
+            else
+            {
+                fightvm.FightDetails.LastActionResult = string.Join(": ", Scribe.ShortMessages.Failure, $"miss");
+            }
+
+            fightvm = EndFight(fightvm);
+
+            var fight = DataService.GetFightById(fightvm.FightId);
+            fight.GoodGuys = JsonConvert.SerializeObject(fightvm.GoodGuys);
+            fight.BadGuys = JsonConvert.SerializeObject(fightvm.BadGuys);
+            fight.FightDetails = JsonConvert.SerializeObject(fightvm.FightDetails);
+
+            DataService.UpdateFight(fight);
+
+            return JsonConvert.SerializeObject(fightvm);
+        }
+
+        public string Pass(RequestVm request)
+        {
+            var defendvm = ValidateRequestDeserializationInto_DefendVm(request.Message);
+            var fight = DataService.GetFightById(defendvm.FightId);
+            if (fight == null)
+            {
+                throw new Exception(message: string.Join(": ", Scribe.ShortMessages.BadRequest, "fight id is missing or invalid."));
+            }
+
+            var fightvm = new FightVm(fight);
+            if (!fightvm.GoodGuys.Where(s => s.PlayerId.Equals(defendvm.PlayerId)).Any())
+            {
+                throw new Exception(message: string.Join(": ", Scribe.ShortMessages.Failure, "player id has no right of decision on said fight."));
+            }
+
+            var charservice = new CharactersService();
+
+            if (fightvm.GoodGuys.Where(s => s.IsAlive && s.AttackToken).Count() <= 0)
+            {
+                throw new Exception(message: string.Join(": ", Scribe.ShortMessages.Failure, "no characters with token found to rest."));
+            }
+
+            foreach (var charvm in fightvm.GoodGuys.Where(s => s.IsAlive && s.AttackToken))
+            {
+                var originalChr = charservice.GetCalculatedCharacterById(charvm.CharacterId);
+                charvm.Assets.Health += (originalChr.Assets.Health - charvm.Assets.Health) / 2;
+                charvm.AttackToken = false;
+            }
+
+            fight.GoodGuys = JsonConvert.SerializeObject(fightvm.GoodGuys);
+            fight.BadGuys = JsonConvert.SerializeObject(fightvm.BadGuys);
+            fight.FightDetails = JsonConvert.SerializeObject(fightvm.FightDetails);
+
+            DataService.UpdateFight(fight);
+
+            return JsonConvert.SerializeObject(fightvm);
+        }
+
+        public string Turn(RequestVm request)
+        {
+            var defendvm = ValidateRequestDeserializationInto_DefendVm(request.Message);
+            var fight = DataService.GetFightById(defendvm.FightId);
+            if (fight == null)
+            {
+                throw new Exception(message: string.Join(": ", Scribe.ShortMessages.BadRequest, "fight id is missing or invalid."));
+            }
+
+            var fightvm = new FightVm(fight);
+            if(!fightvm.GoodGuys.Where(s => s.PlayerId.Equals(defendvm.PlayerId)).Any())
+            {
+                throw new Exception(message: string.Join(": ", Scribe.ShortMessages.Failure, "player id has no right of decision on said fight."));
+            }
+
+            if (!fightvm.BadGuys.Where(s => s.IsAlive).Any())
+            {
+                throw new Exception(message: string.Join(": ", Scribe.ShortMessages.Failure, "all enemies defeated."));
+            }
+
+            fightvm = RollNpcAttack(fightvm);
+            fightvm = ReimburseTokens(fightvm);
+            fightvm = EndFight(fightvm);
+
+            fight.GoodGuys = JsonConvert.SerializeObject(fightvm.GoodGuys);
+            fight.BadGuys = JsonConvert.SerializeObject(fightvm.BadGuys);
+            fight.FightDetails = JsonConvert.SerializeObject(fightvm.FightDetails);
+
+            DataService.UpdateFight(fight);
+
+            return JsonConvert.SerializeObject(fightvm);
         }
 
         public string JoinParty(RequestVm request)
@@ -186,8 +188,8 @@ namespace Avelraangame.Services
             fightvm.FightDetails.Renown = renown;
 
             fightvm.FightDetails.TacticalSituation = DecideTacticalSituation(fightvm.GoodGuys, fightvm.BadGuys);
-            if (fightvm.FightDetails.TacticalSituation.Equals(TacticalSituation.Major_tactical_disadvantage) ||
-                fightvm.FightDetails.TacticalSituation.Equals(TacticalSituation.Slight_tactical_disadvantage))
+            if (fightvm.FightDetails.TacticalSituation.Equals(TacticalSituation.Major_tactical_disadvantage.ToString()) ||
+                fightvm.FightDetails.TacticalSituation.Equals(TacticalSituation.Slight_tactical_disadvantage.ToString()))
             {
                 fightvm = RollNpcAttack(fightvm);
             }

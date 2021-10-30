@@ -315,12 +315,57 @@ namespace Avelraangame.Services
         #endregion
 
         #region Public getters
+        public ItemsUtils.Types GetItemType(string itemType)
+        {
+            switch (itemType)
+            {
+                case Scribe.ItemTypes_Apparatus:
+                    return ItemsUtils.Types.Apparatus;
+                case Scribe.ItemTypes_Armour:
+                    return ItemsUtils.Types.Armour;
+                case Scribe.ItemTypes_Axe:
+                    return ItemsUtils.Types.Axe;
+                case Scribe.ItemTypes_Bow:
+                    return ItemsUtils.Types.Bow;
+                case Scribe.ItemTypes_Club:
+                    return ItemsUtils.Types.Club;
+                case Scribe.ItemTypes_Crossbow:
+                    return ItemsUtils.Types.Crossbow;
+                case Scribe.ItemTypes_Mace:
+                    return ItemsUtils.Types.Mace;
+                case Scribe.ItemTypes_Polearm:
+                    return ItemsUtils.Types.Polearm;
+                case Scribe.ItemTypes_Shield:
+                    return ItemsUtils.Types.Shield;
+                case Scribe.ItemTypes_Spear:
+                    return ItemsUtils.Types.Spear;
+                case Scribe.ItemTypes_Sword:
+                    return ItemsUtils.Types.Sword;
+                case Scribe.ItemTypes_Valuables:
+                    return ItemsUtils.Types.Valuables;
+                case Scribe.ItemTypes_Warhammer:
+                    return ItemsUtils.Types.Warhammer;
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+
+        public List<ItemsUtils.Slots> GetItemSlotsByType(ItemsUtils.Types type)
+        {
+            return GenerateItemSlotsByType(type);
+        }
+
         public string GetItemsByCharacter(RequestVm request)
         {
             var reqCharVm = ValidateRequestDeserializationInto_CharacterVm(request.Message);
             var chr = ValidateCharacterByPlayerId(reqCharVm.CharacterId, reqCharVm.PlayerId);
 
             return chr.Supplies;
+        }
+
+        public Item GetItemById(Guid itemId)
+        {
+            return DataService.GetItemById(itemId);
         }
 
         public int GetItemsCount()

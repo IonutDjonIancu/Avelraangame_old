@@ -192,7 +192,7 @@ namespace Avelraangame.Services.SubService
             return item;
         }
 
-        private List<ItemsUtils.Slots> GenerateItemSlotsByType(ItemsUtils.Types type)
+        protected List<ItemsUtils.Slots> GenerateItemSlotsByType(ItemsUtils.Types type)
         {
             if (type.Equals(ItemsUtils.itemTypes.Apparatus))
             {
