@@ -135,6 +135,7 @@ function addPrologueClickEvent() {
                     <div class="modal-body">
                         ${text}
                     </div>
+                    <button class="btn btn-light mute">Mute narrator</button>
                 </div>
             </div>
         </div>`;
@@ -152,6 +153,13 @@ function addPrologueClickEvent() {
             this.pause(); // Stop playing
         });
         $(`#${audioName}_audio`)[0].play();
+        $(".mute").on("click", function () {
+            $('audio').each(function () {
+                this.pause(); // Stop playing
+                this.currentTime = 0; // Reset time
+            });
+        });
+
         $("#myModal").modal("toggle");
     });
 
