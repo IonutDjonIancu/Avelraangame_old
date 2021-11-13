@@ -4,4 +4,4 @@
 - Uses SQL server for db persistance.
 - Frontend build on HTML, CSS, JS (with jquery), Bootstrap.
 - Deployed on Azure (both server and db): https://avelraangame.azurewebsites.net/
-- Trademark and lore info: http://www.avelraan.com/
+- Lore info and trademark (at the bottom of the page): http://www.avelraan.com/
