@@ -3,5 +3,5 @@
 - .NET Core 3.1 server application. Code-first approach (includes migration scripts).
 - Uses SQL server for db persistance.
 - Frontend build on HTML, CSS, JS (with jquery), Bootstrap.
-- Deployed on Azure (both server and db): https://avelraangame.azurewebsites.net/
-- Lore info and Avelraan™ trademark (at the bottom of the page): http://www.avelraan.com/
+- Deployed on Azure (both server and db) at: https://avelraangame.azurewebsites.net/
+- Lore and Avelraan™ trademark information at: http://www.avelraan.com/
