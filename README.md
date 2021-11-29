@@ -4,5 +4,5 @@
 - Uses SQL server for db persistance.
 - Frontend build on HTML, CSS, JS (with jquery), Bootstrap.
 - Deployed on Azure (both server and db) at: https://avelraangame.azurewebsites.net/
-- AvelraangameOpenAPI at: https://app.swaggerhub.com/apis/IonutDjonIancu/Avelraangame/1.0
+- AvelraangameOpenAPI at: inside the project there is a postman OpenAPI collection json
 - Lore and Avelraan™ trademark information at: http://www.avelraan.com/
