@@ -10,6 +10,8 @@ const rollStatsBtn = "#rollStatsBtn";
 const storeStatsBtn = "#storeStatsBtn";
 const saveBtn = "#saveBtn";
 const statsPlaceholder = "#statsPlaceholder";
+const statsPlaceholder_1 = "#statsPlaceholder-1";
+const statsPlaceholder_2 = "#statsPlaceholder-2";
 const storeStatsPlaceholder = "#storeStatsPlaceholder";
 const players = "#players";
 const charName = "#charName";
@@ -154,11 +156,12 @@ function charRoll20() {
 
             data = JSON.parse(response.Data);
 
-
             console.log(data.PlayerId, data.Logbook.StatsRoll);
 
+            $(statsPlaceholder_2).text($(statsPlaceholder_1).text());
+            $(statsPlaceholder_1).text($(statsPlaceholder).text());
             $(statsPlaceholder).text(data.Logbook.StatsRoll);
-
+            colorNumbers();
         },
         error: function (err) {
             console.log(err);
@@ -172,6 +175,29 @@ function establishPlayer() {
     playerId = localStorage.getItem("playerId");
 }
 
+function colorNumbers() {
+    var par = $('p');
+
+    for (var i = 0; i < par.length; i++) {
+        var num = parseInt(par[i].textContent);
+
+        if (num) {
+            if (num < 20) {
+                par[i].setAttribute('style', 'color:gray');
+            } else if (num > 20 && num < 40) {
+                par[i].setAttribute('style', 'color:aqua');
+            } else if (num > 40 && num < 60) {
+                par[i].setAttribute('style', 'color:yellow');
+            } else if (num > 60 && num < 80) {
+                par[i].setAttribute('style', 'color:mediumpurple'); 
+            } else if (num > 80 && num < 100) {
+                par[i].setAttribute('style', 'color:darkred');
+            } else {
+                par[i].setAttribute('style', 'color:red');
+            }
+        }
+    }
+}
 
 
 

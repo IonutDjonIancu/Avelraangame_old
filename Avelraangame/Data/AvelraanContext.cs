@@ -32,7 +32,7 @@ namespace Avelraangame.Data
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Server=.\\sqlexpress; Database=Avelraan; Trusted_Connection=True;");
+                optionsBuilder.UseSqlServer("Server=.\\sqlexpress; Database=TestDb; Trusted_Connection=True;");
             }
         }
 

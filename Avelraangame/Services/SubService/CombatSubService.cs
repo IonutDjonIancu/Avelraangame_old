@@ -98,13 +98,21 @@ namespace Avelraangame.Services.SubService
             fight.GoodGuys.RemoveAt(indexGoood);
             fight.GoodGuys.Add(goodguy);
 
-            if (dmg > 0)
+            if (dmg <= 0)
             {
-                fight.FightDetails.LastActionResult = string.Concat(Scribe.ShortMessages.NpcDmg, $": {dmg} dmg taken.");
+                fight.FightDetails.LastActionResult = "You deflect glancing blows";
+            }
+            else if (dmg > 0 && dmg <= 200)
+            {
+                fight.FightDetails.LastActionResult = "You sustain superficial wounds";
+            }
+            else if (dmg > 200 && dmg <= 1000)
+            {
+                fight.FightDetails.LastActionResult = "You\'re injured";
             }
             else
             {
-                fight.FightDetails.LastActionResult = string.Concat(Scribe.ShortMessages.NpcDmg, $": npc missed!");
+                fight.FightDetails.LastActionResult = "You suffer heavy injuries";
             }
 
             var result = RollNpcAttack(fight);

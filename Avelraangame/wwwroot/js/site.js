@@ -209,45 +209,63 @@ function base_drawGoodGuys(data, whereTo) {
             exp = "white";
         }
 
-        var html = `
-            <div id="${data[i].CharacterId}" class="btn btn-outline-dark goodGuy" style="padding:5px; float:right" title="${data[i].Name}">
-                <div class="container">
-                    <div class="row">
-                        <div class="col">
-                            <div class="row" style="padding:0px">
-                                <span class="material-icons" style="color:${hp}">
-                                    favorite_border
-                                </span>
-                                <span class="material-icons" style="color:${drm}">
-                                    shield
+        if (data[i].IsAlive) {
+            var html = `
+                <div id="${data[i].CharacterId}" class="btn btn-outline-dark goodGuy" style="padding:5px; float:right" title="${data[i].Name}">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <div class="row" style="padding:0px">
+                                    <span class="material-icons" style="color:${hp}">
+                                        favorite_border
+                                    </span>
+                                    <span class="material-icons" style="color:${drm}">
+                                        shield
+                                    </span>
+                                </div>
+                                <div class="row" style="padding:0px">
+                                    <span class="material-icons" style="color:${harm}">
+                                        fitness_center
+                                    </span>
+                                    <span class="material-icons" style="color:${mana}">
+                                        star_half
+                                    </span>
+                                </div>
+                                <div class="row" style="padding:0px">
+                                    <span class="material-icons" style="color:${token}">
+                                        radio_button_checked
+                                    </span>
+                                    <span class="material-icons" style="color:${exp}">
+                                        military_tech
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <span>
+                                    <img style="border-radius:10px" src="../media/images/humans/human${data[i].Logbook.PortraitNr}.png" />
                                 </span>
                             </div>
-                            <div class="row" style="padding:0px">
-                                <span class="material-icons" style="color:${harm}">
-                                    fitness_center
-                                </span>
-                                <span class="material-icons" style="color:${mana}">
-                                    star_half
-                                </span>
-                            </div>
-                            <div class="row" style="padding:0px">
-                                <span class="material-icons" style="color:${token}">
-                                    radio_button_checked
-                                </span>
-                                <span class="material-icons" style="color:${exp}">
-                                    military_tech
-                                </span>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <span>
-                                <img style="border-radius:10px" src="../media/images/humans/human${data[i].Logbook.PortraitNr}.png" />
-                            </span>
                         </div>
                     </div>
                 </div>
-            </div>
-        `;
+            `;
+        } else {
+            html = `
+                <div id="${data[i].CharacterId}" class="btn btn-outline-danger" style="padding:5px; float:right" title="dead">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                Dead    
+                                <span>
+                                    <img style="border-radius:10px" src="../media/images/humans/human${data[i].Logbook.PortraitNr}.png" />
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
 
         $(whereTo).append(html);
     }

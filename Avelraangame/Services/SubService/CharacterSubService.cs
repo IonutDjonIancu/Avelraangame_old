@@ -327,54 +327,69 @@ namespace Avelraangame.Services.SubService
         private int FormulaMana(CharacterVm charVm)
         {
             var fromBase = charVm.Assets != null ? charVm.Assets.Mana : 0;
-            var fromItems = 0;
+            int? fromItems = 0;
             if (charVm.Equippment != null)
             {
-                fromItems = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses.ToMana : 0) +
-                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses.ToMana : 0) +
-                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses.ToMana : 0) +
-                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses.ToMana : 0) +
-                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s.Bonuses.ToMana).Sum() : 0);
+                fromItems = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses?.ToMana : 0) +
+                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses?.ToMana : 0) +
+                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses?.ToMana : 0) +
+                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses?.ToMana : 0) +
+                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s != null ? s.Bonuses?.ToMana : 0).Sum() : 0);
+            }
+
+            if (fromItems == null)
+            {
+                fromItems = 0;
             }
 
             // ((2*TOU + EXP/5) * type + bonuses + base) * ABS/100
-            var result = ((2 * charVm.Stats.Toughness + charVm.Expertise.Experience / 5) * charVm.Logbook.EntityLevel + fromItems + fromBase) * charVm.Stats.Abstract / 100;
+            var result = ((2 * charVm.Stats.Toughness + charVm.Expertise.Experience / 5) * charVm.Logbook.EntityLevel + (int)fromItems + fromBase) * charVm.Stats.Abstract / 100;
 
             return result;
         }
         private int FormulaHealth(CharacterVm charVm)
         {
             var fromBase = charVm.Assets != null ? charVm.Assets.Health : 0;
-            var fromItems = 0;
+            int? fromItems = 0;
             if (charVm.Equippment != null)
             {
-                fromItems = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses.ToHealth : 0) +
-                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses.ToHealth : 0) +
-                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses.ToHealth : 0) +
-                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses.ToHealth : 0) +
-                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s.Bonuses.ToHealth).Sum() : 0);
+                fromItems = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses?.ToHealth : 0) +
+                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses?.ToHealth : 0) +
+                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses?.ToHealth : 0) +
+                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses?.ToHealth : 0) +
+                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s != null ? s.Bonuses?.ToHealth : 0).Sum() : 0);
+            }
+
+            if (fromItems == null)
+            {
+                fromItems = 0;
             }
 
             // (5*TOU + 2*STR + AWA + EXP/10) * type + bonuses + base
-            var result = (5 * charVm.Stats.Toughness + 2 * charVm.Stats.Strength + charVm.Stats.Awareness + charVm.Expertise.Experience / 10) * charVm.Logbook.EntityLevel + fromItems + fromBase;
+            var result = (5 * charVm.Stats.Toughness + 2 * charVm.Stats.Strength + charVm.Stats.Awareness + charVm.Expertise.Experience / 10) * charVm.Logbook.EntityLevel + (int)fromItems + fromBase;
 
             return result;
         }
         private int FormulaHarm(CharacterVm charVm)
         {
             var fromBase = charVm.Assets != null ? charVm.Assets.Harm : 0;
-            var fromItems = 0;
+            int? fromItems = 0;
             if (charVm.Equippment != null)
             {
-                fromItems = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses.ToHarm : 0) +
-                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses.ToHarm : 0) +
-                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses.ToHarm : 0) +
-                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses.ToHarm : 0) +
-                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s.Bonuses.ToHarm).Sum() : 0);
+                fromItems = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses?.ToHarm : 0) +
+                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses?.ToHarm : 0) +
+                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses?.ToHarm : 0) +
+                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses?.ToHarm : 0) +
+                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s != null ? s.Bonuses?.ToHarm : 0).Sum() : 0);
+            }
+
+            if (fromItems == null)
+            {
+                fromItems = 0;
             }
 
             // (2*STR + 2*AWA + EXP/2) * type + bonuses + base
-            var result = (2 * charVm.Stats.Strength + 2 * charVm.Stats.Awareness + charVm.Expertise.Experience / 2) * charVm.Logbook.EntityLevel + fromItems + fromBase;
+            var result = (2 * charVm.Stats.Strength + 2 * charVm.Stats.Awareness + charVm.Expertise.Experience / 2) * charVm.Logbook.EntityLevel + (int)fromItems + fromBase;
 
             return result;
         }
@@ -384,34 +399,44 @@ namespace Avelraangame.Services.SubService
         private int FormulaDRM(CharacterVm charVm)
         {
             var fromBase = charVm.Expertise != null ? charVm.Expertise.DRM : 0;
-            var fromItems = 0;
+            int? fromItems = 0;
             if (charVm.Equippment != null)
             {
-                fromItems = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses.ToDRM : 0) +
-                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses.ToDRM : 0) +
-                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses.ToDRM : 0) +
-                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses.ToDRM : 0) +
-                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s.Bonuses.ToDRM).Sum() : 0);
+                fromItems = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses?.ToDRM : 0) +
+                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses?.ToDRM : 0) +
+                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses?.ToDRM : 0) +
+                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses?.ToDRM : 0) +
+                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s != null ? s.Bonuses?.ToDRM : 0).Sum() : 0);
             }
 
-            var result = fromBase + fromItems;
+            if (fromItems == null)
+            {
+                fromItems = 0;
+            }
+
+            var result = fromBase + (int)fromItems;
 
             return result;
         }
         private int FormulaExp(CharacterVm charVm)
         {
             var fromBase = charVm.Expertise != null ? charVm.Expertise.Experience : 0;
-            var fromItems = 0;
+            int? fromItems = 0;
             if (charVm.Equippment != null)
             {
-                fromItems = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses.ToExperience : 0) +
-                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses.ToExperience : 0) +
-                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses.ToExperience : 0) +
-                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses.ToExperience : 0) +
-                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s.Bonuses.ToExperience).Sum() : 0);
+                fromItems = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses?.ToExperience : 0) +
+                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses?.ToExperience : 0) +
+                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses?.ToExperience : 0) +
+                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses?.ToExperience : 0) +
+                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s != null ? s.Bonuses?.ToExperience : 0).Sum() : 0);
             }
 
-            var result = fromBase + fromItems;
+            if (fromItems == null)
+            {
+                fromItems = 0;
+            }
+
+            var result = fromBase + (int)fromItems;
 
             return result;
         }
@@ -421,68 +446,88 @@ namespace Avelraangame.Services.SubService
         private int FormulaAbs(CharacterVm charVm)
         {
             var fromBase = charVm.Stats != null ? charVm.Stats.Abstract : 0;
-            var fromItems = 0;
+            int? fromItems = 0;
             if (charVm.Equippment != null)
             {
-                fromItems = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses.ToAbstract : 0) +
-                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses.ToAbstract : 0) +
-                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses.ToAbstract : 0) +
-                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses.ToAbstract : 0) +
-                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s.Bonuses.ToAbstract).Sum() : 0);
+                fromItems = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses?.ToAbstract : 0) +
+                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses?.ToAbstract : 0) +
+                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses?.ToAbstract : 0) +
+                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses?.ToAbstract : 0) +
+                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s != null ? s.Bonuses.ToAbstract : 0).Sum() : 0);
             }
 
-            var result = fromBase + fromItems;
+            if (fromItems == null)
+            {
+                fromItems = 0;
+            }
+
+            var result = fromBase + (int)fromItems;
 
             return result;
         }
         private int FormulaAwa(CharacterVm charVm)
         {
             var fromBase = charVm.Stats != null ? charVm.Stats.Awareness : 0;
-            var fromItems = 0;
+            int? fromItems = 0;
             if (charVm.Equippment != null)
             {
-                fromItems = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses.ToAwareness : 0) +
-                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses.ToAwareness : 0) +
-                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses.ToAwareness : 0) +
-                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses.ToAwareness : 0) +
-                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s.Bonuses.ToAwareness).Sum() : 0);
+                fromItems = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses?.ToAwareness : 0) +
+                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses?.ToAwareness : 0) +
+                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses?.ToAwareness : 0) +
+                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses?.ToAwareness : 0) +
+                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s != null ? s.Bonuses?.ToAwareness : 0).Sum() : 0);
             }
 
-            var result = fromBase + fromItems;
+            if (fromItems == null)
+            {
+                fromItems = 0;
+            }
+
+            var result = fromBase + (int)fromItems;
 
             return result;
         }
         private int FormulaTou(CharacterVm charVm)
         {
             var fromBase = charVm.Stats != null ? charVm.Stats.Toughness : 0;
-            var fromItems = 0;
+            int? fromItems = 0;
             if (charVm.Equippment != null)
             {
-                fromItems = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses.ToToughness : 0) +
-                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses.ToToughness : 0) +
-                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses.ToToughness : 0) +
-                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses.ToToughness : 0) +
-                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s.Bonuses.ToToughness).Sum() : 0);
+                fromItems = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses?.ToToughness : 0) +
+                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses?.ToToughness : 0) +
+                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses?.ToToughness : 0) +
+                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses?.ToToughness : 0) +
+                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s!= null ? s.Bonuses?.ToToughness : 0).Sum() : 0);
             }
 
-            var result = fromBase + fromItems;
+            if (fromItems == null)
+            {
+                fromItems = 0;
+            }
+
+            var result = fromBase + (int)fromItems;
 
             return result;
         }
         private int FormulaStr(CharacterVm charVm)
         {
             var fromBase = charVm.Stats != null ? charVm.Stats.Strength : 0;
-            var fromItems = 0;
+            int? fromItems = 0;
             if (charVm.Equippment != null)
             {
-                fromItems = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses.ToStrength : 0) +
-                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses.ToStrength : 0 ) +
-                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses.ToStrength : 0 )+
-                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses.ToStrength : 0)+
-                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s.Bonuses.ToStrength).Sum() : 0);
+                fromItems = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses?.ToStrength : 0) +
+                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses?.ToStrength : 0 ) +
+                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses?.ToStrength : 0 )+
+                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses?.ToStrength : 0)+
+                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s != null ? s.Bonuses?.ToStrength : 0).Sum() : 0);
             }
 
-            var result = fromBase + fromItems;
+            if (fromItems == null)
+            {
+                fromItems = 0;
+            }
+
+            var result = fromBase + (int)fromItems;
 
             return result;
         }
@@ -493,117 +538,117 @@ namespace Avelraangame.Services.SubService
         {
             if (charVm.Equippment != null)
             {
-                var apothecary = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses.ToApothecary : 0) +
-                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses.ToApothecary : 0) +
-                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses.ToApothecary : 0) +
-                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses.ToApothecary : 0) +
-                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s.Bonuses.ToApothecary).Sum() : 0);
-                charVm.Skills.Apothecary += apothecary;
+                var apothecary = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses?.ToApothecary : 0) +
+                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses?.ToApothecary : 0) +
+                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses?.ToApothecary : 0) +
+                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses?.ToApothecary : 0) +
+                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s != null ? s.Bonuses?.ToApothecary : 0).Sum() : 0);
+                charVm.Skills.Apothecary += (int)apothecary;
 
-                var arcane = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses.ToArcane : 0) +
-                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses.ToArcane : 0) +
-                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses.ToArcane : 0) +
-                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses.ToArcane : 0) +
-                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s.Bonuses.ToArcane).Sum() : 0);
-                charVm.Skills.Arcane += arcane;
+                var arcane = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses?.ToArcane : 0) +
+                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses?.ToArcane : 0) +
+                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses?.ToArcane : 0) +
+                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses?.ToArcane : 0) +
+                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s != null ? s.Bonuses?.ToArcane : 0).Sum() : 0);
+                charVm.Skills.Arcane += (int)arcane;
 
-                var dodge = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses.ToDodge : 0) +
-                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses.ToDodge : 0) +
-                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses.ToDodge : 0) +
-                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses.ToDodge : 0) +
-                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s.Bonuses.ToDodge).Sum() : 0);
-                charVm.Skills.Dodge += dodge;
+                var dodge = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses?.ToDodge : 0) +
+                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses?.ToDodge : 0) +
+                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses?.ToDodge : 0) +
+                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses?.ToDodge : 0) +
+                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s != null ? s.Bonuses?.ToDodge : 0).Sum() : 0);
+                charVm.Skills.Dodge += (int)dodge;
 
-                var hide = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses.ToHide : 0) +
-                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses.ToHide : 0) +
-                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses.ToHide : 0) +
-                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses.ToHide : 0) +
-                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s.Bonuses.ToHide).Sum() : 0);
-                charVm.Skills.Hide += hide;
+                var hide = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses?.ToHide : 0) +
+                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses?.ToHide : 0) +
+                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses?.ToHide : 0) +
+                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses?.ToHide : 0) +
+                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s != null ? s.Bonuses?.ToHide : 0).Sum() : 0);
+                charVm.Skills.Hide += (int)hide;
 
-                var melee = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses.ToMelee : 0) +
-                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses.ToMelee : 0) +
-                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses.ToMelee : 0) +
-                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses.ToMelee : 0) +
-                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s.Bonuses.ToMelee).Sum() : 0);
-                charVm.Skills.Melee += melee;
+                var melee = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses?.ToMelee : 0) +
+                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses?.ToMelee : 0) +
+                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses?.ToMelee : 0) +
+                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses?.ToMelee : 0) +
+                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s != null ? s.Bonuses?.ToMelee : 0).Sum() : 0);
+                charVm.Skills.Melee += (int)melee;
 
-                var navigation = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses.ToNavigation : 0) +
-                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses.ToNavigation : 0) +
-                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses.ToNavigation : 0) +
-                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses.ToNavigation : 0) +
-                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s.Bonuses.ToNavigation).Sum() : 0);
-                charVm.Skills.Navigation += navigation;
+                var navigation = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses?.ToNavigation : 0) +
+                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses?.ToNavigation : 0) +
+                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses?.ToNavigation : 0) +
+                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses?.ToNavigation : 0) +
+                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s != null ? s.Bonuses?.ToNavigation : 0).Sum() : 0);
+                charVm.Skills.Navigation += (int)navigation;
 
-                var psionics = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses.ToPsionics : 0) +
-                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses.ToPsionics : 0) +
-                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses.ToPsionics : 0) +
-                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses.ToPsionics : 0) +
-                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s.Bonuses.ToPsionics).Sum() : 0);
-                charVm.Skills.Psionics += psionics;
+                var psionics = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses?.ToPsionics : 0) +
+                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses?.ToPsionics : 0) +
+                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses?.ToPsionics : 0) +
+                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses?.ToPsionics : 0) +
+                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s != null ? s.Bonuses?.ToPsionics : 0).Sum() : 0);
+                charVm.Skills.Psionics += (int)psionics;
 
-                var ranged = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses.ToRanged : 0) +
-                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses.ToRanged : 0) +
-                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses.ToRanged : 0) +
-                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses.ToRanged : 0) +
-                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s.Bonuses.ToRanged).Sum() : 0);
-                charVm.Skills.Ranged += ranged;
+                var ranged = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses?.ToRanged : 0) +
+                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses?.ToRanged : 0) +
+                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses?.ToRanged : 0) +
+                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses?.ToRanged : 0) +
+                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s != null ? s.Bonuses?.ToRanged : 0).Sum() : 0);
+                charVm.Skills.Ranged += (int)ranged;
 
-                var resistance = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses.ToResistance : 0) +
-                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses.ToResistance : 0) +
-                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses.ToResistance : 0) +
-                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses.ToResistance : 0) +
-                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s.Bonuses.ToResistance).Sum() : 0);
-                charVm.Skills.Resistance += resistance;
+                var resistance = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses?.ToResistance : 0) +
+                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses?.ToResistance : 0) +
+                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses?.ToResistance : 0) +
+                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses?.ToResistance : 0) +
+                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s != null ? s.Bonuses?.ToResistance : 0).Sum() : 0);
+                charVm.Skills.Resistance += (int)resistance;
 
-                var scouting = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses.ToScouting : 0) +
-                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses.ToScouting : 0) +
-                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses.ToScouting : 0) +
-                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses.ToScouting : 0) +
-                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s.Bonuses.ToScouting).Sum() : 0);
-                charVm.Skills.Scouting += scouting;
+                var scouting = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses?.ToScouting : 0) +
+                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses?.ToScouting : 0) +
+                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses?.ToScouting : 0) +
+                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses?.ToScouting : 0) +
+                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s != null ? s.Bonuses?.ToScouting : 0).Sum() : 0);
+                charVm.Skills.Scouting += (int)scouting;
 
-                var social = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses.ToSocial : 0) +
-                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses.ToSocial : 0) +
-                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses.ToSocial : 0) +
-                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses.ToSocial : 0) +
-                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s.Bonuses.ToSocial).Sum() : 0);
-                charVm.Skills.Social += social;
+                var social = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses?.ToSocial : 0) +
+                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses?.ToSocial : 0) +
+                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses?.ToSocial : 0) +
+                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses?.ToSocial : 0) +
+                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s != null ? s.Bonuses?.ToSocial : 0).Sum() : 0);
+                charVm.Skills.Social += (int)social;
 
-                var spot = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses.ToSpot : 0) +
-                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses.ToSpot : 0) +
-                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses.ToSpot : 0) +
-                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses.ToSpot : 0) +
-                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s.Bonuses.ToSpot).Sum() : 0);
-                charVm.Skills.Spot += spot;
+                var spot = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses?.ToSpot : 0) +
+                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses?.ToSpot : 0) +
+                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses?.ToSpot : 0) +
+                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses?.ToSpot : 0) +
+                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s != null ? s.Bonuses?.ToSpot : 0).Sum() : 0);
+                charVm.Skills.Spot += (int)spot;
 
-                var survival = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses.ToSurvival : 0) +
-                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses.ToSurvival : 0) +
-                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses.ToSurvival : 0) +
-                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses.ToSurvival : 0) +
-                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s.Bonuses.ToSurvival).Sum() : 0);
-                charVm.Skills.Survival += survival;
+                var survival = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses?.ToSurvival : 0) +
+                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses?.ToSurvival : 0) +
+                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses?.ToSurvival : 0) +
+                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses?.ToSurvival : 0) +
+                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s != null ? s.Bonuses?.ToSurvival : 0).Sum() : 0);
+                charVm.Skills.Survival += (int)survival;
 
-                var tactics = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses.ToTactics : 0) +
-                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses.ToTactics : 0) +
-                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses.ToTactics : 0) +
-                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses.ToTactics : 0) +
-                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s.Bonuses.ToTactics).Sum() : 0);
-                charVm.Skills.Tactics += tactics;
+                var tactics = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses?.ToTactics : 0) +
+                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses?.ToTactics : 0) +
+                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses?.ToTactics : 0) +
+                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses?.ToTactics : 0) +
+                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s != null ? s.Bonuses?.ToTactics : 0).Sum() : 0);
+                charVm.Skills.Tactics += (int)tactics;
 
-                var traps = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses.ToTraps : 0) +
-                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses.ToTraps : 0) +
-                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses.ToTraps : 0) +
-                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses.ToTraps : 0) +
-                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s.Bonuses.ToTraps).Sum() : 0);
-                charVm.Skills.Traps += traps;
+                var traps = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses?.ToTraps : 0) +
+                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses?.ToTraps : 0) +
+                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses?.ToTraps : 0) +
+                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses?.ToTraps : 0) +
+                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s != null ? s.Bonuses?.ToTraps : 0).Sum() : 0);
+                charVm.Skills.Traps += (int)traps;
 
-                var unarmed = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses.ToUnarmed : 0) +
-                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses.ToUnarmed : 0) +
-                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses.ToUnarmed : 0) +
-                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses.ToUnarmed : 0) +
-                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s.Bonuses.ToUnarmed).Sum() : 0);
-                charVm.Skills.Unarmed += unarmed;
+                var unarmed = (charVm.Equippment.Armour != null ? charVm.Equippment.Armour.Bonuses?.ToUnarmed : 0) +
+                    (charVm.Equippment.Mainhand != null ? charVm.Equippment.Mainhand.Bonuses?.ToUnarmed : 0) +
+                    (charVm.Equippment.Offhand != null ? charVm.Equippment.Offhand.Bonuses?.ToUnarmed : 0) +
+                    (charVm.Equippment.Ranged != null ? charVm.Equippment.Ranged.Bonuses?.ToUnarmed : 0) +
+                    (charVm.Equippment.Trinkets != null ? charVm.Equippment.Trinkets.Select(s => s != null ? s.Bonuses?.ToUnarmed : 0).Sum() : 0);
+                charVm.Skills.Unarmed += (int)unarmed;
             }
 
             return charVm;

@@ -5,21 +5,39 @@
 <br />
 <p style="color:navajowhite">Roll character stats</p>
 <div class="btn-group">
-    <a class="btn btn-outline-dark btn-sm" asp-controller="Character" asp-action="Character_index">Index</a>
-    <a class="btn btn-outline-dark btn-sm" asp-controller="Character" asp-action="Character_roll">Roll</a>
-    <a class="btn btn-outline-dark btn-sm" asp-controller="Character" asp-action="Character_select">Select</a>
-    <a class="btn btn-outline-dark btn-sm" asp-controller="Character" asp-action="Character_levelup">Levelup</a>
+    <a class="btn btn-outline-secondary btn-sm" asp-controller="Character" asp-action="Character_index">Index</a>
+    <a class="btn btn-outline-secondary btn-sm" asp-controller="Character" asp-action="Character_roll">Roll</a>
+    <a class="btn btn-outline-secondary btn-sm" asp-controller="Character" asp-action="Character_select">Select</a>
+    <a class="btn btn-outline-secondary btn-sm" asp-controller="Character" asp-action="Character_levelup">Levelup</a>
 </div>
 
 <div class="text-left jumbotron" style="opacity:0.7; background-color:black; color:navajowhite">
-    <div>
-        <button id="rollStatsBtn" class="btn btn-outline-light">Roll stats</button>
-        <p id="statsPlaceholder" style="float:right"></p>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <button id="rollStatsBtn" class="btn btn-outline-light">Roll stats</button>
+            </div>
+            <div class="col-md-3">
+                <p id="statsPlaceholder">0</p>
+            </div>
+            <div class="col-md-3">
+                <p id="statsPlaceholder-1" style="opacity:0.5">previous roll</p> 
+            </div>
+            <div class="col-md-3">
+                <p id="statsPlaceholder-2" style="opacity:0.2">previous two rolls</p>
+            </div>
+        </div>
     </div>
     <hr />
-    <div>
-        <button id="storeStatsBtn" class="btn btn-outline-light">Store</button>
-        <p id="storeStatsPlaceholder" style="float:right; color:green"></p>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <button id="storeStatsBtn" class="btn btn-outline-light">Store</button>
+            </div>
+            <div class="col-md-9">
+                <p id="storeStatsPlaceholder" style="color:green"></p>
+            </div>
+        </div>
     </div>
     <hr />
     <div>

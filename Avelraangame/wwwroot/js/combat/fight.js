@@ -35,6 +35,8 @@ getFight();
 
 
 // events
+
+
 $(attackBtn).on("click", function () {
 
     var object = {
@@ -65,6 +67,7 @@ $(attackBtn).on("click", function () {
                     console.log(data);
                     drawCombatantsAndAddEvents();
                     redrawGuys(data);
+                    modalSplash(data.FightDetails.LastActionResult);
                 }
             }
         },
@@ -102,6 +105,7 @@ $(passBtn).on("click", function () {
                     console.log(data);
                     drawCombatantsAndAddEvents();
                     redrawGuys(data);
+                    modalSplash(data.FightDetails.LastActionResult);
                 }
             }
         },
@@ -351,3 +355,206 @@ function drawGuy(guy, isGood) {
         $(targetDiv).append(html);
     }
 }
+
+
+function modalSplash(lastActionResult) {
+    var npcMiss = 'You deflect glancing blows';
+    var npcLowDmg = 'You sustain superficial wounds';
+    var npcNormalDmg = 'You\'re injured';
+    var npcHighDmg = 'You suffer heavy injuries';
+    var charMiss = 'You missed';
+    var charLowDmg = 'You cause minor damage';
+    var charNormalDmg = 'You deal some direct strikes';
+    var charHighDmg = 'You critically hit';
+
+    switch (lastActionResult) {
+        case npcMiss:
+            break;
+        case npcLowDmg:
+            break;
+        case npcNormalDmg:
+            break;
+        case npcHighDmg:
+            break;
+        case charMiss:
+            attack0();
+            break;
+        case charLowDmg:
+            attack1();
+            break;
+        case charNormalDmg:
+            attack2();
+            break;
+        case charHighDmg:
+            attack3();
+            break;
+        default:
+            return;
+    }
+
+}
+
+function attack0() {
+    $(modalDiv).empty();
+
+    var textHtml = `
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="opacity:0.9">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-body" style="text-align:center">
+                        <img style="border-radius:10px; height:180px; width:auto" src="../media/images/animations/attack0.gif" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    var audioHtml = `
+    <audio id="sword_hit_kill_audio" preload="none" controls="" style="margin-top: 5px;" hidden="hidden">
+        <source src="/media/sounds/attack0.ogg" type="audio/ogg; codecs=&quot;vorbis&quot;">
+    </audio>`;
+
+    $(modalDiv).append(audioHtml);
+    $(modalDiv).append(textHtml);
+
+    $('audio').each(function () {
+        this.pause(); // Stop playing
+    });
+    setTimeout(function () {
+        $('#sword_hit_kill_audio')[0].play();
+
+    }, 300);
+
+    $("#myModal").modal("toggle");
+    setTimeout(function () {
+        $("#myModal").modal("toggle");
+    }, 1200);
+
+    setTimeout(function () {
+        $(modalDiv).empty();
+    }, 1700);
+}
+
+function attack1() {
+    $(modalDiv).empty();
+
+    var textHtml = `
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="opacity:0.9">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-body" style="text-align:center">
+                        <img style="border-radius:10px; height:180px; width:auto" src="../media/images/animations/attack1.gif" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    var audioHtml = `
+    <audio id="sword_hit_kill_audio" preload="none" controls="" style="margin-top: 5px;" hidden="hidden">
+        <source src="/media/sounds/attack1.ogg" type="audio/ogg; codecs=&quot;vorbis&quot;">
+    </audio>`;
+
+    $(modalDiv).append(audioHtml);
+    $(modalDiv).append(textHtml);
+
+    $('audio').each(function () {
+        this.pause(); // Stop playing
+    });
+    setTimeout(function () {
+        $('#sword_hit_kill_audio')[0].play();
+
+    }, 2250);
+
+    $("#myModal").modal("toggle");
+    setTimeout(function () {
+        $("#myModal").modal("toggle");
+    }, 4000);
+
+    setTimeout(function () {
+        $(modalDiv).empty();
+    }, 4500);
+}
+
+function attack2() {
+    $(modalDiv).empty();
+
+    var textHtml = `
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="opacity:0.9">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-body" style="text-align:center">
+                        <img style="border-radius:10px; height:180px; width:auto" src="../media/images/animations/attack2.gif" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    var audioHtml = `
+    <audio id="sword_hit_kill_audio" preload="none" controls="" style="margin-top: 5px;" hidden="hidden">
+        <source src="/media/sounds/attack2.ogg" type="audio/ogg; codecs=&quot;vorbis&quot;">
+    </audio>`;
+
+    $(modalDiv).append(audioHtml);
+    $(modalDiv).append(textHtml);
+
+    $('audio').each(function () {
+        this.pause(); // Stop playing
+    });
+    setTimeout(function () {
+        $('#sword_hit_kill_audio')[0].play();
+
+    }, 1800);
+
+    $("#myModal").modal("toggle");
+    setTimeout(function () {
+        $("#myModal").modal("toggle");
+    }, 5000);
+
+    setTimeout(function () {
+        $(modalDiv).empty();
+    }, 6000);
+}
+
+function attack3() {
+    $(modalDiv).empty();
+
+    var textHtml = `
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="opacity:0.9">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-body" style="text-align:center">
+                        <img style="border-radius:10px; height:180px; width:auto" src="../media/images/animations/attack3.gif" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    var audioHtml = `
+    <audio id="sword_hit_kill_audio" preload="none" controls="" style="margin-top: 5px;" hidden="hidden">
+        <source src="/media/sounds/attack3.ogg" type="audio/ogg; codecs=&quot;vorbis&quot;">
+    </audio>`;
+
+    $(modalDiv).append(audioHtml);
+    $(modalDiv).append(textHtml);
+
+    $('audio').each(function () {
+        this.pause(); // Stop playing
+    });
+    setTimeout(function () {
+        $('#sword_hit_kill_audio')[0].play();
+
+    }, 1200);
+
+    $("#myModal").modal("toggle");
+    setTimeout(function () {
+        $("#myModal").modal("toggle");
+    }, 2800);
+
+    setTimeout(function () {
+        $(modalDiv).empty();
+    }, 3200);
+}
+

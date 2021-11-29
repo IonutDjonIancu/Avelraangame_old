@@ -40,13 +40,21 @@ namespace Avelraangame.Services
             int dmgDone = 0;
             (attacker, target, dmgDone) = RollAttack(attacker, target);
 
-            if (dmgDone > 0)
+            if (dmgDone <= 0)
             {
-                fightvm.FightDetails.LastActionResult = string.Join(": ", Scribe.ShortMessages.Success, $"{dmgDone} dmg done.");
+                fightvm.FightDetails.LastActionResult = "You missed";
+            }
+            else if (dmgDone > 0 && dmgDone <= 200)
+            {
+                fightvm.FightDetails.LastActionResult = "You cause minor damage";
+            }
+            else if (dmgDone > 200 && dmgDone <= 1000)
+            {
+                fightvm.FightDetails.LastActionResult = "You deal some direct strikes";
             }
             else
             {
-                fightvm.FightDetails.LastActionResult = string.Join(": ", Scribe.ShortMessages.Failure, $"miss");
+                fightvm.FightDetails.LastActionResult = "You critically hit";
             }
 
             fightvm = EndFight(fightvm);
@@ -89,6 +97,8 @@ namespace Avelraangame.Services
                 charvm.Assets.Health += (originalChr.Assets.Health - charvm.Assets.Health) / 2;
                 charvm.AttackToken = false;
             }
+
+            fightvm.FightDetails.LastActionResult = "You take a step a back and mend your wounds";
 
             fight.GoodGuys = JsonConvert.SerializeObject(fightvm.GoodGuys);
             fight.BadGuys = JsonConvert.SerializeObject(fightvm.BadGuys);
@@ -188,15 +198,15 @@ namespace Avelraangame.Services
             fightvm.FightDetails.Renown = renown;
 
             fightvm.FightDetails.TacticalSituation = DecideTacticalSituation(fightvm.GoodGuys, fightvm.BadGuys);
-            if (fightvm.FightDetails.TacticalSituation.Equals(TacticalSituation.Major_tactical_disadvantage.ToString()) ||
-                fightvm.FightDetails.TacticalSituation.Equals(TacticalSituation.Slight_tactical_disadvantage.ToString()))
-            {
-                fightvm = RollNpcAttack(fightvm);
-            }
-            else
-            {
-                fightvm.FightDetails.LastActionResult = "The advantage is yours";
-            }
+            fightvm.FightDetails.LastActionResult = fightvm.FightDetails.TacticalSituation;
+            //if (fightvm.FightDetails.TacticalSituation.Equals(TacticalSituation.Major_tactical_disadvantage.ToString()) ||
+            //    fightvm.FightDetails.TacticalSituation.Equals(TacticalSituation.Slight_tactical_disadvantage.ToString()))
+            //{
+            //    fightvm = RollNpcAttack(fightvm);
+            //}
+            //else
+            //{
+            //}
 
             var fight = new Fight()
             {
