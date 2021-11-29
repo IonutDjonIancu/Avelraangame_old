@@ -1,0 +1,147 @@
+{
+	"info": {
+		"_postman_id": "fba0c2f1-01c0-4d1b-8efc-e7152eaba75d",
+		"name": "AvelraangameOpenAPI",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Generic",
+			"item": [
+				{
+					"name": "Get ok from server",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:44326/api/palantir/getok",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44326",
+							"path": [
+								"api",
+								"palantir",
+								"getok"
+							]
+						},
+						"description": "Gets an OK from the server."
+					},
+					"response": []
+				}
+			],
+			"description": "Generic endpoints folder."
+		},
+		{
+			"name": "Players",
+			"item": [
+				{
+					"name": "GetPlayersNames",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:44326/api/palantir/GetPlayersNames",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44326",
+							"path": [
+								"api",
+								"palantir",
+								"GetPlayersNames"
+							]
+						},
+						"description": "- gets the list of all player names from the database in alphabetical order"
+					},
+					"response": []
+				},
+				{
+					"name": "GetPlayerIdByName",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:44326/api/palantir/GetPlayerIdByName?message={\"PlayerName\":\"djon\", \"Ward\":\"1234\"}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44326",
+							"path": [
+								"api",
+								"palantir",
+								"GetPlayerIdByName"
+							],
+							"query": [
+								{
+									"key": "message",
+									"value": "{\"PlayerName\":\"djon\", \"Ward\":\"1234\"}"
+								}
+							]
+						},
+						"description": "- gets the player ID by player name\n- the player name is unique in the database"
+					},
+					"response": []
+				}
+			],
+			"description": "Player and player accounts endpoint folder."
+		},
+		{
+			"name": "Get characters by player id",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				},
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:44326/api/palantir/getcharactersbyplayerid?message={\"PlayerId\":\"370002b3-9699-4b51-89c2-ef3436a07d7a\",\"PlayerName\":\"djon\"}",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "44326",
+					"path": [
+						"api",
+						"palantir",
+						"getcharactersbyplayerid"
+					],
+					"query": [
+						{
+							"key": "message",
+							"value": "{\"PlayerId\":\"370002b3-9699-4b51-89c2-ef3436a07d7a\",\"PlayerName\":\"djon\"}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
