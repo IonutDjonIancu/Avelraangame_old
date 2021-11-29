@@ -9,17 +9,18 @@
 			"name": "Generic",
 			"item": [
 				{
-					"name": "Get ok from server",
+					"name": "GetOk",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://localhost:44326/api/palantir/getok",
+							"raw": "https://avelraangame.azurewebsites.net/api/palantir/getok",
 							"protocol": "https",
 							"host": [
-								"localhost"
+								"avelraangame",
+								"azurewebsites",
+								"net"
 							],
-							"port": "44326",
 							"path": [
 								"api",
 								"palantir",
@@ -28,7 +29,68 @@
 						},
 						"description": "Gets an OK from the server."
 					},
-					"response": []
+					"response": [
+						{
+							"name": "Get ok from server",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://avelraangame.azurewebsites.net/api/palantir/getok",
+									"protocol": "https",
+									"host": [
+										"avelraangame",
+										"azurewebsites",
+										"net"
+									],
+									"path": [
+										"api",
+										"palantir",
+										"getok"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "plain",
+							"header": [
+								{
+									"key": "Content-Length",
+									"value": "122"
+								},
+								{
+									"key": "Content-Type",
+									"value": "text/plain; charset=utf-8"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "gzip"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "Server",
+									"value": "Microsoft-IIS/10.0"
+								},
+								{
+									"key": "Strict-Transport-Security",
+									"value": "max-age=2592000"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "ASP.NET"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 29 Nov 2021 15:18:09 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "Ok"
+						}
+					]
 				}
 			],
 			"description": "Generic endpoints folder."
@@ -42,21 +104,83 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://localhost:44326/api/palantir/GetPlayersNames",
+							"raw": "https://avelraangame.azurewebsites.net/api/palantir/GetPlayersNames",
 							"protocol": "https",
 							"host": [
-								"localhost"
+								"avelraangame",
+								"azurewebsites",
+								"net"
 							],
-							"port": "44326",
 							"path": [
 								"api",
 								"palantir",
 								"GetPlayersNames"
 							]
 						},
-						"description": "- gets the list of all player names from the database in alphabetical order"
+						"description": "Gets the list of all player names from the database in alphabetical order."
 					},
-					"response": []
+					"response": [
+						{
+							"name": "GetPlayersNames",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://avelraangame.azurewebsites.net/api/palantir/GetPlayersNames",
+									"protocol": "https",
+									"host": [
+										"avelraangame",
+										"azurewebsites",
+										"net"
+									],
+									"path": [
+										"api",
+										"palantir",
+										"GetPlayersNames"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "plain",
+							"header": [
+								{
+									"key": "Content-Length",
+									"value": "203"
+								},
+								{
+									"key": "Content-Type",
+									"value": "text/plain; charset=utf-8"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "gzip"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "Server",
+									"value": "Microsoft-IIS/10.0"
+								},
+								{
+									"key": "Strict-Transport-Security",
+									"value": "max-age=2592000"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "ASP.NET"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 29 Nov 2021 15:18:57 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\"Data\":\"[\\\"Andrei \\\",\\\"Bulu\\\",\\\"djon2\\\",\\\"djon3\\\",\\\"Liviu\\\",\\\"Mari\\\",\\\"Miu'stariu\\\",\\\"Ninel\\\"]\",\"Error\":null}"
+						}
+					]
 				},
 				{
 					"name": "GetPlayerIdByName",
@@ -88,9 +212,82 @@
 								}
 							]
 						},
-						"description": "- gets the player ID by player name\n- the player name is unique in the database"
+						"description": "Gets the player ID by player name. The player name is unique in the database."
 					},
-					"response": []
+					"response": [
+						{
+							"name": "GetPlayerIdByName",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://avelraangame.azurewebsites.net/api/palantir/GetPlayerIdByName?message={\"PlayerName\":\"djon2\", \"Ward\":\"1234\"}",
+									"protocol": "https",
+									"host": [
+										"avelraangame",
+										"azurewebsites",
+										"net"
+									],
+									"path": [
+										"api",
+										"palantir",
+										"GetPlayerIdByName"
+									],
+									"query": [
+										{
+											"key": "message",
+											"value": "{\"PlayerName\":\"djon2\", \"Ward\":\"1234\"}"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "plain",
+							"header": [
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Content-Type",
+									"value": "text/plain; charset=utf-8"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "gzip"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "Server",
+									"value": "Microsoft-IIS/10.0"
+								},
+								{
+									"key": "Strict-Transport-Security",
+									"value": "max-age=2592000"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "ASP.NET"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 29 Nov 2021 15:19:48 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\"Data\":\"e72fea85-13f7-4700-aa9e-667ce13a60b6\",\"Error\":null}"
+						}
+					]
 				}
 			],
 			"description": "Player and player accounts endpoint folder."
