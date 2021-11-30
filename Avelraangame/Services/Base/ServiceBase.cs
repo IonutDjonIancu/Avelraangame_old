@@ -152,6 +152,11 @@ namespace Avelraangame.Services.Base
         protected void ValidatePlayerDetailsOnCreate(PlayerVm playerVm)
         {
             ValidatePlayerName(playerVm.PlayerName);
+            if (playerVm.PlayerName.Length > 50)
+            {
+                throw new Exception(message: string.Join(":", Scribe.ShortMessages.Failure, "player name too long."));
+            }
+
             ValidateWards(playerVm.Ward, playerVm.Wardcheck);
             if (!PlayersUtils.PlayerSymbolsList.Contains(playerVm.Symbol))
             {
